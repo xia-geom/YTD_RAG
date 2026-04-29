@@ -1,0 +1,19 @@
+# Optional document metadata. Copy this file to documents.yaml and edit it.
+# Keys may be source paths relative to the project root or corpus folder.
+
+documents:
+  corpus/example.tex:
+    title: "Example Kähler Geometry Notes"
+    authors:
+      - "Researcher Name"
+    year: 2026
+    document_type: note
+    topics:
+      - "toric Kähler geometry"
+      - "Mabuchi energy"
+    mathematical_objects:
+      - "moment polytope"
+      - "symplectic potential"
+    status: unread
+    notes: "Replace with real private metadata."
+

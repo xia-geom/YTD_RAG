@@ -1,0 +1,70 @@
+seed_authors:
+  - "Berman"
+  - "Darvas"
+  - "Lu"
+  - "Chen"
+  - "Cheng"
+  - "Lahdili"
+  - "Apostolov"
+  - "Auvray"
+  - "Sektnan"
+  - "Donaldson"
+  - "Székelyhidi"
+  - "Boucksom"
+  - "Jonsson"
+  - "Guedj"
+  - "Zeriahi"
+
+seed_keywords:
+  - "constant scalar curvature Kähler"
+  - "cscK"
+  - "Mabuchi energy"
+  - "K-energy"
+  - "Ding functional"
+  - "toric Kähler"
+  - "moment polytope"
+  - "Abreu equation"
+  - "conic Kähler metric"
+  - "cone angle"
+  - "Poincare metric"
+  - "Poincaré metric"
+  - "cusp metric"
+  - "weighted extremal metric"
+  - "weak geodesic"
+  - "finite energy"
+  - "Yau-Tian-Donaldson"
+
+arxiv_categories:
+  - "math.DG"
+  - "math.AG"
+  - "math.CV"
+
+ranking_weights:
+  keyword_match: 3.0
+  author_match: 2.5
+  title_match: 2.0
+  abstract_match: 1.5
+  category_match: 1.0
+  recency: 0.5
+  blacklist_penalty: -10.0
+  whitelist_bonus: 5.0
+
+download_policy:
+  # When true, only candidates with action: "download" are fetched.
+  # Set false only for a deliberately capped --auto-download run.
+  require_approval: true
+  max_papers_per_run: 20
+  delay_seconds_between_requests: 3
+  download_source: true
+  download_pdf: true
+  avoid_duplicates: true
+
+# Values are substring matches against arXiv ID, title, and author names.
+# Examples:
+# manual_whitelist:
+#   - "Darvas"
+#   - "2301.12345"
+# manual_blacklist:
+#   - "unrelated phrase"
+manual_whitelist: []
+manual_blacklist: []
