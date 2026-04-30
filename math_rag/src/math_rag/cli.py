@@ -9,7 +9,7 @@ from .answer import build_answer
 from .citations import format_result_header, format_section_path
 from .config import DEFAULT_INDEX_DIR, load_settings
 from .discovery import discover_candidates
-from .downloader import download_approved_papers
+from .downloader import download_approved_papers, download_arxiv_ids, download_seed_file
 from .hybrid_search import search_chunks
 from .index_store import IndexStore
 from .loaders import load_corpus
@@ -182,13 +182,82 @@ def run_download_approved(
         console.print("No papers were approved for download.")
         console.print("Edit the candidate YAML and set action: download for selected candidate papers.")
         return 0
+    _print_download_results(results)
+    return 0
 
+
+def run_download_arxiv(
+    arxiv_ids: list[str],
+    corpus_dir: str = DEFAULT_ARXIV_CORPUS_DIR,
+    config: str | None = None,
+    limit: int | None = None,
+    force: bool = False,
+    skip_existing: bool = False,
+) -> int:
+    effective_skip_existing = _resolve_skip_existing(force, skip_existing)
+    if effective_skip_existing is None:
+        return 2
+    results = download_arxiv_ids(
+        arxiv_ids,
+        corpus_arxiv_dir=corpus_dir,
+        config_path=config,
+        limit=limit,
+        force=force,
+        skip_existing=effective_skip_existing,
+    )
+    if not results:
+        console.print("No arXiv IDs were processed.")
+        return 0
+    _print_download_results(results)
+    return 0
+
+
+def run_download_seed(
+    seed_file: str = "arxiv_seed_core.txt",
+    corpus_dir: str = DEFAULT_ARXIV_CORPUS_DIR,
+    config: str | None = None,
+    limit: int | None = None,
+    force: bool = False,
+    skip_existing: bool = False,
+) -> int:
+    effective_skip_existing = _resolve_skip_existing(force, skip_existing)
+    if effective_skip_existing is None:
+        return 2
+    try:
+        results = download_seed_file(
+            seed_file,
+            corpus_arxiv_dir=corpus_dir,
+            config_path=config,
+            limit=limit,
+            force=force,
+            skip_existing=effective_skip_existing,
+        )
+    except FileNotFoundError:
+        console.print(f"Seed file not found: {seed_file}")
+        return 1
+    if not results:
+        console.print(f"No arXiv IDs found in {seed_file}.")
+        return 0
+    _print_download_results(results)
+    return 0
+
+
+def _resolve_skip_existing(force: bool, skip_existing: bool) -> bool | None:
+    if force and skip_existing:
+        console.print("Choose either --force or --skip-existing, not both.")
+        return None
+    return skip_existing or not force
+
+
+def _print_download_results(results: list) -> None:
     downloaded = sum(1 for result in results if result.status in {"downloaded", "metadata_only"})
     skipped = sum(1 for result in results if result.status.startswith("skipped"))
     duplicates = sum(1 for result in results if result.duplicate)
+    failed = len(results) - downloaded - skipped
     console.print(f"Papers processed: {len(results)}")
     console.print(f"Papers downloaded or recorded: {downloaded}")
     console.print(f"Papers skipped: {skipped}")
+    console.print(f"Papers failed: {failed}")
     console.print(f"Duplicates detected: {duplicates}")
     for result in results:
         console.print(
@@ -199,7 +268,6 @@ def run_download_approved(
         )
         for error in result.errors:
             console.print(f"  error: {error}")
-    return 0
 
 
 def print_candidate_table(candidates: list[PaperCandidate]) -> None:
@@ -283,6 +351,28 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
     ) -> None:
         raise typer.Exit(run_download_approved(candidates_path, corpus_dir, config, auto_download, limit, overwrite))
 
+    @app.command()
+    def download_arxiv(
+        arxiv_ids: list[str] = typer.Argument(..., help="One or more arXiv IDs."),
+        corpus_dir: str = typer.Option(DEFAULT_ARXIV_CORPUS_DIR, help="arXiv corpus directory."),
+        config: str | None = typer.Option(None, help="Discovery/download config YAML."),
+        limit: int | None = typer.Option(None, help="Maximum IDs to download this run."),
+        force: bool = typer.Option(False, help="Replace an existing paper folder."),
+        skip_existing: bool = typer.Option(False, help="Skip existing paper folders; this is the default behavior."),
+    ) -> None:
+        raise typer.Exit(run_download_arxiv(arxiv_ids, corpus_dir, config, limit, force, skip_existing))
+
+    @app.command()
+    def download_seed(
+        seed_file: str = typer.Argument("arxiv_seed_core.txt", help="Seed file with one arXiv ID per line."),
+        corpus_dir: str = typer.Option(DEFAULT_ARXIV_CORPUS_DIR, help="arXiv corpus directory."),
+        config: str | None = typer.Option(None, help="Discovery/download config YAML."),
+        limit: int | None = typer.Option(None, help="Maximum IDs to download this run."),
+        force: bool = typer.Option(False, help="Replace existing paper folders."),
+        skip_existing: bool = typer.Option(False, help="Skip existing paper folders; this is the default behavior."),
+    ) -> None:
+        raise typer.Exit(run_download_seed(seed_file, corpus_dir, config, limit, force, skip_existing))
+
 
 def _argparse_main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Local-first RAG for mathematical research documents.")
@@ -328,6 +418,32 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     download_parser.add_argument("--limit", type=int, default=None)
     download_parser.add_argument("--overwrite", action="store_true")
 
+    download_arxiv_parser = subparsers.add_parser("download-arxiv")
+    download_arxiv_parser.add_argument("arxiv_ids", nargs="+")
+    download_arxiv_parser.add_argument("--corpus-dir", default=DEFAULT_ARXIV_CORPUS_DIR)
+    download_arxiv_parser.add_argument("--config", default=None)
+    download_arxiv_parser.add_argument("--limit", type=int, default=None)
+    download_arxiv_group = download_arxiv_parser.add_mutually_exclusive_group()
+    download_arxiv_group.add_argument("--force", action="store_true", help="Replace an existing paper folder.")
+    download_arxiv_group.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Skip existing paper folders; this is the default behavior.",
+    )
+
+    download_seed_parser = subparsers.add_parser("download-seed")
+    download_seed_parser.add_argument("seed_file", nargs="?", default="arxiv_seed_core.txt")
+    download_seed_parser.add_argument("--corpus-dir", default=DEFAULT_ARXIV_CORPUS_DIR)
+    download_seed_parser.add_argument("--config", default=None)
+    download_seed_parser.add_argument("--limit", type=int, default=None)
+    download_seed_group = download_seed_parser.add_mutually_exclusive_group()
+    download_seed_group.add_argument("--force", action="store_true", help="Replace existing paper folders.")
+    download_seed_group.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Skip existing paper folders; this is the default behavior.",
+    )
+
     args = parser.parse_args(argv)
     if args.command == "ingest":
         return run_ingest(args.corpus_path, args.index_dir, args.metadata)
@@ -349,6 +465,24 @@ def _argparse_main(argv: list[str] | None = None) -> int:
             args.auto_download,
             args.limit,
             args.overwrite,
+        )
+    if args.command == "download-arxiv":
+        return run_download_arxiv(
+            args.arxiv_ids,
+            args.corpus_dir,
+            args.config,
+            args.limit,
+            args.force,
+            args.skip_existing,
+        )
+    if args.command == "download-seed":
+        return run_download_seed(
+            args.seed_file,
+            args.corpus_dir,
+            args.config,
+            args.limit,
+            args.force,
+            args.skip_existing,
         )
     return 2
 

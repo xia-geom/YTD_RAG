@@ -3,7 +3,7 @@
 Put private research documents here, or pass another folder to:
 
 ```bash
-python -m math_rag.cli ingest /path/to/corpus
+python3 -m math_rag.cli ingest /path/to/corpus
 ```
 
 Supported first-version formats:

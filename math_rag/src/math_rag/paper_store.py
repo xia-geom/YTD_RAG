@@ -156,7 +156,7 @@ def approved_candidates(candidates: list[PaperCandidate], auto_download: bool = 
 
 def safe_arxiv_dirname(arxiv_id: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", arxiv_id.strip())
-    return cleaned or "unknown"
+    return cleaned if cleaned not in {"", ".", ".."} else "unknown"
 
 
 def paper_dir(corpus_arxiv_dir: str | Path, arxiv_id: str) -> Path:
@@ -181,8 +181,11 @@ def build_paper_metadata(
     pdf_available: bool,
     primary_ingestion: str,
     topics: list[str] | None = None,
+    requested_arxiv_id: str | None = None,
+    download_status: str | None = None,
+    download_errors: list[str] | None = None,
 ) -> dict[str, Any]:
-    return {
+    metadata = {
         "arxiv_id": candidate.arxiv_id,
         "version": candidate.version,
         "title": candidate.title,
@@ -203,6 +206,13 @@ def build_paper_metadata(
         "source_url": candidate.source_url,
         "pdf_url": candidate.pdf_url,
     }
+    if requested_arxiv_id:
+        metadata["requested_arxiv_id"] = requested_arxiv_id
+    if download_status:
+        metadata["download_status"] = download_status
+    if download_errors:
+        metadata["download_errors"] = list(download_errors)
+    return metadata
 
 
 def write_paper_metadata(corpus_arxiv_dir: str | Path, candidate: PaperCandidate, metadata: dict[str, Any]) -> Path:

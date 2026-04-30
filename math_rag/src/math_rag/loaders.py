@@ -142,6 +142,12 @@ def decorate_arxiv_chunks(path: Path, chunks: list[Chunk]) -> None:
                 "primary_ingestion": metadata.get("primary_ingestion"),
                 "ingestion_source": ingestion_source,
                 "downloaded_at": metadata.get("downloaded_at"),
+                "source_available": metadata.get("source_available"),
+                "pdf_available": metadata.get("pdf_available"),
+                "requested_arxiv_id": metadata.get("requested_arxiv_id"),
+                "download_status": metadata.get("download_status"),
+                "source_url": metadata.get("source_url"),
+                "pdf_url": metadata.get("pdf_url"),
             }
         )
 

@@ -80,6 +80,59 @@ Without an LLM backend, `ask` produces a retrieval-based structured report:
 
 The answer layer is deliberately conservative. It says when evidence is weak and avoids asserting mathematical truth beyond retrieved passages.
 
+## Seeded arXiv Corpus
+
+For an initial research corpus, prefer a curated arXiv seed list over broad discovery. A seed list starts from papers you already trust, avoids noisy query matches, and makes the first corpus reproducible. Use discovery later to expand the corpus after the core papers are in place.
+
+Create `arxiv_seed_core.txt` in this project directory with one arXiv ID per line:
+
+```text
+# comments and blank lines are ignored
+1711.08424
+1711.08424v2
+math/0407486
+dg-ga/9711014
+```
+
+Download the seed list:
+
+```bash
+python3 -m math_rag.cli download-seed arxiv_seed_core.txt
+```
+
+The default download policy processes at most 20 IDs per run. For a larger seed list, pass an explicit cap:
+
+```bash
+python3 -m math_rag.cli download-seed arxiv_seed_core.txt --limit 50
+```
+
+Or pass a download config you have edited:
+
+```bash
+python3 -m math_rag.cli download-seed arxiv_seed_core.txt --config metadata/discovery_config.yaml
+```
+
+Or download a few exact IDs directly:
+
+```bash
+python3 -m math_rag.cli download-arxiv 1711.08424 math/0407486 dg-ga/9711014
+```
+
+Then ingest the corpus:
+
+```bash
+python3 -m math_rag.cli ingest corpus/
+python3 -m math_rag.cli stats
+```
+
+`download-seed` and `download-arxiv` use exact arXiv IDs, not search queries. Unversioned IDs such as `1711.08424` resolve to the version returned by arXiv at download time; use `1711.08424v2` when you need a fixed version. Old-style IDs such as `math/0407486` and `dg-ga/9711014` should be written verbatim in the seed file. Folder names are made filesystem-safe, so those examples are stored as `corpus/arxiv/math_0407486/` and `corpus/arxiv/dg-ga_9711014/`, while metadata preserves the original arXiv ID.
+
+Before ingesting, inspect the download summary. `Papers failed` should be `0`, and `Papers processed` should match the number of unique seed IDs you expected. IDs beyond the run limit are reported as `skipped_limit`; unavailable papers are reported as `not_found`, `metadata_unavailable`, or `metadata_only`.
+
+Existing paper folders are skipped by default and are never silently overwritten. Use `--skip-existing` when you want that behavior explicitly in scripts. Use `--force` only when intentionally replacing an existing folder. Rerunning an unversioned ID does not check for a newer arXiv version while the existing folder is present; pin `vN` for reproducibility, and use `--force` only for an intentional refresh. Repeated IDs in a seed file are downloaded once.
+
+The downloader is intentionally polite: it uses one client, no parallel downloads, the configured delay between arXiv requests, and a single conservative retry when arXiv responds with HTTP 429. Source and PDF downloads are attempted independently. TeX source is preferred for ingestion; PDF is used as a fallback; if neither is available, `metadata.yaml` is still written and the paper is skipped by ingest. PDF fallback requires `pypdf`, installed by `python3 -m pip install -e ".[preferred,dev]"`; otherwise ingest prints a warning and skips PDF-only papers.
+
 ## Automatic Paper Discovery And Download
 
 `math_rag` can help discover candidate papers from arXiv, rank them, and download only the papers you approve. The workflow is intentionally not autonomous:
