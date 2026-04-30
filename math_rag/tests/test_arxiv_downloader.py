@@ -1,7 +1,7 @@
 import io
+import re
 import tarfile
 import urllib.error
-from email.message import Message
 
 from math_rag import cli as cli_module
 from math_rag.arxiv_client import ArxivClient, ArxivPaper, parse_arxiv_atom, parse_arxiv_id, split_arxiv_id
@@ -121,6 +121,30 @@ def test_seed_file_download_uses_unique_non_comment_ids(tmp_path):
     assert client.fetch_requests == [["1711.08424", "dg-ga/9711014"]]
 
 
+def test_seed_file_default_limit_is_10_successful_downloads(tmp_path):
+    ids = _arxiv_ids(11)
+    seed = _seed_file(tmp_path, ids)
+    client = FakeArxivClient([_paper(identifier) for identifier in ids])
+
+    results = download_seed_file(seed, corpus_arxiv_dir=str(tmp_path / "arxiv"), client=client)
+
+    assert _statuses(results).count("downloaded") == 10
+    assert _statuses(results)[-1] == "skipped_limit"
+    assert client.fetch_requests == [ids[:10]]
+
+
+def test_seed_max_papers_50_allows_50_successful_downloads(tmp_path):
+    ids = _arxiv_ids(51)
+    seed = _seed_file(tmp_path, ids)
+    client = FakeArxivClient([_paper(identifier) for identifier in ids])
+
+    results = download_seed_file(seed, corpus_arxiv_dir=str(tmp_path / "arxiv"), max_papers=50, client=client)
+
+    assert _statuses(results).count("downloaded") == 50
+    assert _statuses(results)[-1] == "skipped_limit"
+    assert client.fetch_requests == [ids[:50]]
+
+
 def test_old_style_ids_and_safe_path_generation(tmp_path):
     assert split_arxiv_id("math/0407486") == ("math/0407486", None)
     assert split_arxiv_id("dg-ga/9711014v1") == ("dg-ga/9711014", "v1")
@@ -173,6 +197,45 @@ def test_download_limit_reports_skipped_seed_ids(tmp_path):
 
     assert [result.status for result in results] == ["downloaded", "skipped_limit"]
     assert client.fetch_requests == [["1711.08424"]]
+
+
+def test_existing_seed_papers_do_not_count_against_download_limit(tmp_path):
+    ids = _arxiv_ids(3)
+    seed = _seed_file(tmp_path, ids)
+    corpus_arxiv = tmp_path / "arxiv"
+    existing_root = corpus_arxiv / safe_arxiv_dirname(ids[0])
+    existing_root.mkdir(parents=True)
+    write_yaml_file(existing_root / "metadata.yaml", {"arxiv_id": ids[0], "version": None})
+    client = FakeArxivClient([_paper(ids[1]), _paper(ids[2])])
+
+    results = download_seed_file(seed, corpus_arxiv_dir=str(corpus_arxiv), max_papers=1, client=client)
+
+    assert _statuses(results) == ["skipped_duplicate", "downloaded", "skipped_limit"]
+    assert client.fetch_requests == [[ids[1]]]
+
+
+def test_not_found_seed_papers_do_not_count_against_download_limit(tmp_path):
+    ids = _arxiv_ids(3)
+    seed = _seed_file(tmp_path, ids)
+    client = FakeArxivClient([_paper(ids[1]), _paper(ids[2])])
+
+    results = download_seed_file(seed, corpus_arxiv_dir=str(tmp_path / "arxiv"), max_papers=1, client=client)
+
+    assert _statuses(results) == ["not_found", "downloaded", "skipped_limit"]
+    assert client.fetch_requests == [[ids[0]], [ids[1]]]
+
+
+def test_skipped_limit_only_appears_after_successful_download_limit(tmp_path):
+    ids = _arxiv_ids(4)
+    seed = _seed_file(tmp_path, ids)
+    client = FakeArxivClient([_paper(ids[1]), _paper(ids[2]), _paper(ids[3])])
+
+    results = download_seed_file(seed, corpus_arxiv_dir=str(tmp_path / "arxiv"), max_papers=2, client=client)
+    statuses = _statuses(results)
+
+    assert statuses == ["not_found", "downloaded", "downloaded", "skipped_limit"]
+    first_skipped_limit = statuses.index("skipped_limit")
+    assert sum(1 for status in statuses[:first_skipped_limit] if status in {"downloaded", "metadata_only"}) == 2
 
 
 def test_metadata_batch_failure_falls_back_to_per_id_lookup(tmp_path):
@@ -267,9 +330,10 @@ def test_text_only_source_bundle_uses_pdf_fallback(tmp_path):
     assert metadata["primary_ingestion"] == "pdf"
 
 
-def test_arxiv_client_retries_429_once(monkeypatch):
+def test_arxiv_client_retries_429_with_required_backoff_schedule(monkeypatch):
     sleeps = []
     calls = {"count": 0}
+    clock = {"now": 1000.0}
 
     class FakeResponse:
         def __enter__(self):
@@ -283,20 +347,56 @@ def test_arxiv_client_retries_429_once(monkeypatch):
 
     def fake_urlopen(request, timeout):
         calls["count"] += 1
-        if calls["count"] == 1:
-            headers = Message()
-            headers["Retry-After"] = "2"
-            raise urllib.error.HTTPError(request.full_url, 429, "Too Many Requests", headers, None)
+        if calls["count"] <= 3:
+            raise urllib.error.HTTPError(request.full_url, 429, "Too Many Requests", {}, None)
         return FakeResponse()
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
-    monkeypatch.setattr("time.sleep", lambda seconds: sleeps.append(seconds))
+    monkeypatch.setattr("time.monotonic", lambda: clock["now"])
+    monkeypatch.setattr("time.sleep", lambda seconds: (sleeps.append(seconds), clock.update(now=clock["now"] + seconds)))
+    logs = []
 
-    client = ArxivClient(delay_seconds=0, max_429_retries=1)
+    client = ArxivClient(delay_seconds=0, logger=logs.append)
 
     assert client.download_bytes("https://arxiv.org/pdf/1711.08424") == b"ok"
-    assert calls["count"] == 2
-    assert sleeps == [2.0]
+    assert calls["count"] == 4
+    assert sleeps == [600.0, 1800.0, 3600.0]
+    assert any("arXiv HTTP 429: sleeping 600s before retry 2/4" in message for message in logs)
+    assert all(re.match(r"\d{4}-\d{2}-\d{2}T", message) for message in logs)
+
+
+def test_arxiv_client_throttles_pdf_downloads_and_logs_timestamps(monkeypatch):
+    sleeps = []
+    urls = []
+    clock = {"now": 2000.0}
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+        def read(self):
+            return b"ok"
+
+    def fake_urlopen(request, timeout):
+        urls.append(request.full_url)
+        return FakeResponse()
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.monotonic", lambda: clock["now"])
+    monkeypatch.setattr("time.sleep", lambda seconds: (sleeps.append(seconds), clock.update(now=clock["now"] + seconds)))
+    logs = []
+    client = ArxivClient(delay_seconds=0, logger=logs.append)
+
+    assert client.download_bytes("https://arxiv.org/e-print/1711.08424") == b"ok"
+    assert client.download_bytes("https://arxiv.org/pdf/1711.08424") == b"ok"
+
+    assert urls == ["https://arxiv.org/e-print/1711.08424", "https://arxiv.org/pdf/1711.08424"]
+    assert sleeps == [4.0]
+    assert any("arXiv throttle: sleeping 4.00s before request: https://arxiv.org/pdf/1711.08424" in message for message in logs)
+    assert all(re.match(r"\d{4}-\d{2}-\d{2}T", message) for message in logs)
 
 
 def test_cli_force_and_skip_existing_flags(monkeypatch):
@@ -324,6 +424,48 @@ def test_cli_force_and_skip_existing_flags(monkeypatch):
     assert cli_module._argparse_main(["download-arxiv", "1711.08424", "--skip-existing"]) == 0
     assert calls[-1]["force"] is False
     assert calls[-1]["skip_existing"] is True
+
+
+def test_cli_download_seed_max_papers_default_and_aliases(monkeypatch):
+    calls = []
+
+    def fake_download(seed_path, corpus_arxiv_dir, config_path, max_papers, force, skip_existing):
+        calls.append(
+            {
+                "seed_path": seed_path,
+                "corpus": corpus_arxiv_dir,
+                "config": config_path,
+                "max_papers": max_papers,
+                "force": force,
+                "skip_existing": skip_existing,
+            }
+        )
+        return [DownloadResult(arxiv_id="1711.08424", version=None, status="downloaded")]
+
+    monkeypatch.setattr(cli_module, "download_seed_file", fake_download)
+
+    assert cli_module._argparse_main(["download-seed", "arxiv_seed_core.txt"]) == 0
+    assert calls[-1]["max_papers"] == 10
+
+    assert cli_module._argparse_main(["download-seed", "arxiv_seed_core.txt", "--max-papers", "50"]) == 0
+    assert calls[-1]["max_papers"] == 50
+
+    assert cli_module._argparse_main(["download-seed", "arxiv_seed_core.txt", "--limit", "50"]) == 0
+    assert calls[-1]["max_papers"] == 50
+
+
+def _arxiv_ids(count):
+    return [f"2401.{index:05d}" for index in range(1, count + 1)]
+
+
+def _seed_file(tmp_path, ids):
+    seed = tmp_path / "arxiv_seed_core.txt"
+    seed.write_text("\n".join(ids), encoding="utf-8")
+    return seed
+
+
+def _statuses(results):
+    return [result.status for result in results]
 
 
 def _paper(identifier):

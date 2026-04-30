@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
+import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from datetime import datetime
-from email.utils import parsedate_to_datetime
+from datetime import UTC, datetime
 
 
 ARXIV_API_URL = "https://export.arxiv.org/api/query"
@@ -18,7 +20,8 @@ ARXIV_PDF_URL = "https://arxiv.org/pdf"
 ARXIV_SOURCE_URL = "https://arxiv.org/e-print"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
 MAX_ID_LIST_BATCH_SIZE = 50
-DEFAULT_429_BACKOFF_SECONDS = 30.0
+MIN_ARXIV_DELAY_SECONDS = 4.0
+DEFAULT_429_BACKOFF_SECONDS = (600.0, 1800.0, 3600.0)
 
 
 @dataclass(frozen=True)
@@ -50,16 +53,19 @@ class ArxivPaper:
 class ArxivClient:
     def __init__(
         self,
-        delay_seconds: float = 3.0,
+        delay_seconds: float = MIN_ARXIV_DELAY_SECONDS,
         user_agent: str = "math_rag/0.1 local research tool",
-        max_429_retries: int = 1,
-        backoff_seconds: float = DEFAULT_429_BACKOFF_SECONDS,
+        max_429_retries: int | None = None,
+        backoff_seconds: float | Sequence[float] = DEFAULT_429_BACKOFF_SECONDS,
+        logger: Callable[[str], None] | None = None,
     ):
-        self.delay_seconds = delay_seconds
+        self.delay_seconds = max(float(delay_seconds), MIN_ARXIV_DELAY_SECONDS)
         self.user_agent = user_agent
-        self.max_429_retries = max(0, max_429_retries)
-        self.backoff_seconds = max(0.0, backoff_seconds)
+        self.backoff_schedule = _backoff_schedule(backoff_seconds, max_429_retries)
+        self.max_429_retries = len(self.backoff_schedule)
+        self.logger = logger or _stderr_logger
         self._last_request_at = 0.0
+        self._request_lock = threading.Lock()
 
     def search(self, query: str, max_results: int = 20, start: int = 0, sort_by: str = "relevance") -> list[ArxivPaper]:
         params = {
@@ -89,25 +95,45 @@ class ArxivClient:
         return self.download_bytes(url).decode("utf-8", errors="replace")
 
     def download_bytes(self, url: str) -> bytes:
-        attempts = self.max_429_retries + 1
-        for attempt in range(attempts):
-            self._respect_delay()
-            request = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
-            try:
-                with urllib.request.urlopen(request, timeout=60) as response:
-                    return response.read()
-            except urllib.error.HTTPError as exc:
-                if exc.code == 429 and attempt < attempts - 1:
-                    time.sleep(_retry_after_seconds(exc) or self.backoff_seconds)
-                    continue
-                raise
+        with self._request_lock:
+            attempts = self.max_429_retries + 1
+            for attempt in range(attempts):
+                self._respect_delay(url)
+                request = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
+                self._log(f"arXiv request {attempt + 1}/{attempts}: GET {url}")
+                try:
+                    with urllib.request.urlopen(request, timeout=60) as response:
+                        data = response.read()
+                        self._log(f"arXiv response: {len(data)} bytes from {url}")
+                        return data
+                except urllib.error.HTTPError as exc:
+                    if exc.code == 429 and attempt < attempts - 1:
+                        backoff_seconds = self.backoff_schedule[attempt]
+                        self._log(
+                            f"arXiv HTTP 429: sleeping {backoff_seconds:.0f}s before retry "
+                            f"{attempt + 2}/{attempts}: {url}"
+                        )
+                        time.sleep(backoff_seconds)
+                        continue
+                    self._log(f"arXiv HTTP error {exc.code}: {url}")
+                    raise
+                except Exception as exc:
+                    self._log(f"arXiv request failed ({type(exc).__name__}): {url}")
+                    raise
         return b""
 
-    def _respect_delay(self) -> None:
+    def _respect_delay(self, url: str) -> None:
         elapsed = time.monotonic() - self._last_request_at
         if self._last_request_at and elapsed < self.delay_seconds:
-            time.sleep(self.delay_seconds - elapsed)
+            wait_seconds = self.delay_seconds - elapsed
+            self._log(f"arXiv throttle: sleeping {wait_seconds:.2f}s before request: {url}")
+            time.sleep(wait_seconds)
         self._last_request_at = time.monotonic()
+
+    def _log(self, message: str) -> None:
+        if self.logger is None:
+            return
+        self.logger(f"{datetime.now(UTC).isoformat()} {message}")
 
 
 def parse_arxiv_atom(xml_text: str) -> list[ArxivPaper]:
@@ -281,15 +307,20 @@ def _year_from_date(value: str | None) -> int | None:
         return None
 
 
-def _retry_after_seconds(exc: urllib.error.HTTPError) -> float | None:
-    value = exc.headers.get("Retry-After") if exc.headers else None
-    if not value:
-        return None
-    try:
-        return max(0.0, float(value))
-    except ValueError:
-        try:
-            retry_at = parsedate_to_datetime(value)
-        except (TypeError, ValueError):
-            return None
-        return max(0.0, retry_at.timestamp() - time.time())
+def _backoff_schedule(backoff_seconds: float | Sequence[float], max_retries: int | None) -> tuple[float, ...]:
+    if isinstance(backoff_seconds, (int, float)):
+        base_schedule = (max(0.0, float(backoff_seconds)),)
+    else:
+        base_schedule = tuple(max(0.0, float(value)) for value in backoff_seconds)
+    if max_retries is None:
+        return base_schedule
+    retries = max(0, max_retries)
+    if retries <= len(base_schedule):
+        return base_schedule[:retries]
+    if not base_schedule:
+        return tuple(0.0 for _ in range(retries))
+    return base_schedule + tuple(base_schedule[-1] for _ in range(retries - len(base_schedule)))
+
+
+def _stderr_logger(message: str) -> None:
+    print(message, file=sys.stderr, flush=True)

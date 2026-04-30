@@ -139,7 +139,7 @@ class RankingWeights:
 class DownloadPolicy:
     require_approval: bool = True
     max_papers_per_run: int = 20
-    delay_seconds_between_requests: float = 3.0
+    delay_seconds_between_requests: float = 4.0
     download_source: bool = True
     download_pdf: bool = True
     avoid_duplicates: bool = True

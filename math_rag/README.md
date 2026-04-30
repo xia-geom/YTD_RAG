@@ -100,11 +100,13 @@ Download the seed list:
 python3 -m math_rag.cli download-seed arxiv_seed_core.txt
 ```
 
-The default download policy processes at most 20 IDs per run. For a larger seed list, pass an explicit cap:
+By default, `download-seed` downloads or records at most 10 new papers per run. Existing downloaded papers and `not_found` papers do not count against this cap. For a larger seed list, pass an explicit cap:
 
 ```bash
-python3 -m math_rag.cli download-seed arxiv_seed_core.txt --limit 50
+python3 -m math_rag.cli download-seed arxiv_seed_core.txt --max-papers 50
 ```
+
+`--limit 50` is also accepted as an alias for `--max-papers 50`.
 
 Or pass a download config you have edited:
 
@@ -127,11 +129,11 @@ python3 -m math_rag.cli stats
 
 `download-seed` and `download-arxiv` use exact arXiv IDs, not search queries. Unversioned IDs such as `1711.08424` resolve to the version returned by arXiv at download time; use `1711.08424v2` when you need a fixed version. Old-style IDs such as `math/0407486` and `dg-ga/9711014` should be written verbatim in the seed file. Folder names are made filesystem-safe, so those examples are stored as `corpus/arxiv/math_0407486/` and `corpus/arxiv/dg-ga_9711014/`, while metadata preserves the original arXiv ID.
 
-Before ingesting, inspect the download summary. `Papers failed` should be `0`, and `Papers processed` should match the number of unique seed IDs you expected. IDs beyond the run limit are reported as `skipped_limit`; unavailable papers are reported as `not_found`, `metadata_unavailable`, or `metadata_only`.
+Before ingesting, inspect the download summary. `Papers failed` should be `0`, and `Papers processed` should match the number of unique seed IDs you expected. IDs beyond the successful download/record cap are reported as `skipped_limit`; unavailable papers are reported as `not_found`, `metadata_unavailable`, or `metadata_only`.
 
 Existing paper folders are skipped by default and are never silently overwritten. Use `--skip-existing` when you want that behavior explicitly in scripts. Use `--force` only when intentionally replacing an existing folder. Rerunning an unversioned ID does not check for a newer arXiv version while the existing folder is present; pin `vN` for reproducibility, and use `--force` only for an intentional refresh. Repeated IDs in a seed file are downloaded once.
 
-The downloader is intentionally polite: it uses one client, no parallel downloads, the configured delay between arXiv requests, and a single conservative retry when arXiv responds with HTTP 429. Source and PDF downloads are attempted independently. TeX source is preferred for ingestion; PDF is used as a fallback; if neither is available, `metadata.yaml` is still written and the paper is skipped by ingest. PDF fallback requires `pypdf`, installed by `python3 -m pip install -e ".[preferred,dev]"`; otherwise ingest prints a warning and skips PDF-only papers.
+The downloader is intentionally polite: it uses one client, serializes arXiv requests, enforces at least 4 seconds between arXiv requests, and applies the same throttling to source and PDF downloads. When arXiv responds with HTTP 429, it backs off for 10 minutes, then 30 minutes, then 1 hour before giving up. Request, throttle, and backoff events are logged with UTC timestamps. Source and PDF downloads are attempted independently. TeX source is preferred for ingestion; PDF is used as a fallback; if neither is available, `metadata.yaml` is still written and the paper is skipped by ingest. PDF fallback requires `pypdf`, installed by `python3 -m pip install -e ".[preferred,dev]"`; otherwise ingest prints a warning and skips PDF-only papers.
 
 ## Automatic Paper Discovery And Download
 
@@ -206,9 +208,85 @@ The downloader avoids duplicate arXiv ID/version folders by default, separates s
 
 TeX source is preferred for mathematical RAG because it preserves theorem environments, labels, references, equations, macros, and line numbers better than PDF text extraction. The PDF is still kept for page citation and human verification. If TeX source is unavailable, ingestion falls back to the PDF page by page. If both are unavailable, metadata is stored but the paper is not ingested.
 
-Customize `metadata/discovery_config.yaml` to change seed authors, seed keywords, arXiv categories, ranking weights, manual whitelist, manual blacklist, download limits, and request delay. Keep rate limits conservative; the example delay is 3 seconds between requests. Whitelist and blacklist values are substring matches against arXiv ID, title, and author names.
+Customize `metadata/discovery_config.yaml` to change seed authors, seed keywords, arXiv categories, ranking weights, manual whitelist, manual blacklist, download limits, and request delay. Keep rate limits conservative; the example delay is 4 seconds between requests, and lower configured values are clamped to 4 seconds. Whitelist and blacklist values are substring matches against arXiv ID, title, and author names.
 
 To avoid polluting the corpus, keep `download_policy.require_approval: true`, review ranking reasons, use `manual_blacklist` for irrelevant recurring matches, and only set `action: download` for papers you want in the local research corpus.
+
+## Using math_rag from Codex or Claude Code
+
+`math_rag` ships with a local stdio MCP (Model Context Protocol) server so that agentic coding tools such as Codex and Claude Code can query the local RAG system directly, without you running CLI commands by hand.
+
+MCP is the right integration layer here: it gives the agent a small set of typed tools (`rag_search`, `rag_ask`, `rag_get_chunk`, `rag_list_sources`) over stdio, the agent never gets shell access to the corpus, and the same service layer that backs the CLI also backs MCP, so the conservative answer discipline is preserved.
+
+### Read-only by default
+
+The MCP server exposes only read-only tools by default:
+
+- `rag_search` — hybrid retrieval over the local index, returns ranked chunks with `source_path`, `chunk_type`, `section_path`, `page_number`, `line_start`/`line_end`, `score`, and `snippet`.
+- `rag_ask` — retrieval-grounded structured answer with separate `retrieved_evidence`, `what_corpus_supports`, `reasonable_inference`, `not_established_by_retrieved_sources`, and `sources_inspected` fields. Never claims to verify a proof.
+- `rag_get_chunk` — full content and metadata for one chunk id returned by `rag_search`.
+- `rag_list_sources` — summary of indexed sources, optionally filtered by substring.
+
+Write tools (`rag_ingest`, etc.) are **disabled** unless you explicitly opt in by setting:
+
+```bash
+export MATH_RAG_MCP_ALLOW_WRITE_TOOLS=true
+```
+
+The server will only attempt to read or write paths inside the resolved project root.
+
+### Resolving the project root
+
+The server determines the project root in this order:
+
+1. `MATH_RAG_ROOT=/absolute/path/to/YTD_RAG/math_rag`
+2. The current working directory, if it contains `pyproject.toml`, `corpus/`, and `src/math_rag/`.
+
+If neither is satisfied, the server prints a clear error and exits.
+
+You can also override the index location with `MATH_RAG_INDEX_DIR`.
+
+### Connect from Codex
+
+```bash
+codex mcp add math-rag -- \
+  /absolute/path/to/YTD_RAG/math_rag/.venv/bin/python \
+  -m math_rag.mcp_server
+```
+
+If you installed `math_rag` in an editable mode where Python does not auto-pick up `__editable__.*.pth` files (Python 3.13 ignores `.pth` filenames starting with `__`), set `PYTHONPATH` and `MATH_RAG_ROOT` explicitly:
+
+```bash
+codex mcp add math-rag --env MATH_RAG_ROOT=/absolute/path/to/YTD_RAG/math_rag \
+  --env PYTHONPATH=/absolute/path/to/YTD_RAG/math_rag/src -- \
+  /absolute/path/to/YTD_RAG/math_rag/.venv/bin/python \
+  -m math_rag.mcp_server
+```
+
+### Connect from Claude Code
+
+```bash
+claude mcp add --transport stdio math-rag -- \
+  /absolute/path/to/YTD_RAG/math_rag/.venv/bin/python \
+  -m math_rag.mcp_server
+```
+
+### Example prompts
+
+In Codex or Claude Code, ask:
+
+- "Use math-rag to search for Poincaré type cscK uniqueness and summarize the relevant sources."
+- "Before editing my introduction, query math-rag for Berman-Darvas-Lu, Chen-Cheng, Lahdili, and Apostolov-Auvray-Sektnan."
+- "Use math-rag to find all corpus evidence about conic approximations of Poincaré type cscK metrics."
+
+The agent will call `rag_search` and `rag_ask`, receive structured JSON, and cite the retrieved sources back to you with page and line numbers.
+
+### Security limits
+
+- Default tool surface is read-only. No shell execution. No arbitrary file reads. No filesystem traversal.
+- arXiv discovery and download are **never** exposed via MCP. They remain CLI-only and require explicit human approval per the existing download policy.
+- The server caps the size of every tool response and instructs the caller to use `rag_get_chunk` for full content. Snippets and chunks pulled through MCP carry the same source path and line-number provenance as the CLI.
+- Source-filter arguments accept substrings only, never raw shell or path-traversal strings.
 
 ## Stats
 
@@ -217,6 +295,93 @@ python3 -m math_rag.cli stats
 ```
 
 This reports source count, chunk count, and chunk types in the local index.
+
+## Validating The Corpus
+
+Before adding ranking features, embeddings, or answer-generation layers, validate that the current corpus retrieves the sources you already expect. This evaluation is retrieval-only: it checks whether known evidence appears near the top of search results. It does not certify theorem statements, proof correctness, novelty, or completeness.
+
+The commands below assume you are running from the workspace root that contains the downloaded `corpus/`, root `.math_rag_index/`, and `eval/toric_gold_questions.yaml`. If you run from inside this `math_rag/` package directory, adjust the paths, for example `../corpus/`, `../.math_rag_index`, and `../eval/toric_gold_questions.yaml`.
+
+Rebuild the index from the corpus you want to test:
+
+```bash
+python3 -m math_rag.cli ingest corpus/
+python3 -m math_rag.cli stats
+```
+
+Check the stats output for the number of sources, total chunks, and chunk types. TeX and BibTeX chunks should normally carry line numbers. PDF fallback chunks carry page numbers when `pypdf` is installed. If a PDF-only paper is skipped, install the preferred dependencies and ingest again:
+
+```bash
+python3 -m pip install -e ".[preferred,dev]"
+python3 -m math_rag.cli ingest corpus/
+```
+
+Run search sanity checks with known queries:
+
+```bash
+python3 -m math_rag.cli search "Poincare type constant scalar curvature"
+python3 -m math_rag.cli search "conical approximation Poincare type"
+python3 -m math_rag.cli search "toric extremal Poincare type metrics"
+python3 -m math_rag.cli search "Mabuchi energy weak geodesic"
+python3 -m math_rag.cli search "extended K-energy finite energy"
+python3 -m math_rag.cli search "Abreu equation toric"
+python3 -m math_rag.cli search "weighted Mabuchi functional Lahdili"
+python3 -m math_rag.cli search "polytope [-1,1]"
+python3 -m math_rag.cli search "cone angle beta"
+python3 -m math_rag.cli search "symplectic potential"
+```
+
+For each query, inspect whether the top results are mathematically sensible, whether they are primary paper passages or only bibliography hits, and whether source paths include line or page provenance.
+
+Run ask sanity checks after search looks reasonable:
+
+```bash
+python3 -m math_rag.cli ask "What does the corpus say about conical approximations of Poincare type cscK metrics?"
+python3 -m math_rag.cli ask "What does the corpus say about toric extremal Poincare type metrics?"
+python3 -m math_rag.cli ask "What is the relation between Berman-Darvas-Lu convexity and weak geodesics?"
+python3 -m math_rag.cli ask "What does the corpus say about weighted Mabuchi convexity?"
+python3 -m math_rag.cli ask "What does the corpus say about the Abreu equation in toric Kähler geometry?"
+```
+
+The answer should keep retrieved evidence, corpus-supported statements, reasonable inference, and "not established by retrieved sources" separate. It should cite retrieved sources and should not claim to verify proofs.
+
+Run the gold retrieval evaluation:
+
+```bash
+python3 -m math_rag.cli eval eval/toric_gold_questions.yaml
+```
+
+Gold files use this shape:
+
+```yaml
+questions:
+  - id: abreu_equation
+    question: "Where does the corpus discuss the Abreu equation?"
+    expected_sources:
+      - "math_0407486"
+      - "0805.0128"
+
+  - id: negative_new_theorem
+    question: "Does the corpus contain a complete proof of my own new theorem?"
+    expected_sources: []
+    negative: true
+```
+
+The eval output reports one row per question:
+
+```text
+Question ID | Hit? | First expected rank | Expected sources | Top sources
+```
+
+`Hit?` is `yes` when at least one expected source appears in the top-k retrieved chunks. `First expected rank` is the first rank where that happens. Negative questions are listed as `negative` and are excluded from hit-rate denominators.
+
+Interpret the summary metrics as retrieval checks:
+
+- `hits@1`: expected source is the first result.
+- `hits@3`: expected source appears in the first three results.
+- `hits@5`: expected source appears in the first five results.
+
+High hit@k means the index and ranking can find known evidence. Low hit@k means query wording, chunking, ranking, or corpus coverage needs attention before answer quality can be trusted. The `missing expected sources` section is especially important: it identifies gold-source IDs that are not present in the current index at all.
 
 ## Mathematical Behavior
 

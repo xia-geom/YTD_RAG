@@ -25,6 +25,8 @@ from .paper_store import (
 
 
 INGESTIBLE_SOURCE_SUFFIXES = {".tex"}
+DEFAULT_SEED_MAX_PAPERS = 10
+DOWNLOAD_LIMIT_COUNTED_STATUSES = {"downloaded", "metadata_only"}
 
 
 def download_approved_papers(
@@ -63,16 +65,18 @@ def download_seed_file(
     seed_path: str | Path,
     corpus_arxiv_dir: str = DEFAULT_ARXIV_CORPUS_DIR,
     config_path: str | None = None,
+    max_papers: int | None = DEFAULT_SEED_MAX_PAPERS,
     limit: int | None = None,
     force: bool = False,
     skip_existing: bool = True,
     client: ArxivClient | None = None,
 ) -> list[DownloadResult]:
+    effective_max_papers = limit if limit is not None else max_papers
     return download_arxiv_ids(
         read_seed_arxiv_ids(seed_path),
         corpus_arxiv_dir=corpus_arxiv_dir,
         config_path=config_path,
-        limit=limit,
+        limit=effective_max_papers,
         force=force,
         skip_existing=skip_existing,
         client=client,
@@ -101,7 +105,7 @@ def download_arxiv_ids(
     policy = config.download_policy
     client = client or ArxivClient(delay_seconds=policy.delay_seconds_between_requests)
     effective_limit = limit if limit is not None else policy.max_papers_per_run
-    entries = _parse_requested_ids(arxiv_ids, effective_limit)
+    entries = _parse_requested_ids(arxiv_ids)
 
     indexed_results: dict[int, DownloadResult] = {}
     pending: list[tuple[int, ParsedArxivID]] = []
@@ -115,31 +119,43 @@ def download_arxiv_ids(
         else:
             pending.append((index, entry))
 
-    if pending:
-        papers, metadata_errors = _fetch_papers_with_isolation(client, pending)
-        for index, parsed in pending:
+    successful_count = 0
+    while pending:
+        if effective_limit is not None and successful_count >= effective_limit:
+            for index, parsed in pending:
+                indexed_results[index] = _skipped_limit_result(parsed, corpus_arxiv_dir, effective_limit)
+            break
+
+        remaining_capacity = None if effective_limit is None else max(effective_limit - successful_count, 1)
+        batch_size = len(pending) if remaining_capacity is None else min(len(pending), remaining_capacity)
+        batch = pending[:batch_size]
+        pending = pending[batch_size:]
+        papers, metadata_errors = _fetch_papers_with_isolation(client, batch)
+        for index, parsed in batch:
             metadata_error = metadata_errors.get(parsed.id_with_version)
             if metadata_error:
-                indexed_results[index] = DownloadResult(
+                result = DownloadResult(
                     arxiv_id=parsed.arxiv_id,
                     version=parsed.version,
                     status="metadata_unavailable",
                     path=str(paper_dir(corpus_arxiv_dir, parsed.arxiv_id)),
                     errors=[f"metadata unavailable: {metadata_error}"],
                 )
+                indexed_results[index] = result
                 continue
             paper = _find_paper_for_request(parsed, papers)
             if paper is None:
-                indexed_results[index] = DownloadResult(
+                result = DownloadResult(
                     arxiv_id=parsed.arxiv_id,
                     version=parsed.version,
                     status="not_found",
                     path=str(paper_dir(corpus_arxiv_dir, parsed.arxiv_id)),
                     errors=["arXiv metadata lookup returned no matching paper."],
                 )
+                indexed_results[index] = result
                 continue
             candidate = _candidate_from_paper(paper, parsed)
-            indexed_results[index] = _download_one_safely(
+            result = _download_one_safely(
                 candidate,
                 corpus_arxiv_dir,
                 policy.download_source,
@@ -148,6 +164,9 @@ def download_arxiv_ids(
                 client,
                 requested_arxiv_id=parsed.id_with_version,
             )
+            indexed_results[index] = result
+            if _counts_against_download_limit(result):
+                successful_count += 1
     return [indexed_results[index] for index in sorted(indexed_results)]
 
 
@@ -301,10 +320,9 @@ def _download_one(
     )
 
 
-def _parse_requested_ids(arxiv_ids: list[str], limit: int | None) -> list[ParsedArxivID | DownloadResult]:
+def _parse_requested_ids(arxiv_ids: list[str]) -> list[ParsedArxivID | DownloadResult]:
     entries: list[ParsedArxivID | DownloadResult] = []
     seen: set[str] = set()
-    valid_count = 0
     for raw_id in arxiv_ids:
         try:
             parsed = parse_arxiv_id(raw_id)
@@ -314,19 +332,22 @@ def _parse_requested_ids(arxiv_ids: list[str], limit: int | None) -> list[Parsed
         if parsed.id_with_version in seen:
             continue
         seen.add(parsed.id_with_version)
-        if limit is not None and valid_count >= limit:
-            entries.append(
-                DownloadResult(
-                    arxiv_id=parsed.arxiv_id,
-                    version=parsed.version,
-                    status="skipped_limit",
-                    errors=[f"Download limit reached before {parsed.id_with_version}."],
-                )
-            )
-            continue
         entries.append(parsed)
-        valid_count += 1
     return entries
+
+
+def _counts_against_download_limit(result: DownloadResult) -> bool:
+    return result.status in DOWNLOAD_LIMIT_COUNTED_STATUSES
+
+
+def _skipped_limit_result(parsed: ParsedArxivID, corpus_arxiv_dir: str, limit: int) -> DownloadResult:
+    return DownloadResult(
+        arxiv_id=parsed.arxiv_id,
+        version=parsed.version,
+        status="skipped_limit",
+        path=str(paper_dir(corpus_arxiv_dir, parsed.arxiv_id)),
+        errors=[f"Download limit of {limit} successful papers was reached before {parsed.id_with_version}."],
+    )
 
 
 def _existing_result(

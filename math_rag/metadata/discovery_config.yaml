@@ -63,7 +63,7 @@ ranking_weights:
 download_policy:
   require_approval: true
   max_papers_per_run: 20
-  delay_seconds_between_requests: 3
+  delay_seconds_between_requests: 4
   download_source: true
   download_pdf: true
   avoid_duplicates: true

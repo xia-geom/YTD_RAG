@@ -3,23 +3,20 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 
 from .answer import build_answer
-from .citations import format_result_header, format_section_path
-from .config import DEFAULT_INDEX_DIR, load_settings
+from .citations import format_result_header
+from .config import DEFAULT_INDEX_DIR
 from .discovery import discover_candidates
-from .downloader import download_approved_papers, download_arxiv_ids, download_seed_file
-from .hybrid_search import search_chunks
-from .index_store import IndexStore
-from .loaders import load_corpus
+from .downloader import DEFAULT_SEED_MAX_PAPERS, download_approved_papers, download_arxiv_ids, download_seed_file
+from .eval import evaluate_retrieval, format_eval_report
 from .paper_store import (
     DEFAULT_ARXIV_CORPUS_DIR,
     DEFAULT_CANDIDATES_PATH,
     PaperCandidate,
     load_candidate_groups,
-    load_candidates,
 )
+from .rag_service import IndexNotFoundError, index_stats, ingest_path, retrieve
 from .text_cleaning import make_snippet
 
 
@@ -45,28 +42,24 @@ except Exception:  # pragma: no cover - main path in the execution sandbox
 
 
 def run_ingest(corpus_path: str, index_dir: str = DEFAULT_INDEX_DIR, metadata: str | None = None) -> int:
-    chunks, warnings = load_corpus(corpus_path, metadata)
-    store = IndexStore(index_dir)
-    store.save_chunks(chunks)
-    if chunks:
-        console.print(f"Ingested {len(chunks)} chunks from {corpus_path}")
-        console.print(f"Index written to {store.index_path}")
+    result = ingest_path(corpus_path, index_dir=index_dir, metadata=metadata)
+    if result["chunk_count"]:
+        console.print(f"Ingested {result['chunk_count']} chunks from {corpus_path}")
+        console.print(f"Index written to {result['index_path']}")
     else:
         console.print(f"No supported documents were ingested from {corpus_path}.")
         console.print("Add .tex, .md, .txt, .bib, or .pdf files and run ingest again.")
-    for warning in warnings:
+    for warning in result["warnings"]:
         console.print(f"Warning: {warning}")
     return 0
 
 
 def run_search(query: str, index_dir: str = DEFAULT_INDEX_DIR, mode: str = "hybrid", top_k: int = 10) -> int:
-    settings = load_settings(index_dir)
-    chunks = IndexStore(index_dir).load_chunks()
-    if not chunks:
-        console.print(f"No index found or index is empty at {Path(index_dir) / 'index.json'}.")
-        console.print("Run: python -m math_rag.cli ingest corpus/")
+    try:
+        results = retrieve(query, top_k=top_k, mode=mode, index_dir=index_dir)
+    except IndexNotFoundError as exc:
+        console.print(str(exc))
         return 1
-    results = search_chunks(chunks, query, mode=mode, top_k=top_k, vector_backend=settings.embedding_backend)
     if not results:
         console.print("No matching chunks found.")
         return 0
@@ -85,20 +78,17 @@ def run_search(query: str, index_dir: str = DEFAULT_INDEX_DIR, mode: str = "hybr
 
 
 def run_ask(query: str, index_dir: str = DEFAULT_INDEX_DIR, mode: str = "hybrid", top_k: int = 6) -> int:
-    settings = load_settings(index_dir)
-    chunks = IndexStore(index_dir).load_chunks()
-    if not chunks:
-        console.print(f"No index found or index is empty at {Path(index_dir) / 'index.json'}.")
-        console.print("Run: python -m math_rag.cli ingest corpus/")
+    try:
+        results = retrieve(query, top_k=top_k, mode=mode, index_dir=index_dir)
+    except IndexNotFoundError as exc:
+        console.print(str(exc))
         return 1
-    results = search_chunks(chunks, query, mode=mode, top_k=top_k, vector_backend=settings.embedding_backend)
     console.print(build_answer(query, results, top_evidence=top_k))
     return 0
 
 
 def run_stats(index_dir: str = DEFAULT_INDEX_DIR) -> int:
-    store = IndexStore(index_dir)
-    stats = store.stats()
+    stats = index_stats(index_dir=index_dir)
     console.print(f"Index: {stats['index_path']}")
     console.print(f"Sources: {stats['source_count']}")
     console.print(f"Chunks: {stats['chunk_count']}")
@@ -108,6 +98,16 @@ def run_stats(index_dir: str = DEFAULT_INDEX_DIR) -> int:
             console.print(f"  {chunk_type}: {count}")
     else:
         console.print("  none")
+    return 0
+
+
+def run_eval(eval_path: str, index_dir: str = DEFAULT_INDEX_DIR, mode: str = "hybrid", top_k: int = 5) -> int:
+    try:
+        summary = evaluate_retrieval(eval_path, index_dir=index_dir, mode=mode, top_k=top_k)
+    except (FileNotFoundError, ValueError, IndexNotFoundError) as exc:
+        console.print(str(exc))
+        return 1
+    console.print(format_eval_report(summary))
     return 0
 
 
@@ -216,7 +216,7 @@ def run_download_seed(
     seed_file: str = "arxiv_seed_core.txt",
     corpus_dir: str = DEFAULT_ARXIV_CORPUS_DIR,
     config: str | None = None,
-    limit: int | None = None,
+    max_papers: int | None = DEFAULT_SEED_MAX_PAPERS,
     force: bool = False,
     skip_existing: bool = False,
 ) -> int:
@@ -228,7 +228,7 @@ def run_download_seed(
             seed_file,
             corpus_arxiv_dir=corpus_dir,
             config_path=config,
-            limit=limit,
+            max_papers=max_papers,
             force=force,
             skip_existing=effective_skip_existing,
         )
@@ -324,6 +324,15 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
     def stats(index_dir: str = typer.Option(DEFAULT_INDEX_DIR, help="Local index directory.")) -> None:
         raise typer.Exit(run_stats(index_dir))
 
+    @app.command("eval")
+    def eval_cmd(
+        eval_path: str,
+        index_dir: str = typer.Option(DEFAULT_INDEX_DIR, help="Local index directory."),
+        mode: str = typer.Option("hybrid", help="keyword, vector, or hybrid."),
+        top_k: int = typer.Option(5, help="Number of retrieved chunks to score."),
+    ) -> None:
+        raise typer.Exit(run_eval(eval_path, index_dir, mode, top_k))
+
     @app.command()
     def discover(
         query: str | None = typer.Argument(None, help="Search query for arXiv discovery."),
@@ -367,11 +376,19 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
         seed_file: str = typer.Argument("arxiv_seed_core.txt", help="Seed file with one arXiv ID per line."),
         corpus_dir: str = typer.Option(DEFAULT_ARXIV_CORPUS_DIR, help="arXiv corpus directory."),
         config: str | None = typer.Option(None, help="Discovery/download config YAML."),
-        limit: int | None = typer.Option(None, help="Maximum IDs to download this run."),
+        max_papers: int = typer.Option(
+            DEFAULT_SEED_MAX_PAPERS,
+            "--max-papers",
+            "--limit",
+            help=(
+                "Maximum papers to download or record this run; existing and not-found papers do not count "
+                f"(default: {DEFAULT_SEED_MAX_PAPERS})."
+            ),
+        ),
         force: bool = typer.Option(False, help="Replace existing paper folders."),
         skip_existing: bool = typer.Option(False, help="Skip existing paper folders; this is the default behavior."),
     ) -> None:
-        raise typer.Exit(run_download_seed(seed_file, corpus_dir, config, limit, force, skip_existing))
+        raise typer.Exit(run_download_seed(seed_file, corpus_dir, config, max_papers, force, skip_existing))
 
 
 def _argparse_main(argv: list[str] | None = None) -> int:
@@ -397,6 +414,12 @@ def _argparse_main(argv: list[str] | None = None) -> int:
 
     stats_parser = subparsers.add_parser("stats")
     stats_parser.add_argument("--index-dir", default=DEFAULT_INDEX_DIR)
+
+    eval_parser = subparsers.add_parser("eval")
+    eval_parser.add_argument("eval_path")
+    eval_parser.add_argument("--index-dir", default=DEFAULT_INDEX_DIR)
+    eval_parser.add_argument("--mode", default="hybrid", choices=["keyword", "vector", "hybrid"])
+    eval_parser.add_argument("--top-k", type=int, default=5)
 
     discover_parser = subparsers.add_parser("discover")
     discover_parser.add_argument("query", nargs="?")
@@ -435,7 +458,17 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     download_seed_parser.add_argument("seed_file", nargs="?", default="arxiv_seed_core.txt")
     download_seed_parser.add_argument("--corpus-dir", default=DEFAULT_ARXIV_CORPUS_DIR)
     download_seed_parser.add_argument("--config", default=None)
-    download_seed_parser.add_argument("--limit", type=int, default=None)
+    download_seed_parser.add_argument(
+        "--max-papers",
+        "--limit",
+        dest="max_papers",
+        type=int,
+        default=DEFAULT_SEED_MAX_PAPERS,
+        help=(
+            "Maximum papers to download or record this run; existing and not-found papers do not count "
+            f"(default: {DEFAULT_SEED_MAX_PAPERS})."
+        ),
+    )
     download_seed_group = download_seed_parser.add_mutually_exclusive_group()
     download_seed_group.add_argument("--force", action="store_true", help="Replace existing paper folders.")
     download_seed_group.add_argument(
@@ -453,6 +486,8 @@ def _argparse_main(argv: list[str] | None = None) -> int:
         return run_ask(args.query, args.index_dir, args.mode, args.top_k)
     if args.command == "stats":
         return run_stats(args.index_dir)
+    if args.command == "eval":
+        return run_eval(args.eval_path, args.index_dir, args.mode, args.top_k)
     if args.command == "discover":
         return run_discover(args.query, args.config, args.output, args.index_dir, args.max_results, args.sort_by, args.verbose)
     if args.command == "review-candidates":
@@ -480,7 +515,7 @@ def _argparse_main(argv: list[str] | None = None) -> int:
             args.seed_file,
             args.corpus_dir,
             args.config,
-            args.limit,
+            args.max_papers,
             args.force,
             args.skip_existing,
         )
