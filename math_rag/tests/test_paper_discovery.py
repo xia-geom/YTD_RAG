@@ -1,10 +1,11 @@
 import io
 import tarfile
 
-from math_rag.arxiv_client import ArxivPaper, parse_arxiv_atom
+from math_rag.arxiv_client import ArxivPaper, build_arxiv_query, parse_arxiv_atom
+from math_rag.discovery import discover_candidates
 from math_rag.downloader import download_approved_papers
 from math_rag.loaders import discover_files
-from math_rag.paper_ranker import DiscoveryConfig, rank_paper
+from math_rag.paper_ranker import DiscoveryConfig, discovery_query_phrases, parse_discovery_query, rank_paper, rank_papers
 from math_rag.paper_store import (
     PaperCandidate,
     is_duplicate,
@@ -53,6 +54,16 @@ class FakeDownloadClient:
         return self.pdf_bytes
 
 
+class FakeDiscoveryClient:
+    def __init__(self, papers):
+        self.papers = papers
+        self.calls = []
+
+    def search(self, query, max_results=20, start=0, sort_by="relevance"):
+        self.calls.append((query, max_results, start, sort_by))
+        return self.papers[:max_results]
+
+
 def test_arxiv_metadata_parsing():
     papers = parse_arxiv_atom(ATOM)
 
@@ -73,8 +84,99 @@ def test_candidate_ranking_by_keyword_and_author():
     candidate = rank_paper(paper, DiscoveryConfig(), query="Mabuchi energy")
 
     assert candidate.score > 0
-    assert any("matched keyword: Mabuchi energy" in reason for reason in candidate.ranking_reasons)
-    assert any("matched seed author: Darvas" in reason for reason in candidate.ranking_reasons)
+    assert any("strong title phrase match: Mabuchi energy" in reason for reason in candidate.ranking_reasons)
+    assert any("seed author match: Darvas" in reason for reason in candidate.ranking_reasons)
+    assert candidate.confidence == "high"
+
+
+def test_phrase_aware_query_parsing_and_arxiv_query_construction():
+    parsed = parse_discovery_query("constant scalar curvature Kahler toric")
+    phrases = discovery_query_phrases("constant scalar curvature Kahler toric", DiscoveryConfig())
+    arxiv_query = build_arxiv_query(phrases=phrases, categories=["math.DG"])
+
+    assert parsed.protected_phrases == ["constant scalar curvature Kähler"]
+    assert parsed.weak_tokens == ["toric"]
+    assert "cscK" in phrases
+    assert "toric Kähler" in phrases
+    assert "toric cscK" in phrases
+    assert 'ti:"constant scalar curvature Kähler"' in arxiv_query
+    assert 'abs:"constant scalar curvature Kähler"' in arxiv_query
+    assert 'all:"constant scalar curvature Kähler"' in arxiv_query
+    assert 'ti:"cscK"' in arxiv_query
+    assert 'ti:"toric Kähler"' in arxiv_query
+    assert 'all:"constant"' not in arxiv_query
+    assert "cat:math.DG" in arxiv_query
+
+
+def test_negative_examples_are_low_confidence_for_cscK_toric_query():
+    papers = [
+        _paper("n1", "A note on Rigidity of Shrinking Gradient Ricci Solitons", "scalar curvature appears once"),
+        _paper("n2", "Survey on topological methods for Allen--Cahn", "constant curvature topology"),
+        _paper("n3", "Stable 2-systoles, scalar curvature and topology", "generic scalar curvature"),
+        _paper("n4", "Principal Matroid Determinants", "toric varieties and matroids"),
+        _paper("n5", "Enhanced CAD-Based Quantifier Elimination", "equation solving"),
+        _paper("n6", "Generic toric varieties", "A paper about toric variety combinatorics."),
+    ]
+
+    candidates = rank_papers(papers, DiscoveryConfig(), query="constant scalar curvature Kahler toric")
+
+    assert all(candidate.confidence == "low" for candidate in candidates)
+    assert all(candidate.score < 0.2 for candidate in candidates)
+    weak_only_candidates = [
+        candidate
+        for candidate in candidates
+        if any(reason.startswith("weak token match only") for reason in candidate.ranking_reasons)
+    ]
+    assert weak_only_candidates
+    assert all(
+        any("demoted: no protected phrase or seed author match" in reason for reason in candidate.ranking_reasons)
+        for candidate in weak_only_candidates
+    )
+
+
+def test_positive_examples_are_high_confidence_for_domain_matches():
+    examples = [
+        _paper("p1", "constant scalar curvature Kähler metrics on toric manifolds", ""),
+        _paper("p2", "toric cscK metrics", ""),
+        _paper("p3", "A related paper", "We study the Abreu equation and extremal Kähler metrics."),
+        _paper("p4", "A related paper", "The Mabuchi energy and weak geodesics are central."),
+        _paper("p5", "A related paper", "We study conic Kähler metrics with cone angle beta."),
+        _paper("p6", "A related paper", "General background.", authors=["Robert Berman"]),
+        _paper("p7", "A related paper", "General background.", authors=["X. Chen", "J. Cheng"]),
+        _paper("p8", "A related paper", "General background.", authors=["Vestislav Apostolov", "Hugues Auvray", "Lars Sektnan"]),
+    ]
+
+    candidates = rank_papers(examples, DiscoveryConfig(), query="constant scalar curvature Kahler toric")
+    by_id = {candidate.arxiv_id: candidate for candidate in candidates}
+
+    assert all(candidate.confidence == "high" for candidate in candidates)
+    assert "strong title phrase match: constant scalar curvature Kähler" in by_id["p1"].ranking_reasons
+    assert any("seed author match" in reason for candidate in candidates for reason in candidate.ranking_reasons)
+
+
+def test_discovery_excludes_low_confidence_by_default_and_uses_relevance_sort(tmp_path):
+    papers = [
+        _paper("p1", "constant scalar curvature Kähler metrics", ""),
+        _paper("n1", "Stable 2-systoles, scalar curvature and topology", "generic scalar curvature"),
+    ]
+    client = FakeDiscoveryClient(papers)
+    output = tmp_path / "discovered.yaml"
+
+    result = discover_candidates(
+        "constant scalar curvature Kahler toric",
+        output_path=str(output),
+        client=client,
+        max_results=10,
+        sort_by="relevance",
+    )
+    data = load_yaml_file(output)
+
+    assert client.calls[0][3] == "relevance"
+    assert result.arxiv_query == client.calls[0][0]
+    assert len(data["candidates"]) == 1
+    assert data["candidates"][0]["confidence"] == "high"
+    assert len(data["low_confidence_candidates"]) == 1
+    assert data["low_confidence_candidates"][0]["confidence"] == "low"
 
 
 def test_manual_blacklist_lowers_score_and_whitelist_raises_score():
@@ -250,6 +352,20 @@ def _candidate(arxiv_id, action="pending"):
         action=action,
         source_url=f"https://arxiv.org/e-print/{arxiv_id}v2",
         pdf_url=f"https://arxiv.org/pdf/{arxiv_id}v2",
+    )
+
+
+def _paper(arxiv_id, title, abstract, authors=None):
+    return ArxivPaper(
+        arxiv_id=arxiv_id,
+        version="v1",
+        title=title,
+        authors=authors or ["Unmatched Author"],
+        abstract=abstract,
+        year=2024,
+        categories=["math.DG"],
+        source_url=f"https://arxiv.org/e-print/{arxiv_id}v1",
+        pdf_url=f"https://arxiv.org/pdf/{arxiv_id}v1",
     )
 
 

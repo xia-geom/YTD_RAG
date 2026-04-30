@@ -13,7 +13,13 @@ from .downloader import download_approved_papers
 from .hybrid_search import search_chunks
 from .index_store import IndexStore
 from .loaders import load_corpus
-from .paper_store import DEFAULT_ARXIV_CORPUS_DIR, DEFAULT_CANDIDATES_PATH, PaperCandidate, load_candidates
+from .paper_store import (
+    DEFAULT_ARXIV_CORPUS_DIR,
+    DEFAULT_CANDIDATES_PATH,
+    PaperCandidate,
+    load_candidate_groups,
+    load_candidates,
+)
 from .text_cleaning import make_snippet
 
 
@@ -111,31 +117,47 @@ def run_discover(
     output: str = DEFAULT_CANDIDATES_PATH,
     index_dir: str = DEFAULT_INDEX_DIR,
     max_results: int | None = None,
+    sort_by: str = "relevance",
+    verbose: bool = False,
 ) -> int:
-    candidates, warnings = discover_candidates(
+    result = discover_candidates(
         query=query,
         config_path=config,
         output_path=output,
         index_dir=index_dir,
         max_results=max_results,
+        sort_by=sort_by,
     )
-    for warning in warnings:
+    if verbose:
+        console.print(f"arXiv search_query: {result.arxiv_query}")
+        console.print(f"arXiv sort_by: {sort_by}")
+    for warning in result.warnings:
         console.print(f"Warning: {warning}")
-    console.print(f"Wrote {len(candidates)} candidate papers to {output}")
-    print_candidate_table(candidates)
-    if candidates:
+    console.print(f"Wrote {len(result.candidates)} candidate papers to {output}")
+    if result.low_confidence_candidates:
+        console.print(f"Excluded {len(result.low_confidence_candidates)} low-confidence papers into low_confidence_candidates.")
+    print_candidate_table(result.candidates)
+    if result.candidates:
         console.print("Review the YAML file and set action: download for papers you want to fetch.")
     else:
         console.print("No candidate papers were discovered. Try broader keywords or check network access.")
-    return 0 if not warnings else 1
+    return 0 if not result.warnings else 1
 
 
 def run_review_candidates(candidates_path: str = DEFAULT_CANDIDATES_PATH) -> int:
-    candidates = load_candidates(candidates_path)
-    if not candidates:
+    candidates, low_confidence = load_candidate_groups(candidates_path)
+    if not candidates and not low_confidence:
         console.print(f"No candidates found in {candidates_path}.")
         return 1
-    print_candidate_table(candidates)
+    if candidates:
+        print_candidate_table(candidates)
+    else:
+        console.print("No high/medium-confidence candidates in the main list.")
+    if low_confidence:
+        console.print(
+            f"Low-confidence papers excluded from the main list: {len(low_confidence)}. "
+            "They are under low_confidence_candidates in the YAML file."
+        )
     console.print("Set action: download to approve a candidate paper, or action: ignore to skip it.")
     return 0
 
@@ -181,15 +203,15 @@ def run_download_approved(
 
 
 def print_candidate_table(candidates: list[PaperCandidate]) -> None:
-    console.print("Rank | Score | arXiv ID | Year | Title | Authors | Reasons | Action")
-    console.print("-" * 110)
+    console.print("Rank | Score | Confidence | arXiv ID | Year | Title | Authors | Reasons | Action")
+    console.print("-" * 125)
     for rank, candidate in enumerate(candidates, start=1):
         authors = ", ".join(candidate.authors[:3])
         if len(candidate.authors) > 3:
             authors += " et al."
         reasons = "; ".join(candidate.ranking_reasons[:3])
         console.print(
-            f"{rank} | {candidate.score:.3f} | {candidate.arxiv_id}{candidate.version or ''} | "
+            f"{rank} | {candidate.score:.3f} | {candidate.confidence} | {candidate.arxiv_id}{candidate.version or ''} | "
             f"{candidate.year or ''} | {_shorten(candidate.title, 46)} | "
             f"{_shorten(authors, 30)} | {_shorten(reasons, 52)} | {candidate.action}"
         )
@@ -241,8 +263,10 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
         output: str = typer.Option(DEFAULT_CANDIDATES_PATH, help="Candidate YAML output path."),
         index_dir: str = typer.Option(DEFAULT_INDEX_DIR, help="Existing local index for corpus keyword hints."),
         max_results: int | None = typer.Option(None, help="Maximum candidate papers to store."),
+        sort_by: str = typer.Option("relevance", help="relevance or newest."),
+        verbose: bool = typer.Option(False, help="Print the arXiv search_query used."),
     ) -> None:
-        raise typer.Exit(run_discover(query, config, output, index_dir, max_results))
+        raise typer.Exit(run_discover(query, config, output, index_dir, max_results, sort_by, verbose))
 
     @app.command()
     def review_candidates(candidates_path: str = typer.Argument(DEFAULT_CANDIDATES_PATH)) -> None:
@@ -290,6 +314,8 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     discover_parser.add_argument("--output", default=DEFAULT_CANDIDATES_PATH)
     discover_parser.add_argument("--index-dir", default=DEFAULT_INDEX_DIR)
     discover_parser.add_argument("--max-results", type=int, default=None)
+    discover_parser.add_argument("--sort-by", default="relevance", choices=["relevance", "newest"])
+    discover_parser.add_argument("--verbose", action="store_true")
 
     review_parser = subparsers.add_parser("review-candidates")
     review_parser.add_argument("candidates_path", nargs="?", default=DEFAULT_CANDIDATES_PATH)
@@ -312,7 +338,7 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     if args.command == "stats":
         return run_stats(args.index_dir)
     if args.command == "discover":
-        return run_discover(args.query, args.config, args.output, args.index_dir, args.max_results)
+        return run_discover(args.query, args.config, args.output, args.index_dir, args.max_results, args.sort_by, args.verbose)
     if args.command == "review-candidates":
         return run_review_candidates(args.candidates_path)
     if args.command == "download-approved":

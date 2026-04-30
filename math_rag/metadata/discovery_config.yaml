@@ -1,0 +1,74 @@
+seed_authors:
+  - "Berman"
+  - "Darvas"
+  - "Lu"
+  - "Chen"
+  - "Cheng"
+  - "Lahdili"
+  - "Apostolov"
+  - "Auvray"
+  - "Sektnan"
+  - "Donaldson"
+  - "Székelyhidi"
+  - "Tian"
+  - "Boucksom"
+  - "Jonsson"
+  - "Guedj"
+  - "Zeriahi"
+  - "Berndtsson"
+
+seed_keywords:
+  - "toric Kähler geometry"
+  - "moment polytopes"
+  - "symplectic potentials"
+  - "Abreu equation"
+  - "cone angles"
+  - "cusp/Poincare limits"
+  - "cusp/Poincaré limits"
+  - "cscK metrics"
+  - "constant scalar curvature Kähler"
+  - "extremal metrics"
+  - "extremal Kähler metrics"
+  - "Mabuchi energy"
+  - "K-energy"
+  - "Ding functional"
+  - "twisted Monge-Ampere energy"
+  - "twisted Monge-Ampère energy"
+  - "weighted energy functionals"
+  - "weighted extremal metrics"
+  - "weak geodesics"
+  - "Berman-Darvas-Lu"
+  - "Chen-Cheng"
+  - "Lahdili"
+  - "Apostolov-Auvray-Sektnan"
+  - "Donaldson"
+  - "Yau-Tian-Donaldson"
+  - "K-stability"
+
+arxiv_categories:
+  - "math.DG"
+  - "math.AG"
+  - "math.CV"
+
+ranking_weights:
+  keyword_match: 3.0
+  author_match: 2.5
+  title_match: 2.0
+  abstract_match: 1.5
+  category_match: 1.0
+  recency: 0.5
+  blacklist_penalty: -10.0
+  whitelist_bonus: 5.0
+
+download_policy:
+  require_approval: true
+  max_papers_per_run: 20
+  delay_seconds_between_requests: 3
+  download_source: true
+  download_pdf: true
+  avoid_duplicates: true
+
+manual_whitelist: []
+manual_blacklist: []
+
+exclude_low_confidence_by_default: true

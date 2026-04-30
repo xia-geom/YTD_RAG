@@ -68,3 +68,7 @@ download_policy:
 #   - "unrelated phrase"
 manual_whitelist: []
 manual_blacklist: []
+
+# Discovery is conservative by default. Low-confidence matches are written under
+# low_confidence_candidates instead of the main candidates list.
+exclude_low_confidence_by_default: true

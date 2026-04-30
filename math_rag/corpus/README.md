@@ -16,3 +16,4 @@ Supported first-version formats:
 
 The default index is written locally to `.math_rag_index/`.
 
+`research_profile.md` is a local vocabulary and discovery seed. It should not be treated as evidence for mathematical claims.

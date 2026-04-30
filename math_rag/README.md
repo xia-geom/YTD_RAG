@@ -91,7 +91,7 @@ discover -> rank -> review/approve -> download -> ingest -> search/ask
 Run discovery with a query:
 
 ```bash
-python3 -m math_rag.cli discover "toric cscK conic cusp Mabuchi energy"
+python3 -m math_rag.cli discover "constant scalar curvature Kahler toric" --verbose
 ```
 
 Or use a configuration file:
@@ -101,12 +101,17 @@ cp metadata/discovery_config.example.yaml metadata/discovery_config.yaml
 python3 -m math_rag.cli discover --config metadata/discovery_config.yaml
 ```
 
-Discovery queries the official arXiv Atom metadata API and writes `discovered_papers.yaml`. This sends your discovery query and config-derived search terms to arXiv. Entries are candidate papers, not endorsed or important papers. Each entry includes provenance, score, ranking reasons, and:
+Discovery is conservative and phrase-aware. It protects mathematical phrases such as `constant scalar curvature Kähler`, `toric Kähler`, `Abreu equation`, `Mabuchi energy`, `weak geodesic`, `conic Kähler`, and `K-stability`. Generic words such as `toric`, `Kähler`, `curvature`, `equation`, `metric`, and `energy` are not enough by themselves to make a paper relevant.
+
+Discovery queries the official arXiv Atom metadata API and writes `discovered_papers.yaml`. This sends your discovery query and config-derived search terms to arXiv. Pass `--verbose` to inspect the exact arXiv `search_query`; default sorting is `--sort-by relevance`, with `--sort-by newest` available when you explicitly want recent submissions. Entries are candidate papers, not endorsed or important papers. Each entry includes provenance, score, confidence, ranking reasons, and:
 
 ```yaml
+confidence: high
 status: pending
 action: pending
 ```
+
+When `exclude_low_confidence_by_default: true`, low-confidence matches are written separately under `low_confidence_candidates` rather than the main `candidates` list. This is meant to demote papers matching only weak tokens, for example generic scalar curvature, toric variety, PDE, matroid, CAD, or topology papers.
 
 Review candidates in the terminal:
 

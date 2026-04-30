@@ -1,0 +1,41 @@
+documents:
+  corpus/research_profile.md:
+    title: "Research Corpus Seed Profile"
+    authors:
+      - "Local Research Profile"
+    year: 2026
+    document_type: note
+    topics:
+      - "toric Kähler geometry"
+      - "moment polytopes"
+      - "symplectic potentials"
+      - "Abreu equation"
+      - "cone angles"
+      - "cusp/Poincare limits"
+      - "cscK metrics"
+      - "extremal metrics"
+      - "Mabuchi/K-energy"
+      - "Ding functional"
+      - "twisted Monge-Ampere energy"
+      - "weighted energy functionals"
+      - "weak geodesics"
+      - "Berman-Darvas-Lu"
+      - "Chen-Cheng"
+      - "Lahdili"
+      - "Apostolov-Auvray-Sektnan"
+      - "Donaldson"
+      - "Yau-Tian-Donaldson"
+    mathematical_objects:
+      - "toric Kähler manifold"
+      - "moment polytope"
+      - "symplectic potential"
+      - "Abreu equation"
+      - "cone angle"
+      - "cusp metric"
+      - "Poincare metric"
+      - "Mabuchi energy"
+      - "Ding functional"
+      - "weak geodesic"
+    status: important
+    notes: "Seed profile for retrieval vocabulary and arXiv discovery. Not a mathematical source."
+

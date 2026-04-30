@@ -24,6 +24,7 @@ class PaperCandidate:
     arxiv_categories: list[str]
     abstract: str
     score: float = 0.0
+    confidence: str = "low"
     ranking_reasons: list[str] = field(default_factory=list)
     status: str = "pending"
     action: str = "pending"
@@ -57,6 +58,7 @@ def candidate_from_dict(data: dict[str, Any]) -> PaperCandidate:
         arxiv_categories=list(data.get("arxiv_categories") or []),
         abstract=str(data.get("abstract", "")),
         score=float(data.get("score", 0.0) or 0.0),
+        confidence=str(data.get("confidence", "low")),
         ranking_reasons=list(data.get("ranking_reasons") or []),
         status=str(data.get("status", "pending")),
         action=str(data.get("action", "pending")),
@@ -116,13 +118,31 @@ def write_yaml_file(path: str | Path, data: dict[str, Any]) -> None:
         file_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def load_candidates(path: str | Path) -> list[PaperCandidate]:
+def load_candidate_groups(path: str | Path) -> tuple[list[PaperCandidate], list[PaperCandidate]]:
     data = load_yaml_file(path)
-    return [candidate_from_dict(item) for item in data.get("candidates", []) if isinstance(item, dict)]
+    candidates = [candidate_from_dict(item) for item in data.get("candidates", []) if isinstance(item, dict)]
+    low_confidence = [
+        candidate_from_dict(item) for item in data.get("low_confidence_candidates", []) if isinstance(item, dict)
+    ]
+    return candidates, low_confidence
 
 
-def write_candidates(path: str | Path, candidates: list[PaperCandidate]) -> None:
-    write_yaml_file(path, {"candidates": [candidate_to_dict(candidate) for candidate in candidates]})
+def load_candidates(path: str | Path) -> list[PaperCandidate]:
+    candidates, low_confidence = load_candidate_groups(path)
+    return candidates + low_confidence
+
+
+def write_candidates(
+    path: str | Path,
+    candidates: list[PaperCandidate],
+    low_confidence_candidates: list[PaperCandidate] | None = None,
+) -> None:
+    payload = {"candidates": [candidate_to_dict(candidate) for candidate in candidates]}
+    if low_confidence_candidates is not None:
+        payload["low_confidence_candidates"] = [
+            candidate_to_dict(candidate) for candidate in low_confidence_candidates
+        ]
+    write_yaml_file(path, payload)
 
 
 def approved_candidates(candidates: list[PaperCandidate], auto_download: bool = False, limit: int | None = None) -> list[PaperCandidate]:
@@ -171,6 +191,7 @@ def build_paper_metadata(
         "abstract": candidate.abstract,
         "arxiv_categories": candidate.arxiv_categories,
         "discovery_score": round(candidate.score, 4),
+        "discovery_confidence": candidate.confidence,
         "ranking_reasons": list(candidate.ranking_reasons),
         "candidate_status": candidate.status,
         "candidate_action": candidate.action,

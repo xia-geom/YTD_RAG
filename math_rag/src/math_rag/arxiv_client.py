@@ -38,12 +38,12 @@ class ArxivClient:
         self.user_agent = user_agent
         self._last_request_at = 0.0
 
-    def search(self, query: str, max_results: int = 20, start: int = 0) -> list[ArxivPaper]:
+    def search(self, query: str, max_results: int = 20, start: int = 0, sort_by: str = "relevance") -> list[ArxivPaper]:
         params = {
             "search_query": query,
             "start": str(start),
             "max_results": str(max_results),
-            "sortBy": "submittedDate",
+            "sortBy": _normalize_sort_by(sort_by),
             "sortOrder": "descending",
         }
         url = f"{ARXIV_API_URL}?{urllib.parse.urlencode(params)}"
@@ -125,11 +125,17 @@ def build_arxiv_query(
     query: str | None = None,
     authors: list[str] | None = None,
     categories: list[str] | None = None,
+    phrases: list[str] | None = None,
 ) -> str:
     term_parts: list[str] = []
+    for phrase in phrases or []:
+        escaped = _escape_query_term(phrase)
+        term_parts.append(f'ti:"{escaped}"')
+        term_parts.append(f'abs:"{escaped}"')
+        term_parts.append(f'all:"{escaped}"')
     if query:
         terms = [term for term in query.replace(",", " ").split() if term]
-        term_parts.extend(f'all:"{_escape_query_term(term)}"' for term in terms[:8])
+        term_parts.extend(f'all:"{_escape_query_term(term)}"' for term in terms[:4])
     author_parts: list[str] = []
     for author in authors or []:
         author_parts.append(f'au:"{_escape_query_term(author)}"')
@@ -155,6 +161,14 @@ def build_arxiv_query(
 
 def _escape_query_term(term: str) -> str:
     return term.replace('"', "")
+
+
+def _normalize_sort_by(sort_by: str) -> str:
+    if sort_by == "newest":
+        return "submittedDate"
+    if sort_by in {"relevance", "lastUpdatedDate", "submittedDate"}:
+        return sort_by
+    return "relevance"
 
 
 def _text(entry: ET.Element, path: str) -> str | None:
