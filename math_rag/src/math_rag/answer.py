@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from .citations import format_citation, format_location, unique_sources
 from .models import SearchResult
+from .symbol_normalization import normalize_search_text
 from .text_cleaning import make_snippet, salient_terms
 
 
@@ -164,8 +165,8 @@ def _evidence_lines(question: str, results: list[SearchResult]) -> list[str]:
 
 
 def _matched_terms(question: str, result: SearchResult) -> list[str]:
-    content = result.chunk.content.lower()
-    return [term for term in salient_terms(question) if term.lower() in content]
+    content = normalize_search_text(result.chunk.content)
+    return [term for term in salient_terms(question) if normalize_search_text(term) in content]
 
 
 def _is_specific_term(term: str) -> bool:

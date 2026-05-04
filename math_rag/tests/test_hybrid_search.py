@@ -38,6 +38,66 @@ def test_hybrid_search_keeps_exact_keyword_hits_above_weak_vector_similarity():
     assert results[0].keyword_score > 0
 
 
+def test_hybrid_search_demotes_citation_context_below_real_text():
+    chunks = [
+        Chunk(
+            chunk_id="bib",
+            source_path="paperA/source/biblio.bib",
+            chunk_type="citation_context",
+            content=(
+                "@article{chen-cheng-1, author = {Chen, X. and Cheng, J.}, "
+                "title = {Chen-Cheng a priori estimates for cscK metrics}}"
+            ),
+        ),
+        Chunk(
+            chunk_id="real",
+            source_path="paperB/source/source.tex",
+            chunk_type="theorem",
+            content=(
+                "Theorem (Chen-Cheng). The Mabuchi energy is proper. "
+                "We give a priori estimates for cscK metrics."
+            ),
+        ),
+    ]
+
+    results = HybridSearch(chunks).search("Chen-Cheng cscK estimates", top_k=2)
+
+    assert results[0].chunk.chunk_id == "real", (
+        f"expected real .tex theorem to outrank biblio.bib, got top={results[0].chunk.chunk_id}"
+    )
+
+
+def test_hybrid_search_matches_unaccented_query_to_accented_content():
+    chunks = [
+        Chunk(
+            chunk_id="accented",
+            source_path="notes.tex",
+            chunk_type="text",
+            content="The Poincaré type Kähler metric appears in the cusp model.",
+        ),
+        Chunk(
+            chunk_id="other",
+            source_path="other.tex",
+            chunk_type="text",
+            content="A generic paragraph about algebraic geometry.",
+        ),
+    ]
+
+    results = HybridSearch(chunks).search("Poincare Kahler cusp", top_k=2)
+
+    assert results[0].chunk.chunk_id == "accented"
+    assert results[0].keyword_score > 0
+
+
+def test_hybrid_search_demotion_can_be_disabled():
+    chunks = [
+        Chunk(chunk_id="bib", source_path="a.bib", chunk_type="citation_context", content="Chen-Cheng cscK"),
+        Chunk(chunk_id="text", source_path="b.tex", chunk_type="text", content="Chen-Cheng cscK"),
+    ]
+    results = HybridSearch(chunks, citation_context_demotion=1.0).search("Chen-Cheng cscK", top_k=2)
+    assert {r.chunk.chunk_id for r in results} == {"bib", "text"}
+
+
 def test_empty_or_weak_retrieval_does_not_hallucinate_answer():
     answer = build_answer("Prove the missing theorem about cusp limits.", [])
 

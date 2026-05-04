@@ -11,17 +11,18 @@ from __future__ import annotations
 import math
 from collections import Counter
 
+from .keyword_search import _chunk_search_text
 from .models import Chunk, SearchResult
 from .text_cleaning import salient_terms, tokenize
 
 
 DOMAIN_EXPANSIONS = {
-    "cscK": ["constant", "scalar", "curvature", "kahler", "kähler"],
-    "poincare": ["poincare", "poincaré", "cusp"],
-    "poincaré": ["poincare", "poincaré", "cusp"],
+    "csck": ["constant", "scalar", "curvature", "kahler"],
+    "poincare": ["poincare", "cusp"],
     "cone": ["conic", "angle", "beta"],
     "conic": ["cone", "angle", "beta"],
     "k-energy": ["mabuchi", "energy"],
+    "kenergy": ["mabuchi", "energy"],
     "mabuchi": ["k-energy", "functional"],
     "toric": ["polytope", "moment", "symplectic"],
     "weighted": ["lahdili", "extremal"],
@@ -32,7 +33,7 @@ class VectorSearch:
     def __init__(self, chunks: list[Chunk], backend: str = "local"):
         self.chunks = chunks
         self.backend = backend
-        self.vectors = [self._vectorize(chunk.content) for chunk in chunks]
+        self.vectors = [self._vectorize(_chunk_search_text(chunk)) for chunk in chunks]
         self.norms = [self._norm(vector) for vector in self.vectors]
 
     def search(self, query: str, top_k: int = 10) -> list[SearchResult]:
@@ -74,4 +75,3 @@ class VectorSearch:
     @staticmethod
     def _norm(vector: Counter[str]) -> float:
         return math.sqrt(sum(value * value for value in vector.values()))
-

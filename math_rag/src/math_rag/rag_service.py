@@ -19,6 +19,7 @@ from .hybrid_search import search_chunks
 from .index_store import IndexStore
 from .loaders import load_corpus
 from .models import Chunk, SearchResult
+from .symbol_normalization import normalize_search_text
 from .text_cleaning import make_snippet, salient_terms
 
 
@@ -87,8 +88,8 @@ def _result_to_dict(result: SearchResult, query: str) -> dict[str, Any]:
 
 
 def _matched_terms(question: str, result: SearchResult) -> list[str]:
-    content = result.chunk.content.lower()
-    return [term for term in salient_terms(question) if term.lower() in content]
+    content = normalize_search_text(result.chunk.content)
+    return [term for term in salient_terms(question) if normalize_search_text(term) in content]
 
 
 def retrieve(

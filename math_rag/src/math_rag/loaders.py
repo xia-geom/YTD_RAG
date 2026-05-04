@@ -15,6 +15,9 @@ from .pdf_loader import load_pdf_chunks
 from .text_cleaning import extract_symbols
 
 
+PDF_SHADOWING_SUFFIXES = {".tex", ".md", ".markdown"}
+
+
 def discover_files(corpus_path: str | Path) -> list[Path]:
     root = Path(corpus_path)
     if root.is_file():
@@ -22,6 +25,7 @@ def discover_files(corpus_path: str | Path) -> list[Path]:
     if not root.exists():
         return []
     files: list[Path] = []
+    arxiv_governed: set[Path] = set()
     for path in root.rglob("*"):
         if any(part.startswith(".") for part in path.parts):
             continue
@@ -30,8 +34,27 @@ def discover_files(corpus_path: str | Path) -> list[Path]:
         arxiv_decision = should_ingest_arxiv_file(path)
         if arxiv_decision is False:
             continue
+        if arxiv_decision is True:
+            arxiv_governed.add(path)
         files.append(path)
-    return sorted(files)
+
+    text_stems_by_dir: dict[Path, set[str]] = {}
+    for path in files:
+        if path in arxiv_governed:
+            continue
+        if path.suffix.lower() in PDF_SHADOWING_SUFFIXES:
+            text_stems_by_dir.setdefault(path.parent, set()).add(path.stem)
+
+    filtered: list[Path] = []
+    for path in files:
+        if (
+            path.suffix.lower() == ".pdf"
+            and path not in arxiv_governed
+            and path.stem in text_stems_by_dir.get(path.parent, set())
+        ):
+            continue
+        filtered.append(path)
+    return sorted(filtered)
 
 
 def load_metadata_map(metadata_path: str | Path | None = None) -> dict[str, DocumentMetadata]:

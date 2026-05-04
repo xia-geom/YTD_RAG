@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 from .models import Chunk, DocumentMetadata
+from .symbol_normalization import extract_latex_macro_aliases, search_metadata_for_content
 from .text_cleaning import extract_symbols, normalize_whitespace
 
 
@@ -30,8 +31,48 @@ ENV_TO_CHUNK_TYPE = {
     "equation": "text",
     "align": "text",
 }
+STATIC_THEOREM_ALIASES = {
+    "thm": "theorem",
+    "theo": "theorem",
+    "theorem": "theorem",
+    "lem": "lemma",
+    "lemma": "lemma",
+    "prop": "proposition",
+    "proposition": "proposition",
+    "defn": "definition",
+    "defi": "definition",
+    "definition": "definition",
+    "cor": "theorem",
+    "corr": "theorem",
+    "corollary": "theorem",
+    "rem": "remark",
+    "rmk": "remark",
+    "remark": "remark",
+    "remarks": "remark",
+    "rmks": "remark",
+    "ex": "example",
+    "exmp": "example",
+    "example": "example",
+    "conj": "conjecture",
+    "conjecture": "conjecture",
+    "ques": "question",
+    "quest": "question",
+    "question": "question",
+    "claim": "theorem",
+    "proof": "proof",
+}
 ENV_NAMES = tuple(sorted(ENV_TO_CHUNK_TYPE, key=len, reverse=True))
 BEGIN_ENV_RE = re.compile(r"\\begin\{(?P<env>" + "|".join(ENV_NAMES) + r")\*?\}")
+NEWTHEOREM_RE = re.compile(
+    r"""
+    \\newtheorem\*?                 # \newtheorem or \newtheorem*
+    \s*\{\s*(?P<env>[^{}\[\]\s]+)\s*\}
+    \s*(?:\[[^\]]*\])?             # optional shared counter
+    \s*\{\s*(?P<display>[^{}]*(?:\{[^{}]*\}[^{}]*)*)\s*\}
+    \s*(?:\[[^\]]*\])?             # optional trailing numbering scope
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
 
 
 def make_chunk_id(source_path: str, line_start: int | None, line_end: int | None, chunk_type: str, content: str) -> str:
@@ -52,6 +93,47 @@ def _update_section_path(section_path: list[str], kind: str, title: str) -> list
     return next_path
 
 
+def _canonical_newtheorem_chunk_type(display_name: str) -> str | None:
+    normalized = normalize_whitespace(re.sub(r"\\[a-zA-Z]+\*?", " ", display_name).lower())
+    if "definition" in normalized:
+        return "definition"
+    if "proposition" in normalized:
+        return "proposition"
+    if "lemma" in normalized:
+        return "lemma"
+    if "corollary" in normalized:
+        return "theorem"
+    if "theorem" in normalized or "claim" in normalized:
+        return "theorem"
+    if "remark" in normalized:
+        return "remark"
+    if "example" in normalized:
+        return "example"
+    if "conjecture" in normalized:
+        return "conjecture"
+    if "question" in normalized:
+        return "question"
+    if "computation" in normalized:
+        return "computation"
+    return None
+
+
+def extract_newtheorem_aliases(text: str) -> dict[str, str]:
+    """Return valid chunk-type aliases declared by LaTeX \\newtheorem commands."""
+
+    aliases: dict[str, str] = {}
+    for match in NEWTHEOREM_RE.finditer(text):
+        chunk_type = _canonical_newtheorem_chunk_type(match.group("display"))
+        if chunk_type is not None:
+            aliases[match.group("env")] = chunk_type
+    return aliases
+
+
+def _begin_env_re(env_to_chunk_type: dict[str, str]) -> re.Pattern[str]:
+    env_names = tuple(sorted(env_to_chunk_type, key=len, reverse=True))
+    return re.compile(r"\\begin\{(?P<env>" + "|".join(re.escape(env) for env in env_names) + r")\*?\}")
+
+
 def chunk_latex_text(
     text: str,
     source_path: str,
@@ -60,12 +142,24 @@ def chunk_latex_text(
 ) -> list[Chunk]:
     """Split LaTeX source into section-aware theorem/proof/example chunks."""
 
+    env_to_chunk_type = dict(ENV_TO_CHUNK_TYPE)
+    env_to_chunk_type.update(STATIC_THEOREM_ALIASES)
+    env_to_chunk_type.update(extract_newtheorem_aliases(text))
+    begin_env_re = _begin_env_re(env_to_chunk_type)
     lines = text.splitlines(keepends=True)
     chunks: list[Chunk] = []
     section_path: list[str] = []
     buffer: list[tuple[int, str]] = []
     title = metadata.title if metadata else None
     topics = list(metadata.topics) if metadata else []
+    macro_aliases = extract_latex_macro_aliases(text)
+
+    def chunk_metadata(content: str, symbols: list[str], environment: str | None = None) -> dict[str, object]:
+        values: dict[str, object] = {"source_format": "latex"}
+        if environment is not None:
+            values["environment"] = environment
+        values.update(search_metadata_for_content(content, symbols, macro_aliases))
+        return values
 
     def flush_text_buffer() -> None:
         nonlocal buffer
@@ -82,6 +176,7 @@ def chunk_latex_text(
                 return
             line_start = items[0][0]
             line_end = items[-1][0]
+            symbols = extract_symbols(content)
             chunks.append(
                 Chunk(
                     chunk_id=make_chunk_id(source_path, line_start, line_end, "text", content),
@@ -92,8 +187,8 @@ def chunk_latex_text(
                     line_start=line_start,
                     line_end=line_end,
                     content=content,
-                    metadata={"source_format": "latex"},
-                    symbols=extract_symbols(content),
+                    metadata=chunk_metadata(content, symbols),
+                    symbols=symbols,
                     topics=topics,
                 )
             )
@@ -114,7 +209,7 @@ def chunk_latex_text(
         line_no = i + 1
         line = lines[i]
         section_match = SECTION_RE.search(line)
-        env_match = BEGIN_ENV_RE.search(line)
+        env_match = begin_env_re.search(line)
 
         if section_match and (not env_match or section_match.start() < env_match.start()):
             flush_text_buffer()
@@ -147,7 +242,8 @@ def chunk_latex_text(
                 i += 1
 
             content = "".join(raw for _, raw in env_lines).strip()
-            chunk_type = ENV_TO_CHUNK_TYPE.get(env_name, "text")
+            chunk_type = env_to_chunk_type.get(env_name, "text")
+            symbols = extract_symbols(content)
             chunks.append(
                 Chunk(
                     chunk_id=make_chunk_id(source_path, env_lines[0][0], env_lines[-1][0], chunk_type, content),
@@ -158,8 +254,8 @@ def chunk_latex_text(
                     line_start=env_lines[0][0],
                     line_end=env_lines[-1][0],
                     content=content,
-                    metadata={"source_format": "latex", "environment": env_name},
-                    symbols=extract_symbols(content),
+                    metadata=chunk_metadata(content, symbols, env_name),
+                    symbols=symbols,
                     topics=topics,
                 )
             )

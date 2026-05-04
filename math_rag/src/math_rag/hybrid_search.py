@@ -7,16 +7,21 @@ from .models import Chunk, SearchResult
 from .vector_search import VectorSearch
 
 
+CITATION_CONTEXT_DEMOTION = 0.4
+
+
 class HybridSearch:
     def __init__(
         self,
         chunks: list[Chunk],
         keyword_search: KeywordSearch | None = None,
         vector_search: VectorSearch | None = None,
+        citation_context_demotion: float = CITATION_CONTEXT_DEMOTION,
     ):
         self.chunks = chunks
         self.keyword_search = keyword_search or KeywordSearch(chunks)
         self.vector_search = vector_search or VectorSearch(chunks)
+        self.citation_context_demotion = citation_context_demotion
 
     def search(
         self,
@@ -66,6 +71,11 @@ class HybridSearch:
                     vector_score=result.vector_score or result.score,
                 )
                 order.setdefault(chunk_id, 1000 + position)
+
+        if self.citation_context_demotion < 1.0:
+            for result in merged.values():
+                if result.chunk.chunk_type == "citation_context":
+                    result.score *= self.citation_context_demotion
 
         ranked = sorted(merged.values(), key=lambda result: (result.score, result.keyword_score), reverse=True)
         for rank, result in enumerate(ranked[:top_k], start=1):
