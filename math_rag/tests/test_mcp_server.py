@@ -369,7 +369,7 @@ def test_mcp_ingest_rejects_path_traversal(populated_index, tmp_path, monkeypatc
     )
     result = response["result"]
     assert result["isError"] is True
-    assert "outside the project root" in result["content"][0]["text"]
+    assert "outside the workspace root" in result["content"][0]["text"]
 
 
 def test_mcp_ingest_rejects_absolute_path(populated_index, tmp_path, monkeypatch):
@@ -415,16 +415,56 @@ def test_mcp_serve_stdio_drops_notifications(populated_index, tmp_path, monkeypa
 
 
 def test_resolve_project_root_uses_env_var(tmp_path, monkeypatch):
-    monkeypatch.setenv(mcp_server.ROOT_ENV_VAR, str(tmp_path))
+    monkeypatch.setenv(mcp_server.WORKSPACE_ROOT_ENV_VAR, str(tmp_path))
+    monkeypatch.setenv(mcp_server.PACKAGE_ROOT_ENV_VAR, str(PROJECT_ROOT))
     assert mcp_server.resolve_project_root() == tmp_path.resolve()
+
+
+def test_resolve_roots_supports_separated_workspace_and_package_roots(tmp_path, monkeypatch):
+    workspace_root = tmp_path / "workspace"
+    package_root = workspace_root / "math_rag"
+    (package_root / "src" / "math_rag").mkdir(parents=True)
+    (workspace_root / "corpus").mkdir()
+    (workspace_root / "eval").mkdir()
+    (package_root / "pyproject.toml").write_text("[project]\nname='math-rag'\n", encoding="utf-8")
+
+    monkeypatch.setenv(mcp_server.PACKAGE_ROOT_ENV_VAR, str(package_root))
+    monkeypatch.setenv(mcp_server.WORKSPACE_ROOT_ENV_VAR, str(workspace_root))
+    monkeypatch.delenv(mcp_server.ROOT_ENV_VAR, raising=False)
+
+    roots = mcp_server.resolve_roots()
+
+    assert roots.package_root == package_root.resolve()
+    assert roots.workspace_root == workspace_root.resolve()
+    assert mcp_server._resolve_index_dir(roots.workspace_root) == str(workspace_root / ".math_rag_index")
+
+
+def test_legacy_mcp_root_at_package_root_uses_parent_workspace(tmp_path, monkeypatch):
+    workspace_root = tmp_path / "workspace"
+    package_root = workspace_root / "math_rag"
+    (package_root / "src" / "math_rag").mkdir(parents=True)
+    (workspace_root / "corpus").mkdir()
+    (package_root / "pyproject.toml").write_text("[project]\nname='math-rag'\n", encoding="utf-8")
+
+    monkeypatch.setenv(mcp_server.ROOT_ENV_VAR, str(package_root))
+    monkeypatch.delenv(mcp_server.PACKAGE_ROOT_ENV_VAR, raising=False)
+    monkeypatch.delenv(mcp_server.WORKSPACE_ROOT_ENV_VAR, raising=False)
+
+    roots = mcp_server.resolve_roots()
+
+    assert roots.package_root == package_root.resolve()
+    assert roots.workspace_root == workspace_root.resolve()
 
 
 def test_resolve_project_root_errors_when_missing(tmp_path, monkeypatch):
     monkeypatch.delenv(mcp_server.ROOT_ENV_VAR, raising=False)
+    monkeypatch.delenv(mcp_server.PACKAGE_ROOT_ENV_VAR, raising=False)
+    monkeypatch.delenv(mcp_server.WORKSPACE_ROOT_ENV_VAR, raising=False)
+    monkeypatch.setattr(mcp_server, "_module_package_root", lambda: tmp_path / "missing-package")
     monkeypatch.chdir(tmp_path)
     with pytest.raises(FileNotFoundError) as exc_info:
         mcp_server.resolve_project_root()
-    assert mcp_server.ROOT_ENV_VAR in str(exc_info.value)
+    assert mcp_server.PACKAGE_ROOT_ENV_VAR in str(exc_info.value)
 
 
 # ---------------------------------------------------------------------------
@@ -434,9 +474,11 @@ def test_resolve_project_root_errors_when_missing(tmp_path, monkeypatch):
 
 def test_mcp_server_starts_via_stdio(populated_index, monkeypatch):
     env = os.environ.copy()
-    env["MATH_RAG_ROOT"] = str(PROJECT_ROOT)
+    env["MATH_RAG_PACKAGE_ROOT"] = str(PROJECT_ROOT)
+    env["MATH_RAG_WORKSPACE_ROOT"] = str(PROJECT_ROOT)
     env["MATH_RAG_INDEX_DIR"] = populated_index
     env["PYTHONPATH"] = str(PROJECT_ROOT / "src")
+    env.pop("MATH_RAG_ROOT", None)
     env.pop("MATH_RAG_MCP_ALLOW_WRITE_TOOLS", None)
 
     proc = subprocess.Popen(

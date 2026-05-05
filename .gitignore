@@ -1,0 +1,29 @@
+.DS_Store
+.env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+__pycache__/
+*.py[cod]
+
+# Large/local research data
+corpus/
+.math_rag_index/
+.math_rag_agent_logs_index/
+
+# Local agent/app settings
+.claude/
+
+# Package-local generated files
+math_rag/.env
+math_rag/.venv/
+math_rag/.math_rag_index/
+math_rag/.pytest_cache/
+math_rag/build/
+math_rag/dist/
+math_rag/*.egg-info/
+math_rag/src/math_rag.egg-info/
+math_rag/.git.backup-pre-outer/
+math_rag/scripts/__pycache__/
+math_rag/src/math_rag/__pycache__/
+math_rag/tests/__pycache__/

@@ -1,0 +1,35 @@
+# Core mathematical RAG seed list.
+# Comments and blank lines are ignored by `math_rag.cli download-seed`.
+
+# Poincare / cusp / conic
+1711.08424
+1401.0123
+1401.0128
+2210.11862
+2410.14130
+1803.09506
+
+# Chen-Cheng / cscK
+1712.06697
+1801.00656
+1801.05907
+
+# Mabuchi / weak geodesics / finite energy
+1510.01260
+1405.0401
+1409.7896
+2102.05277
+
+# Toric / Abreu
+dg-ga/9711014
+math/0407486
+0805.0128
+0909.4512
+2208.12493
+
+# Weighted Mabuchi / Lahdili
+1808.07811
+2007.01345
+2104.09709
+2407.09929
+2503.22183

@@ -1,0 +1,227 @@
+questions:
+  - id: conical_approx_poincare_csck
+    question: "Where does the corpus discuss conical approximation of Poincare type cscK metrics?"
+    expected_sources:
+      - "2210.11862"
+
+  - id: poincare_csck_uniqueness
+    question: "Where does the corpus discuss uniqueness of Poincare type cscK metrics?"
+    expected_sources:
+      - "2410.14130"
+
+  - id: toric_poincare_extremal
+    question: "Where does the corpus discuss toric Poincare type extremal metrics?"
+    expected_sources:
+      - "1711.08424"
+
+  - id: poincare_metric_space
+    question: "Where does the corpus discuss the space of Poincare type Kahler metrics on a divisor complement?"
+    expected_sources:
+      - "1205.0056"
+
+  - id: gluing_poincare_csck
+    question: "Where does the corpus discuss gluing constructions for cscK metrics of Poincare type?"
+    expected_sources:
+      - "2405.11952"
+
+  - id: extended_k_energy_finite_energy
+    question: "Where does the corpus discuss convexity of the extended K-energy on finite energy spaces?"
+    expected_sources:
+      - "1510.01260"
+
+  - id: k_energy_weak_geodesics
+    question: "Where does the corpus discuss convexity of the K-energy along weak geodesics?"
+    expected_sources:
+      - "1405.0401"
+      - "1409.7896"
+
+  - id: berman_darvas_lu_convexity
+    question: "Where does the corpus discuss Berman-Darvas-Lu convexity and weak geodesics?"
+    expected_sources:
+      - "1510.01260"
+      - "1405.0401"
+      - "1409.7896"
+
+  - id: weighted_mabuchi_functional
+    question: "Where does the corpus discuss weighted Mabuchi functional or weighted extremal metrics?"
+    expected_sources:
+      - "2007.01345"
+      - "1808.07811"
+      - "2104.09709"
+
+  - id: weighted_mabuchi_convexity
+    question: "Where does the corpus discuss convexity of weighted Mabuchi energy along weak geodesics?"
+    expected_sources:
+      - "2007.01345"
+      - "2303.03263"
+      - "corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex"
+
+  - id: weighted_csck_coercivity
+    question: "Where does the corpus discuss weighted cscK coercivity and openness?"
+    expected_sources:
+      - "2407.09929"
+      - "2412.07968"
+      - "2503.22183"
+
+  - id: weighted_ytd
+    question: "Where does the corpus discuss a YTD correspondence for weighted cscK metrics?"
+    expected_sources:
+      - "2509.15016"
+
+  - id: hisamoto_toric_coercivity_uniform_stability
+    question: "Where does the corpus discuss equivalence between toric uniform K-stability and coercivity of the K-energy?"
+    expected_sources:
+      - "1610.07998"
+
+  - id: nitta_saito_uniform_extremal_toric_ytd
+    question: "Where does the corpus discuss a uniform YTD correspondence for extremal Kahler metrics on polarized toric manifolds?"
+    expected_sources:
+      - "2110.10386"
+
+  - id: li_lian_sheng_filtration_toric_ytd
+    question: "Where does the corpus discuss the filtration version of the YTD conjecture for toric manifolds and homogeneous toric bundles?"
+    expected_sources:
+      - "2110.08491"
+
+  - id: bhj_uniform_kstability_energy_asymptotics
+    question: "Where does the corpus discuss uniform K-stability and asymptotics of energy functionals in Kahler geometry?"
+    expected_sources:
+      - "1603.01026"
+
+  - id: bdl_weak_minimizers_properness
+    question: "Where does the corpus discuss regularity of weak minimizers of the K-energy and applications to properness and K-stability?"
+    expected_sources:
+      - "1602.03114"
+
+  - id: darvas_rubinstein_properness_mod_automorphisms
+    question: "Where does the corpus discuss Tian's properness conjectures and properness modulo automorphisms?"
+    expected_sources:
+      - "1506.07129"
+
+  - id: szekelyhidi_extremal_kstability
+    question: "Where does the corpus discuss Szekelyhidi's extremal metrics and K-stability?"
+    expected_sources:
+      - "math_0611002"
+
+  - id: stoppa_szekelyhidi_relative_kstability
+    question: "Where does the corpus state that if M admits an extremal metric in c1(L), then (M,L) is K-polystable relative to a maximal torus?"
+    expected_sources:
+      - "0912.4095"
+
+  - id: chen_li_sheng_toric_surfaces
+    question: "Where does the corpus discuss extremal metrics on toric surfaces by Chen, Li, and Sheng?"
+    expected_sources:
+      - "1008.2607"
+
+  - id: jmr_edge_singularities
+    question: "Where does the corpus discuss Jeffres Mazzeo Rubinstein and polyhomogeneous Kahler-Einstein metrics with edge singularities?"
+    expected_sources:
+      - "1105.5216"
+
+  - id: hashimoto_relative_uniform_models
+    question: "Where does the corpus discuss relative uniform K-stability over models implying existence of extremal metrics?"
+    expected_sources:
+      - "2506.02360"
+
+  - id: requested_donaldson_toric_stability_note
+    question: "Where does the corpus record the requested Donaldson scalar curvature and stability of toric varieties source?"
+    expected_sources:
+      - "corpus/my_notes/requested_non_arxiv_sources.md"
+
+  - id: chen_cheng_estimates
+    question: "Where does the corpus discuss Chen-Cheng cscK estimates?"
+    expected_sources:
+      - "1712.06697"
+      - "1801.00656"
+
+  - id: chen_cheng_general_automorphism
+    question: "Where does the corpus discuss constant scalar curvature Kahler metrics with general automorphism group?"
+    expected_sources:
+      - "1801.00656"
+      - "1801.05907"
+
+  - id: abreu_equation
+    question: "Where does the corpus discuss the Abreu equation?"
+    expected_sources:
+      - "dg-ga_9711014"
+      - "math_0407486"
+      - "0805.0128"
+
+  - id: donaldson_abreu_estimates
+    question: "Where does the corpus discuss Donaldson interior estimates for solutions of Abreu's equation?"
+    expected_sources:
+      - "math_0407486"
+
+  - id: toric_kahler_extremal_abreu
+    question: "Where does the corpus discuss Kahler geometry of toric varieties and extremal metrics?"
+    expected_sources:
+      - "dg-ga_9711014"
+      - "0805.0128"
+
+  - id: k_stability_csck
+    question: "Where does the corpus discuss K-stability of cscK manifolds?"
+    expected_sources:
+      - "0803.4095"
+      - "math_0412518"
+
+  - id: slope_stability
+    question: "Where does the corpus discuss lower bounds on the Calabi functional and slope stability?"
+    expected_sources:
+      - "math_0412518"
+
+  - id: cp1_polytope_one_conic
+    question: "Where do my notes discuss CP1 with moment polytope [-1,1] and one conic point?"
+    expected_sources:
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex"
+
+  - id: cp1_polytope_one_cusp
+    question: "Where do my notes discuss CP1 or a moment interval with one cusp point?"
+    expected_sources:
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_cusp_point.tex"
+
+  - id: cone_angle_beta_notes
+    question: "Where do my notes discuss cone angle beta and the Guillemin boundary term?"
+    expected_sources:
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex"
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex"
+
+  - id: cusp_alpha_beta_table
+    question: "Where do my notes discuss Poincare cusp parameters alpha and beta?"
+    expected_sources:
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex"
+
+  - id: toric_kenergy_dictionary
+    question: "Where do my notes give a dictionary between Kahler geometry and toric moment-polytope expressions?"
+    expected_sources:
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/kenergy_table.tex"
+
+  - id: symplectic_potential_toric_notes
+    question: "Where does the corpus discuss symplectic potentials in toric Kahler geometry?"
+    expected_sources:
+      - "2208.12493"
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex"
+
+  - id: log_k_stability_cone_angle
+    question: "Where does the corpus discuss log K-stability and cone angle beta?"
+    expected_sources:
+      - "1508.02640"
+
+  - id: cscK_cone_path
+    question: "Where does the corpus discuss deforming the cone angle in a cscK cone path?"
+    expected_sources:
+      - "1803.09506"
+
+  - id: negative_mixed_conic_cusp_chen_cheng
+    question: "Does the corpus prove a general Chen-Cheng theorem for mixed conic and cusp toric manifolds?"
+    expected_sources: []
+    negative: true
+
+  - id: negative_own_new_theorem
+    question: "Does the corpus contain a complete proof of my own new theorem?"
+    expected_sources: []
+    negative: true
+
+  - id: negative_floer_homology
+    question: "Where does this corpus establish a Floer homology spectral sequence for these metrics?"
+    expected_sources: []
+    negative: true

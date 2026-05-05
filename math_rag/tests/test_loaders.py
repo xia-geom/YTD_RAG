@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from math_rag.loaders import discover_files
+from math_rag.loaders import discover_files, load_corpus
 
 
 def test_discover_files_skips_pdf_when_sibling_tex_exists(tmp_path):
@@ -49,3 +49,32 @@ def test_discover_files_does_not_shadow_pdf_in_arxiv_governed_folders(tmp_path):
     # accidentally re-introducing it via the shadowing logic either.
     assert "corpus/arxiv/1234.5678/source/paper.tex" in discovered
     assert "corpus/arxiv/1234.5678/paper.pdf" not in discovered
+
+
+def test_agent_logs_markdown_ingests_with_agent_log_metadata(tmp_path):
+    codex_logs = tmp_path / "agent_logs" / "codex"
+    codex_logs.mkdir(parents=True)
+    (codex_logs / "2026-05-04-symbol-normalization.md").write_text(
+        "# Agent Log: Symbol normalization\n\nHits@1 dropped after metadata expansion.\n",
+        encoding="utf-8",
+    )
+
+    chunks, warnings = load_corpus(tmp_path / "agent_logs")
+
+    assert warnings == []
+    assert chunks
+    assert chunks[0].source_path.endswith("agent_logs/codex/2026-05-04-symbol-normalization.md")
+    assert chunks[0].metadata["source_format"] == "md"
+    assert chunks[0].metadata["source_kind"] == "agent_log"
+
+
+def test_regular_corpus_markdown_is_not_tagged_as_agent_log(tmp_path):
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    (corpus / "notes.md").write_text("# Notes\n\nMathematical note.\n", encoding="utf-8")
+
+    chunks, warnings = load_corpus(corpus)
+
+    assert warnings == []
+    assert chunks
+    assert "source_kind" not in chunks[0].metadata

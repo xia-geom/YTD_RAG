@@ -16,6 +16,7 @@ from .text_cleaning import extract_symbols
 
 
 PDF_SHADOWING_SUFFIXES = {".tex", ".md", ".markdown"}
+AGENT_LOG_DIR_NAME = "agent_logs"
 
 
 def discover_files(corpus_path: str | Path) -> list[Path]:
@@ -125,6 +126,7 @@ def load_file(path: str | Path, metadata: DocumentMetadata | None = None) -> lis
     else:
         chunks = []
     decorate_arxiv_chunks(file_path, chunks)
+    decorate_agent_log_chunks(file_path, chunks)
     return chunks
 
 
@@ -173,6 +175,17 @@ def decorate_arxiv_chunks(path: Path, chunks: list[Chunk]) -> None:
                 "pdf_url": metadata.get("pdf_url"),
             }
         )
+
+
+def is_agent_log_path(path: Path) -> bool:
+    return AGENT_LOG_DIR_NAME in path.parts
+
+
+def decorate_agent_log_chunks(path: Path, chunks: list[Chunk]) -> None:
+    if not is_agent_log_path(path):
+        return
+    for chunk in chunks:
+        chunk.metadata["source_kind"] = "agent_log"
 
 
 def load_corpus(

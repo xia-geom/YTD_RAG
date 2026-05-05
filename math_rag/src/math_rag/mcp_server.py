@@ -20,6 +20,7 @@ import json
 import os
 import sys
 import traceback
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
@@ -39,6 +40,8 @@ PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "math-rag"
 WRITE_TOOLS_ENV_FLAG = "MATH_RAG_MCP_ALLOW_WRITE_TOOLS"
 ROOT_ENV_VAR = "MATH_RAG_ROOT"
+PACKAGE_ROOT_ENV_VAR = "MATH_RAG_PACKAGE_ROOT"
+WORKSPACE_ROOT_ENV_VAR = "MATH_RAG_WORKSPACE_ROOT"
 INDEX_DIR_ENV_VAR = "MATH_RAG_INDEX_DIR"
 MAX_RESPONSE_BYTES = 256 * 1024  # 256 KiB safety cap on a single tool response
 
@@ -48,50 +51,109 @@ MAX_RESPONSE_BYTES = 256 * 1024  # 256 KiB safety cap on a single tool response
 # ---------------------------------------------------------------------------
 
 
-def _looks_like_project_root(path: Path) -> bool:
+@dataclass(frozen=True)
+class ResolvedRoots:
+    package_root: Path
+    workspace_root: Path
+
+
+def _looks_like_package_root(path: Path) -> bool:
+    return (path / "pyproject.toml").exists() and (path / "src" / "math_rag").exists()
+
+
+def _looks_like_workspace_root(path: Path) -> bool:
     return (
-        (path / "pyproject.toml").exists()
-        and (path / "corpus").exists()
-        and (path / "src" / "math_rag").exists()
+        (path / "corpus").exists()
+        or (path / "eval").exists()
+        or (path / DEFAULT_INDEX_DIR).exists()
+        or _looks_like_package_root(path / "math_rag")
     )
 
 
-def resolve_project_root() -> Path:
-    """Resolve the math_rag project root.
+def _module_package_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
-    Order:
-      1. ``MATH_RAG_ROOT`` environment variable, if set and valid.
-      2. The current working directory if it contains pyproject.toml,
-         corpus/, and src/math_rag/.
+
+def _resolve_existing_env_path(name: str) -> Path | None:
+    value = os.environ.get(name)
+    if not value:
+        return None
+    candidate = Path(value).expanduser().resolve()
+    if not candidate.exists():
+        raise FileNotFoundError(f"{name} points to {candidate}, which does not exist.")
+    return candidate
+
+
+def resolve_package_root() -> Path:
+    env_package_root = _resolve_existing_env_path(PACKAGE_ROOT_ENV_VAR)
+    if env_package_root:
+        if not _looks_like_package_root(env_package_root):
+            raise FileNotFoundError(
+                f"{PACKAGE_ROOT_ENV_VAR} points to {env_package_root}, but it does not contain "
+                "pyproject.toml and src/math_rag/."
+            )
+        return env_package_root
+
+    legacy_root = _resolve_existing_env_path(ROOT_ENV_VAR)
+    if legacy_root and _looks_like_package_root(legacy_root):
+        return legacy_root
+
+    cwd = Path.cwd().resolve()
+    candidates = [cwd, cwd / "math_rag", _module_package_root()]
+    for candidate in candidates:
+        if _looks_like_package_root(candidate):
+            return candidate.resolve()
+
+    raise FileNotFoundError(
+        "Could not locate the math_rag package root. "
+        f"Set {PACKAGE_ROOT_ENV_VAR}=/absolute/path/to/YTD_RAG/math_rag."
+    )
+
+
+def resolve_workspace_root(package_root: Path | None = None) -> Path:
+    package_root = package_root or resolve_package_root()
+
+    env_workspace_root = _resolve_existing_env_path(WORKSPACE_ROOT_ENV_VAR)
+    if env_workspace_root:
+        return env_workspace_root
+
+    legacy_root = _resolve_existing_env_path(ROOT_ENV_VAR)
+    if legacy_root:
+        if _looks_like_package_root(legacy_root) and _looks_like_workspace_root(legacy_root.parent):
+            return legacy_root.parent.resolve()
+        return legacy_root
+
+    candidates = [Path.cwd().resolve(), package_root.parent, package_root]
+    for candidate in candidates:
+        if _looks_like_workspace_root(candidate):
+            return candidate.resolve()
+    return package_root.resolve()
+
+
+def resolve_roots() -> ResolvedRoots:
+    package_root = resolve_package_root()
+    workspace_root = resolve_workspace_root(package_root)
+    return ResolvedRoots(package_root=package_root, workspace_root=workspace_root)
+
+
+def resolve_project_root() -> Path:
+    """Resolve the workspace root used for path validation.
+
+    ``MATH_RAG_ROOT`` is kept as a legacy alias. Prefer explicit
+    ``MATH_RAG_WORKSPACE_ROOT`` and ``MATH_RAG_PACKAGE_ROOT``.
 
     Raises:
         FileNotFoundError: with a clear message if neither method works.
     """
 
-    env_root = os.environ.get(ROOT_ENV_VAR)
-    if env_root:
-        candidate = Path(env_root).expanduser().resolve()
-        if not candidate.exists():
-            raise FileNotFoundError(
-                f"{ROOT_ENV_VAR} points to {candidate}, which does not exist."
-            )
-        return candidate
-    cwd = Path.cwd().resolve()
-    if _looks_like_project_root(cwd):
-        return cwd
-    raise FileNotFoundError(
-        "Could not locate the math_rag project root. "
-        f"Set {ROOT_ENV_VAR}=/absolute/path/to/YTD_RAG/math_rag, "
-        "or run the server from a directory that contains pyproject.toml, "
-        "corpus/, and src/math_rag/."
-    )
+    return resolve_roots().workspace_root
 
 
-def _resolve_index_dir(root: Path) -> str:
+def _resolve_index_dir(workspace_root: Path) -> str:
     override = os.environ.get(INDEX_DIR_ENV_VAR)
     if override:
         return override
-    return str(root / DEFAULT_INDEX_DIR)
+    return str(workspace_root / DEFAULT_INDEX_DIR)
 
 
 def _write_tools_enabled() -> bool:
@@ -208,8 +270,8 @@ WRITE_TOOLS: list[dict[str, Any]] = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "path": {"type": "string", "description": "Corpus path relative to the project root.", "default": "corpus/"},
-                "metadata": {"type": "string", "description": "Optional metadata YAML path."},
+                "path": {"type": "string", "description": "Corpus path relative to the workspace root.", "default": "corpus/"},
+                "metadata": {"type": "string", "description": "Optional metadata YAML path relative to the workspace root."},
             },
         },
     },
@@ -255,14 +317,14 @@ def _safe_path_under_root(path: str, root: Path) -> Path:
     raw = Path(path)
     if raw.is_absolute():
         raise ToolError(
-            f"Refusing absolute path argument {path!r}; paths must be relative to the project root."
+            f"Refusing absolute path argument {path!r}; paths must be relative to the workspace root."
         )
     candidate = (root / raw).resolve()
     try:
         candidate.relative_to(root.resolve())
     except ValueError as exc:
         raise ToolError(
-            f"Refusing to operate on path outside the project root: {candidate}"
+            f"Refusing to operate on path outside the workspace root: {candidate}"
         ) from exc
     return candidate
 
@@ -447,14 +509,15 @@ def _send(message: dict[str, Any], stream=sys.stdout) -> None:
 
 def serve_stdio(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr) -> int:
     try:
-        root = resolve_project_root()
+        roots = resolve_roots()
     except FileNotFoundError as exc:
         stderr.write(f"math_rag MCP server: {exc}\n")
         stderr.flush()
         return 2
-    index_dir = _resolve_index_dir(root)
+    index_dir = _resolve_index_dir(roots.workspace_root)
     stderr.write(
-        f"math_rag MCP server v{__version__} starting; root={root}; index_dir={index_dir}; "
+        f"math_rag MCP server v{__version__} starting; package_root={roots.package_root}; "
+        f"workspace_root={roots.workspace_root}; index_dir={index_dir}; "
         f"write_tools_enabled={_write_tools_enabled()}\n"
     )
     stderr.flush()
@@ -471,7 +534,7 @@ def serve_stdio(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr) -> int:
         if not isinstance(request, dict):
             _send(_make_error(-32600, "Invalid Request: expected JSON object"), stream=stdout)
             continue
-        response = handle_request(request, index_dir=index_dir, root=root)
+        response = handle_request(request, index_dir=index_dir, root=roots.workspace_root)
         if response is not None:
             _send(response, stream=stdout)
     return 0
