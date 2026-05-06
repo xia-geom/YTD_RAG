@@ -9,6 +9,7 @@ from typing import Any
 
 from .config import SUPPORTED_SUFFIXES
 from .latex_chunker import chunk_latex_file, make_chunk_id
+from .metadata_enrichment_cache import MetadataEnrichmentCache
 from .models import Chunk, DocumentMetadata, metadata_from_dict
 from .paper_store import load_yaml_file
 from .pdf_loader import load_pdf_chunks
@@ -191,14 +192,22 @@ def decorate_agent_log_chunks(path: Path, chunks: list[Chunk]) -> None:
 def load_corpus(
     corpus_path: str | Path,
     metadata_path: str | Path | None = None,
+    *,
+    enrich_metadata: bool = False,
+    enrichment_cache_dir: str | Path | None = None,
+    refresh_enrichment_cache: bool = False,
 ) -> tuple[list[Chunk], list[str]]:
     metadata_map = load_metadata_map(metadata_path)
+    enrichment_cache = MetadataEnrichmentCache(enrichment_cache_dir) if enrich_metadata and enrichment_cache_dir else None
     chunks: list[Chunk] = []
     warnings: list[str] = []
     for path in discover_files(corpus_path):
         metadata = metadata_for_path(path, metadata_map)
         try:
-            chunks.extend(load_file(path, metadata))
+            file_chunks = load_file(path, metadata)
+            if enrichment_cache is not None:
+                enrichment_cache.apply(path, metadata, file_chunks, refresh=refresh_enrichment_cache)
+            chunks.extend(file_chunks)
         except Exception as exc:
             warnings.append(f"Skipped {path}: {exc}")
     return chunks, warnings

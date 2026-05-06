@@ -41,8 +41,20 @@ except Exception:  # pragma: no cover - main path in the execution sandbox
     console = _PlainConsole()
 
 
-def run_ingest(corpus_path: str, index_dir: str = DEFAULT_INDEX_DIR, metadata: str | None = None) -> int:
-    result = ingest_path(corpus_path, index_dir=index_dir, metadata=metadata)
+def run_ingest(
+    corpus_path: str,
+    index_dir: str = DEFAULT_INDEX_DIR,
+    metadata: str | None = None,
+    enrich_metadata: bool = False,
+    refresh_enrichment_cache: bool = False,
+) -> int:
+    result = ingest_path(
+        corpus_path,
+        index_dir=index_dir,
+        metadata=metadata,
+        enrich_metadata=enrich_metadata,
+        refresh_enrichment_cache=refresh_enrichment_cache,
+    )
     if result["chunk_count"]:
         console.print(f"Ingested {result['chunk_count']} chunks from {corpus_path}")
         console.print(f"Index written to {result['index_path']}")
@@ -299,8 +311,10 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
         corpus_path: str,
         index_dir: str = typer.Option(DEFAULT_INDEX_DIR, help="Local index directory."),
         metadata: str | None = typer.Option(None, help="Optional metadata YAML file."),
+        enrich_metadata: bool = typer.Option(False, help="Add cached metadata enrichment to deterministic chunks."),
+        refresh_enrichment_cache: bool = typer.Option(False, help="Recompute metadata enrichment cache."),
     ) -> None:
-        raise typer.Exit(run_ingest(corpus_path, index_dir, metadata))
+        raise typer.Exit(run_ingest(corpus_path, index_dir, metadata, enrich_metadata, refresh_enrichment_cache))
 
     @app.command()
     def search(
@@ -399,6 +413,8 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     ingest_parser.add_argument("corpus_path")
     ingest_parser.add_argument("--index-dir", default=DEFAULT_INDEX_DIR)
     ingest_parser.add_argument("--metadata", default=None)
+    ingest_parser.add_argument("--enrich-metadata", action="store_true")
+    ingest_parser.add_argument("--refresh-enrichment-cache", action="store_true")
 
     search_parser = subparsers.add_parser("search")
     search_parser.add_argument("query")
@@ -479,7 +495,13 @@ def _argparse_main(argv: list[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
     if args.command == "ingest":
-        return run_ingest(args.corpus_path, args.index_dir, args.metadata)
+        return run_ingest(
+            args.corpus_path,
+            args.index_dir,
+            args.metadata,
+            args.enrich_metadata,
+            args.refresh_enrichment_cache,
+        )
     if args.command == "search":
         return run_search(args.query, args.index_dir, args.mode, args.top_k)
     if args.command == "ask":

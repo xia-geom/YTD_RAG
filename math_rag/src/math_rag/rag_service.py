@@ -18,6 +18,7 @@ from .config import DEFAULT_INDEX_DIR, load_settings
 from .hybrid_search import search_chunks
 from .index_store import IndexStore
 from .loaders import load_corpus
+from .metadata_enrichment_cache import ENRICHMENT_CACHE_DIRNAME
 from .models import Chunk, SearchResult
 from .symbol_normalization import normalize_search_text
 from .text_cleaning import make_snippet, salient_terms
@@ -317,11 +318,20 @@ def ingest_path(
     *,
     index_dir: str = DEFAULT_INDEX_DIR,
     metadata: str | None = None,
+    enrich_metadata: bool = False,
+    refresh_enrichment_cache: bool = False,
 ) -> dict[str, Any]:
     """Re-ingest a corpus path into the local index."""
 
     corpus_path = Path(path)
-    chunks, warnings = load_corpus(corpus_path, metadata)
+    enrichment_cache_dir = Path(index_dir) / ENRICHMENT_CACHE_DIRNAME
+    chunks, warnings = load_corpus(
+        corpus_path,
+        metadata,
+        enrich_metadata=enrich_metadata,
+        enrichment_cache_dir=enrichment_cache_dir,
+        refresh_enrichment_cache=refresh_enrichment_cache,
+    )
     store = IndexStore(index_dir)
     store.save_chunks(chunks)
     return {
