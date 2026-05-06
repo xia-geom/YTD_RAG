@@ -2,12 +2,44 @@
 
 from __future__ import annotations
 
+import re
+
 from .keyword_search import KeywordSearch
 from .models import Chunk, SearchResult
+from .symbol_normalization import normalize_search_text
 from .vector_search import VectorSearch
 
 
 CITATION_CONTEXT_DEMOTION = 0.4
+NAVIGATION_NOTE_DEMOTION = 0.35
+ENGINEERING_MEMORY_DEMOTION = 0.6
+BIBLIOGRAPHY_POINTER_DEMOTION = 0.75
+PRIMARY_PAPER_BOOST = 1.05
+PROJECT_NOTE_QUERY_BOOST = 1.2
+SOURCE_DIVERSITY_MIN_RATIO = 0.8
+
+NAVIGATION_QUERY_PATTERNS = (
+    re.compile(r"\b(?:which|what)\s+papers\b"),
+    re.compile(r"\b(?:which|what)\s+sources\b"),
+    re.compile(r"\bpaper\s+list\b"),
+    re.compile(r"\bsource\s+list\b"),
+    re.compile(r"\bbibliograph(?:y|ic)\b"),
+    re.compile(r"\breading\s+map\b"),
+    re.compile(r"\bproject\s+paper\s+index\b"),
+    re.compile(r"\bexact\s+papers\b"),
+    re.compile(r"\brecord(?:s|ed)?\s+the\s+requested\b"),
+)
+PROJECT_NOTE_QUERY_PATTERNS = (
+    re.compile(r"\bmy\s+notes\b"),
+    re.compile(r"\btable\b"),
+    re.compile(r"\bdictionary\b"),
+    re.compile(r"\bcp\s*(?:\^\s*\{?\s*)?1\}?\b"),
+    re.compile(r"\bmoment\s+polytope\b"),
+    re.compile(r"\bmoment\s+interval\b"),
+    re.compile(r"\bpolytope\s*\[\s*-?1\s*,\s*1\s*\]"),
+    re.compile(r"\bnotation\b"),
+)
+ARXIV_SOURCE_RE = re.compile(r"(?:^|/)corpus/arxiv/([^/]+)(?:/|$)")
 
 
 class HybridSearch:
@@ -77,10 +109,20 @@ class HybridSearch:
                 if result.chunk.chunk_type == "citation_context":
                     result.score *= self.citation_context_demotion
 
+        self._apply_source_role_weights(merged.values(), query)
         ranked = sorted(merged.values(), key=lambda result: (result.score, result.keyword_score), reverse=True)
-        for rank, result in enumerate(ranked[:top_k], start=1):
+        ranked = _diversify_by_source(ranked, top_k)
+        for rank, result in enumerate(ranked, start=1):
             result.rank = rank
-        return ranked[:top_k]
+        return ranked
+
+    @staticmethod
+    def _apply_source_role_weights(results, query: str) -> None:
+        navigation_query = _is_navigation_query(query)
+        project_note_query = _is_project_note_query(query)
+        for result in results:
+            multiplier = _source_role_multiplier(result.chunk, navigation_query, project_note_query)
+            result.score *= multiplier
 
 
 def search_chunks(
@@ -98,3 +140,112 @@ def search_chunks(
     if mode == "hybrid":
         return HybridSearch(chunks, vector_search=VectorSearch(chunks, backend=vector_backend)).search(query, top_k=top_k)
     raise ValueError(f"Unknown search mode {mode!r}; expected keyword, vector, or hybrid.")
+
+
+def _diversify_by_source(
+    ranked: list[SearchResult],
+    top_k: int,
+    min_score_ratio: float = SOURCE_DIVERSITY_MIN_RATIO,
+) -> list[SearchResult]:
+    """Prefer source diversity when the alternative is competitively scored."""
+
+    if top_k <= 0:
+        return []
+    remaining = list(ranked)
+    selected: list[SearchResult] = []
+    seen_sources: set[str] = set()
+
+    while remaining and len(selected) < top_k:
+        candidate = remaining.pop(0)
+        candidate_source = _source_key(candidate.chunk)
+        if candidate_source not in seen_sources:
+            selected.append(candidate)
+            seen_sources.add(candidate_source)
+            continue
+
+        alternative_index = _find_diverse_alternative(
+            remaining,
+            seen_sources,
+            minimum_score=candidate.score * min_score_ratio,
+        )
+        if alternative_index is None:
+            selected.append(candidate)
+            continue
+
+        alternative = remaining.pop(alternative_index)
+        selected.append(alternative)
+        seen_sources.add(_source_key(alternative.chunk))
+        remaining.insert(0, candidate)
+    return selected
+
+
+def _find_diverse_alternative(
+    ranked: list[SearchResult],
+    seen_sources: set[str],
+    minimum_score: float,
+) -> int | None:
+    for index, result in enumerate(ranked):
+        if result.score < minimum_score:
+            return None
+        if _source_key(result.chunk) not in seen_sources:
+            return index
+    return None
+
+
+def _source_role_multiplier(chunk: Chunk, navigation_query: bool, project_note_query: bool) -> float:
+    role = _source_role(chunk)
+    if role == "navigation_note":
+        return 1.0 if navigation_query else NAVIGATION_NOTE_DEMOTION
+    if role == "bibliography_pointer":
+        return 1.0 if navigation_query else BIBLIOGRAPHY_POINTER_DEMOTION
+    if role == "engineering_memory":
+        return ENGINEERING_MEMORY_DEMOTION
+    if role == "primary_paper":
+        return PRIMARY_PAPER_BOOST
+    if role == "project_note" and project_note_query:
+        return PROJECT_NOTE_QUERY_BOOST
+    return 1.0
+
+
+def _source_role(chunk: Chunk) -> str | None:
+    metadata = chunk.metadata if isinstance(chunk.metadata, dict) else {}
+    enrichment = metadata.get("enrichment")
+    if isinstance(enrichment, dict):
+        role = enrichment.get("source_role")
+        if isinstance(role, str) and role:
+            return role
+        if enrichment.get("is_navigation_note") is True:
+            return "navigation_note"
+
+    source_path = chunk.source_path.replace("\\", "/")
+    if "agent_logs/" in source_path:
+        return "engineering_memory"
+    if source_path.endswith("corpus/my_notes/project_paper_index.md") or source_path == "corpus/my_notes/project_paper_index.md":
+        return "navigation_note"
+    if source_path.endswith("corpus/my_notes/requested_non_arxiv_sources.md") or source_path == (
+        "corpus/my_notes/requested_non_arxiv_sources.md"
+    ):
+        return "bibliography_pointer"
+    if "corpus/arxiv/" in source_path:
+        return "primary_paper"
+    if "corpus/my_notes/" in source_path:
+        return "project_note"
+    return None
+
+
+def _source_key(chunk: Chunk) -> str:
+    source_path = chunk.source_path.replace("\\", "/")
+    match = ARXIV_SOURCE_RE.search(source_path)
+    if match:
+        return f"arxiv:{match.group(1)}"
+    return source_path
+
+
+def _is_navigation_query(query: str) -> bool:
+    normalized = normalize_search_text(query)
+    return any(pattern.search(normalized) for pattern in NAVIGATION_QUERY_PATTERNS)
+
+
+def _is_project_note_query(query: str) -> bool:
+    normalized = normalize_search_text(query)
+    return any(pattern.search(normalized) for pattern in PROJECT_NOTE_QUERY_PATTERNS)

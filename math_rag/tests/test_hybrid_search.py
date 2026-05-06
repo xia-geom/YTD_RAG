@@ -16,6 +16,18 @@ class WeakVectorSearch:
         ][:top_k]
 
 
+class FixedSearch:
+    def __init__(self, results):
+        self.results = results
+
+    def search(self, query, top_k=10):
+        return self.results[:top_k]
+
+
+def _result(chunk, score):
+    return SearchResult(chunk=chunk, score=score, keyword_score=score)
+
+
 def test_hybrid_search_keeps_exact_keyword_hits_above_weak_vector_similarity():
     chunks = [
         Chunk(
@@ -96,6 +108,140 @@ def test_hybrid_search_demotion_can_be_disabled():
     ]
     results = HybridSearch(chunks, citation_context_demotion=1.0).search("Chen-Cheng cscK", top_k=2)
     assert {r.chunk.chunk_id for r in results} == {"bib", "text"}
+
+
+def test_hybrid_search_demotes_navigation_notes_for_mathematical_queries():
+    navigation_note = Chunk(
+        chunk_id="paper-index",
+        source_path="corpus/my_notes/project_paper_index.md",
+        chunk_type="text",
+        content="Hisamoto discusses toric coercivity and uniform K-stability.",
+    )
+    primary_paper = Chunk(
+        chunk_id="primary-paper",
+        source_path="corpus/arxiv/1610.07998/source/source.tex",
+        chunk_type="theorem",
+        content="The toric coercivity theorem relates uniform K-stability to K-energy properness.",
+    )
+    keyword = FixedSearch([_result(navigation_note, 1.0), _result(primary_paper, 0.8)])
+
+    results = HybridSearch(
+        [navigation_note, primary_paper],
+        keyword_search=keyword,
+        vector_search=FixedSearch([]),
+    ).search("Where does the corpus discuss toric coercivity?", top_k=2)
+
+    assert results[0].chunk.chunk_id == "primary-paper"
+
+
+def test_hybrid_search_allows_navigation_notes_for_paper_list_queries():
+    navigation_note = Chunk(
+        chunk_id="paper-index",
+        source_path="corpus/my_notes/project_paper_index.md",
+        chunk_type="text",
+        content="Hisamoto discusses toric coercivity and uniform K-stability.",
+    )
+    primary_paper = Chunk(
+        chunk_id="primary-paper",
+        source_path="corpus/arxiv/1610.07998/source/source.tex",
+        chunk_type="theorem",
+        content="The toric coercivity theorem relates uniform K-stability to K-energy properness.",
+    )
+    keyword = FixedSearch([_result(navigation_note, 1.0), _result(primary_paper, 0.8)])
+
+    results = HybridSearch(
+        [navigation_note, primary_paper],
+        keyword_search=keyword,
+        vector_search=FixedSearch([]),
+    ).search("Which papers discuss toric coercivity?", top_k=2)
+
+    assert results[0].chunk.chunk_id == "paper-index"
+
+
+def test_hybrid_search_boosts_project_notes_for_notes_queries():
+    primary_paper = Chunk(
+        chunk_id="primary-paper",
+        source_path="corpus/arxiv/2208.12493/source/source.tex",
+        chunk_type="text",
+        content="Toric Kahler geometry uses moment polytopes and symplectic potentials.",
+    )
+    project_note = Chunk(
+        chunk_id="project-note",
+        source_path="corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/kenergy_table.tex",
+        chunk_type="text",
+        content="A dictionary between Kahler geometry and toric moment-polytope expressions.",
+    )
+    keyword = FixedSearch([_result(primary_paper, 1.0), _result(project_note, 0.9)])
+
+    results = HybridSearch(
+        [primary_paper, project_note],
+        keyword_search=keyword,
+        vector_search=FixedSearch([]),
+    ).search("Where do my notes give a dictionary for toric geometry?", top_k=2)
+
+    assert results[0].chunk.chunk_id == "project-note"
+
+
+def test_hybrid_search_demotes_engineering_memory_for_math_queries():
+    engineering_log = Chunk(
+        chunk_id="agent-log",
+        source_path="agent_logs/codex/2026-05-06-retrieval-precision-audit.md",
+        chunk_type="text",
+        content="The eval report mentions Mabuchi energy retrieval.",
+    )
+    primary_paper = Chunk(
+        chunk_id="primary-paper",
+        source_path="corpus/arxiv/1510.01260/source/source.tex",
+        chunk_type="text",
+        content="The extended K-energy is convex on finite energy spaces.",
+    )
+    keyword = FixedSearch([_result(engineering_log, 1.0), _result(primary_paper, 0.8)])
+
+    results = HybridSearch(
+        [engineering_log, primary_paper],
+        keyword_search=keyword,
+        vector_search=FixedSearch([]),
+    ).search("Where does the corpus discuss extended K-energy convexity?", top_k=2)
+
+    assert results[0].chunk.chunk_id == "primary-paper"
+
+
+def test_source_diversity_prefers_competitive_new_sources():
+    source_a_first = Chunk(chunk_id="a1", source_path="corpus/arxiv/1111.1111/source/main.tex", content="Mabuchi")
+    source_a_second = Chunk(chunk_id="a2", source_path="corpus/arxiv/1111.1111/source/appendix.tex", content="Mabuchi")
+    source_b = Chunk(chunk_id="b1", source_path="corpus/arxiv/2222.2222/source/main.tex", content="Mabuchi")
+    keyword = FixedSearch([
+        _result(source_a_first, 10.0),
+        _result(source_a_second, 9.0),
+        _result(source_b, 8.5),
+    ])
+
+    results = HybridSearch(
+        [source_a_first, source_a_second, source_b],
+        keyword_search=keyword,
+        vector_search=FixedSearch([]),
+    ).search("Mabuchi energy", top_k=2)
+
+    assert [result.chunk.chunk_id for result in results] == ["a1", "b1"]
+
+
+def test_source_diversity_does_not_promote_very_weak_new_sources():
+    source_a_first = Chunk(chunk_id="a1", source_path="corpus/arxiv/1111.1111/source/main.tex", content="Mabuchi")
+    source_a_second = Chunk(chunk_id="a2", source_path="corpus/arxiv/1111.1111/source/appendix.tex", content="Mabuchi")
+    source_b = Chunk(chunk_id="b1", source_path="corpus/arxiv/2222.2222/source/main.tex", content="Mabuchi")
+    keyword = FixedSearch([
+        _result(source_a_first, 10.0),
+        _result(source_a_second, 9.0),
+        _result(source_b, 0.1),
+    ])
+
+    results = HybridSearch(
+        [source_a_first, source_a_second, source_b],
+        keyword_search=keyword,
+        vector_search=FixedSearch([]),
+    ).search("Mabuchi energy", top_k=2)
+
+    assert [result.chunk.chunk_id for result in results] == ["a1", "a2"]
 
 
 def test_empty_or_weak_retrieval_does_not_hallucinate_answer():
