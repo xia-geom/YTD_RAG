@@ -291,7 +291,7 @@ Before changing ranking, embeddings, or answer-generation layers, validate wheth
 From `WORKSPACE_ROOT`:
 
 ```bash
-math_rag/.venv/bin/python -m math_rag.cli eval eval/toric_gold_questions.yaml
+math_rag/.venv/bin/python -m math_rag.cli eval eval/toric_core_gold_questions.yaml
 ```
 
 Gold files use this shape:

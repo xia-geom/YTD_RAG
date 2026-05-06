@@ -1,3 +1,7 @@
+# Original eval filename kept for backward compatibility.
+# For stable ranking/regression comparisons, prefer:
+#   eval/toric_core_gold_questions.yaml
+
 questions:
   - id: conical_approx_poincare_csck
     question: "Where does the corpus discuss conical approximation of Poincare type cscK metrics?"

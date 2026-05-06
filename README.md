@@ -16,7 +16,7 @@ math_rag/.venv/bin/python -m math_rag.cli ingest corpus/
 math_rag/.venv/bin/python -m math_rag.cli stats
 math_rag/.venv/bin/python -m math_rag.cli search "Mabuchi energy convexity"
 math_rag/.venv/bin/python -m math_rag.cli ask "What does the corpus say about Mabuchi energy convexity?"
-math_rag/.venv/bin/python -m math_rag.cli eval eval/toric_gold_questions.yaml
+math_rag/.venv/bin/python -m math_rag.cli eval eval/toric_core_gold_questions.yaml
 ```
 
 ## Equivalent Commands From Package Root
@@ -29,7 +29,7 @@ python3 -m math_rag.cli ingest ../corpus/
 python3 -m math_rag.cli stats
 python3 -m math_rag.cli search "Mabuchi energy convexity"
 python3 -m math_rag.cli ask "What does the corpus say about Mabuchi energy convexity?"
-python3 -m math_rag.cli eval ../eval/toric_gold_questions.yaml
+python3 -m math_rag.cli eval ../eval/toric_core_gold_questions.yaml
 ```
 
 The package documentation lives at `math_rag/README.md`.
