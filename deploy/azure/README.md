@@ -14,15 +14,16 @@ References:
 ```text
 ChatGPT / MCP client
       |
-      |  OAuth token / API key
+      |  OAuth / Bearer token
       v
-Remote math_rag MCP server
+Azure API Management
+      |
+      |  validate-jwt or validate-azure-ad-token
+      v
+Azure Container App running math_rag.remote_mcp_server
       |
       v
 Mounted read-only .math_rag_index
-      |
-      v
-Azure Container Apps / other Azure host
 ```
 
 The remote server is a read-only wrapper over an already-built local index. Ingestion remains local.
@@ -87,9 +88,30 @@ Do not bake private corpus data or the private index into a public image. For Az
 
 Treat indexed content as private research data. ChatGPT can read whatever the remote server exposes from the mounted index.
 
-Do not connect ChatGPT to this server until HTTPS and authentication are configured. OpenAI recommends OAuth for protecting private MCP data integrations. For Azure, put the container behind an authentication layer such as an OAuth-capable gateway, API Management policy, reverse proxy, or equivalent Azure-fronted auth design.
+Do not connect ChatGPT to this server until HTTPS and authentication are configured. OpenAI recommends OAuth for protecting private MCP data integrations.
+
+Preferred architecture: put Azure API Management in front of Azure Container Apps and use Microsoft Entra ID as the OAuth/JWT issuer. API Management should validate incoming bearer tokens with `validate-jwt` or `validate-azure-ad-token`, enforce the expected issuer, audience, scopes/claims, and forward only authenticated traffic to the Container App.
+
+Container Apps built-in authentication is a fallback, not the default. It may be useful for a small private pilot, but API Management gives clearer bearer-token validation, gateway policy, logging, and rate-limit controls for a remote MCP endpoint.
 
 This V1 prep does not implement OAuth inside `math_rag`; it documents the requirement and keeps the server read-only.
+
+Avoid custom OAuth inside `math_rag` unless Azure-fronted authentication proves impossible. Keeping OAuth at the Azure boundary keeps the Python RAG server small, read-only, and easier to audit.
+
+Pre-deployment checklist:
+
+- confirm the ChatGPT connector/app auth mode available to the workspace;
+- confirm the connector can use Entra OAuth endpoints and send `Authorization: Bearer ...` to the MCP endpoint;
+- choose the MCP transport path, usually Streamable HTTP at `/mcp/`, and test API Management compatibility before production;
+- design a private Entra app registration with explicit tenant, redirect URIs, scopes/audience, and restricted users/groups;
+- define the API Management token validation policy with issuer, audience, required scopes/claims, expiration, and signed-token checks;
+- prevent direct Container App ingress from bypassing API Management;
+- mount `.math_rag_index` read-only from private storage;
+- keep `corpus/`, `.math_rag_index/`, PDFs, `.env`, and secrets out of the image;
+- keep `MATH_RAG_MCP_ALLOW_WRITE_TOOLS=false` and `MATH_RAG_REMOTE_MCP_READ_ONLY=true`;
+- set `MATH_RAG_REMOTE_PUBLIC_BASE_URL` to the authenticated API Management URL;
+- define logging policy so query text and returned snippets are not retained more broadly than intended;
+- use a private test index first, not unpublished research content.
 
 ## Azure Container Apps Notes
 
