@@ -5,6 +5,7 @@
 .mypy_cache/
 __pycache__/
 *.py[cod]
+*.pdf
 
 # Large/local research data
 corpus/

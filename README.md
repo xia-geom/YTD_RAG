@@ -19,6 +19,13 @@ math_rag/.venv/bin/python -m math_rag.cli ask "What does the corpus say about Ma
 math_rag/.venv/bin/python -m math_rag.cli eval eval/toric_core_gold_questions.yaml
 ```
 
+Optional cached metadata enrichment:
+
+```bash
+math_rag/.venv/bin/python -m math_rag.cli ingest corpus/ --enrich-metadata
+math_rag/.venv/bin/python -m math_rag.cli export-enrichment-batch corpus/ --output /tmp/enrichment_batch.jsonl
+```
+
 ## Equivalent Commands From Package Root
 
 ```bash
@@ -33,6 +40,36 @@ python3 -m math_rag.cli eval ../eval/toric_core_gold_questions.yaml
 ```
 
 The package documentation lives at `math_rag/README.md`.
+
+## Repository Hygiene
+
+Use `YTD_RAG/` as the project root for Git, corpus operations, and source-level evals. The Python package lives under `math_rag/`.
+
+Run package tests from the outer root:
+
+```bash
+math_rag/.venv/bin/python -m pytest math_rag/tests
+```
+
+Do not commit generated or private files:
+
+- `corpus/arxiv/`
+- `.math_rag_index/`
+- `.math_rag_agent_logs_index/`
+- `math_rag/.venv/`
+- `.env`
+- PDFs
+- caches, build outputs, and secrets
+
+The MCP server is read-only by default. Keep remote MCP deployments read-only unless write tools are explicitly needed and reviewed.
+
+## Remote MCP Preparation
+
+The local stdio MCP server is for Codex and Claude Code. ChatGPT custom MCP connectors need an internet-reachable remote server.
+
+Azure preparation artifacts live under `deploy/azure/`. They document a read-only remote MCP server that exposes only ChatGPT-compatible `search` and `fetch` tools over an already-built `.math_rag_index`.
+
+Do not deploy before configuring HTTPS and authentication. Treat the mounted index as private research data: ChatGPT can read whatever the remote server exposes.
 
 ## Agent Logs Workflow
 

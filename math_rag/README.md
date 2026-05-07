@@ -114,6 +114,32 @@ python3 -m math_rag.cli stats
 
 The default index is local and written to `.math_rag_index/index.json` relative to the current working directory unless `MATH_RAG_INDEX_DIR` or `--index-dir` is set.
 
+## Cached Metadata Enrichment
+
+Metadata enrichment is opt-in and never changes chunk boundaries, chunk ids, source content, chunk types, or line spans. It only adds search-oriented fields under `chunk.metadata["enrichment"]`.
+
+Deterministic enrichment:
+
+```bash
+# From WORKSPACE_ROOT
+math_rag/.venv/bin/python -m math_rag.cli ingest corpus/ --enrich-metadata
+```
+
+Offline agent-assisted enrichment:
+
+```bash
+# Export deterministic chunks for a coding agent or local model to summarize.
+math_rag/.venv/bin/python -m math_rag.cli export-enrichment-batch corpus/ --output /tmp/enrichment_batch.jsonl
+
+# Re-ingest with local precomputed JSONL metadata.
+math_rag/.venv/bin/python -m math_rag.cli ingest corpus/ \
+  --enrich-metadata \
+  --enrichment-backend agent_json_v1 \
+  --agent-enrichment-jsonl /tmp/enrichment.jsonl
+```
+
+`agent_json_v1` uses only a local JSONL file. It does not call a model API. Invalid or mismatched agent records are ignored with warnings and deterministic metadata is used as fallback.
+
 ## Search And Ask
 
 Hybrid search is the default because mathematical retrieval needs exact names/symbols and sparse similarity:
@@ -283,6 +309,41 @@ Security limits:
 - arXiv discovery/download tools are not exposed through MCP.
 - Tool responses are capped in size; use `rag_get_chunk` for a specific retrieved chunk.
 - Source filters are substrings used against indexed source paths, not shell commands.
+
+### Remote MCP For ChatGPT
+
+The local `math_rag.mcp_server` entrypoint above is a stdio server for local tools such as Codex and Claude Code. ChatGPT custom MCP connectors require a remote HTTP MCP endpoint.
+
+`math_rag` includes a separate remote read-only entrypoint:
+
+```bash
+python -m math_rag.remote_mcp_server
+```
+
+Install the optional remote dependencies first:
+
+```bash
+python3 -m pip install -e '.[remote-mcp]'
+```
+
+The remote server exposes only two tools:
+
+- `search(query: str)`: search the existing index and return JSON text with `results`.
+- `fetch(id: str)`: fetch one indexed chunk by id and return JSON text.
+
+It does not expose `rag_ingest`, downloader/discovery tools, shell tools, arbitrary file reads, or write tools.
+
+Required runtime settings:
+
+```bash
+export MATH_RAG_INDEX_DIR=/data/.math_rag_index
+export MATH_RAG_REMOTE_MCP_READ_ONLY=true
+export MATH_RAG_REMOTE_PUBLIC_BASE_URL=https://your-mcp-host.example.com
+```
+
+The remote server refuses startup if `MATH_RAG_MCP_ALLOW_WRITE_TOOLS=true` or `MATH_RAG_REMOTE_MCP_READ_ONLY=false`.
+
+For Azure preparation, see `deploy/azure/README.md`. The prepared target is Azure Container Apps with an already-built `.math_rag_index` mounted at runtime. Do not bake private `corpus/` or `.math_rag_index/` into public images, and do not connect ChatGPT until HTTPS and authentication are configured. Indexed content is private data once exposed remotely.
 
 ## Evaluation
 
