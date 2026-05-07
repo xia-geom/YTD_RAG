@@ -1,0 +1,26 @@
+.git/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# Private/generated research data. Do not send these as Docker build context.
+corpus/
+.math_rag_index/
+.math_rag_agent_logs_index/
+math_rag/.math_rag_index/
+math_rag/.git.backup-pre-outer/
+
+# Local environments and secrets.
+.env
+.env.*
+!.env.example
+math_rag/.venv/
+**/__pycache__/
+*.pyc
+
+# Build outputs and heavy documents.
+build/
+dist/
+*.egg-info/
+*.pdf
