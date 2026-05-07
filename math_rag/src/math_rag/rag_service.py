@@ -9,6 +9,7 @@ Every function in this module returns plain JSON-serialisable dictionaries.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -18,6 +19,7 @@ from .config import DEFAULT_INDEX_DIR, load_settings
 from .hybrid_search import search_chunks
 from .index_store import IndexStore
 from .loaders import load_corpus
+from .metadata_enrichment import DETERMINISTIC_ENRICHMENT_BACKEND, enrichment_batch_record
 from .metadata_enrichment_cache import ENRICHMENT_CACHE_DIRNAME
 from .models import Chunk, SearchResult
 from .symbol_normalization import normalize_search_text
@@ -320,6 +322,8 @@ def ingest_path(
     metadata: str | None = None,
     enrich_metadata: bool = False,
     refresh_enrichment_cache: bool = False,
+    enrichment_backend: str = DETERMINISTIC_ENRICHMENT_BACKEND,
+    agent_enrichment_jsonl: str | None = None,
 ) -> dict[str, Any]:
     """Re-ingest a corpus path into the local index."""
 
@@ -331,12 +335,38 @@ def ingest_path(
         enrich_metadata=enrich_metadata,
         enrichment_cache_dir=enrichment_cache_dir,
         refresh_enrichment_cache=refresh_enrichment_cache,
+        enrichment_backend=enrichment_backend,
+        agent_enrichment_jsonl=agent_enrichment_jsonl,
     )
     store = IndexStore(index_dir)
     store.save_chunks(chunks)
     return {
         "corpus_path": str(corpus_path),
         "index_path": str(store.index_path),
+        "chunk_count": len(chunks),
+        "warnings": list(warnings),
+    }
+
+
+def export_enrichment_batch(
+    path: str = "corpus/",
+    *,
+    output: str,
+    metadata: str | None = None,
+    max_content_chars: int = 4000,
+) -> dict[str, Any]:
+    """Export deterministic chunks as JSONL input for offline agent enrichment."""
+
+    chunks, warnings = load_corpus(path, metadata)
+    output_path = Path(output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as handle:
+        for chunk in chunks:
+            record = enrichment_batch_record(chunk, max_content_chars=max_content_chars)
+            handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+    return {
+        "corpus_path": str(Path(path)),
+        "output_path": str(output_path),
         "chunk_count": len(chunks),
         "warnings": list(warnings),
     }

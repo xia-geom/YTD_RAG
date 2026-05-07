@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .metadata_enrichment import ENRICHMENT_BACKEND, ENRICHMENT_VERSION, PROMPT_HASH, enrich_chunk
+from .metadata_enrichment import DeterministicEnrichmentBackend, MetadataEnrichmentBackend
 from .models import Chunk, DocumentMetadata, model_to_dict
 
 
@@ -19,9 +19,10 @@ ENRICHMENT_METADATA_KEY = "enrichment"
 class MetadataEnrichmentCache:
     """Read/write namespaced enrichment metadata keyed by deterministic chunk id."""
 
-    def __init__(self, cache_dir: str | Path):
+    def __init__(self, cache_dir: str | Path, backend: MetadataEnrichmentBackend | None = None):
         self.cache_dir = Path(cache_dir)
         self.files_dir = self.cache_dir / "files"
+        self.backend = backend or DeterministicEnrichmentBackend()
 
     def apply(
         self,
@@ -30,7 +31,7 @@ class MetadataEnrichmentCache:
         chunks: list[Chunk],
         *,
         refresh: bool = False,
-    ) -> None:
+    ) -> list[str]:
         """Apply cached or newly computed enrichment metadata to chunks."""
 
         path = Path(source_path)
@@ -40,11 +41,12 @@ class MetadataEnrichmentCache:
             enrichments = cached.get("enrichments_by_chunk_id")
             if isinstance(enrichments, dict):
                 self._merge_enrichments(chunks, enrichments)
-                return
+                return self.backend.validate_cached_chunks(chunks)
 
-        enrichments = {chunk.chunk_id: enrich_chunk(chunk) for chunk in chunks}
+        enrichments, warnings = self.backend.enrich_chunks(chunks)
         self._merge_enrichments(chunks, enrichments)
         self._write_cache(path, {**expected, "enrichments_by_chunk_id": enrichments})
+        return warnings
 
     def cache_path_for_source(self, source_path: str | Path) -> Path:
         return self.files_dir / f"{source_path_key(source_path)}.json"
@@ -56,9 +58,9 @@ class MetadataEnrichmentCache:
             "source_hash": source_hash(source_path),
             "metadata_hash": metadata_hash(metadata),
             "base_chunker_version": BASE_CHUNKER_VERSION,
-            "enrichment_version": ENRICHMENT_VERSION,
-            "enrichment_backend": ENRICHMENT_BACKEND,
-            "prompt_hash": PROMPT_HASH,
+            "enrichment_version": self.backend.version,
+            "enrichment_backend": self.backend.name,
+            "prompt_hash": self.backend.prompt_hash,
         }
 
     def _read_cache(self, source_path: Path) -> dict[str, Any] | None:
@@ -84,9 +86,9 @@ class MetadataEnrichmentCache:
         payload = {
             "schema_version": 1,
             "base_chunker_version": BASE_CHUNKER_VERSION,
-            "enrichment_version": ENRICHMENT_VERSION,
-            "enrichment_backend": ENRICHMENT_BACKEND,
-            "prompt_hash": PROMPT_HASH,
+            "enrichment_version": self.backend.version,
+            "enrichment_backend": self.backend.name,
+            "prompt_hash": self.backend.prompt_hash,
         }
         (self.cache_dir / "manifest.json").write_text(
             json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=True),

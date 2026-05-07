@@ -10,13 +10,14 @@ from .config import DEFAULT_INDEX_DIR
 from .discovery import discover_candidates
 from .downloader import DEFAULT_SEED_MAX_PAPERS, download_approved_papers, download_arxiv_ids, download_seed_file
 from .eval import evaluate_retrieval, format_eval_report
+from .metadata_enrichment import DETERMINISTIC_ENRICHMENT_BACKEND
 from .paper_store import (
     DEFAULT_ARXIV_CORPUS_DIR,
     DEFAULT_CANDIDATES_PATH,
     PaperCandidate,
     load_candidate_groups,
 )
-from .rag_service import IndexNotFoundError, index_stats, ingest_path, retrieve
+from .rag_service import IndexNotFoundError, export_enrichment_batch, index_stats, ingest_path, retrieve
 from .text_cleaning import make_snippet
 
 
@@ -47,20 +48,49 @@ def run_ingest(
     metadata: str | None = None,
     enrich_metadata: bool = False,
     refresh_enrichment_cache: bool = False,
+    enrichment_backend: str = DETERMINISTIC_ENRICHMENT_BACKEND,
+    agent_enrichment_jsonl: str | None = None,
 ) -> int:
-    result = ingest_path(
-        corpus_path,
-        index_dir=index_dir,
-        metadata=metadata,
-        enrich_metadata=enrich_metadata,
-        refresh_enrichment_cache=refresh_enrichment_cache,
-    )
+    try:
+        result = ingest_path(
+            corpus_path,
+            index_dir=index_dir,
+            metadata=metadata,
+            enrich_metadata=enrich_metadata,
+            refresh_enrichment_cache=refresh_enrichment_cache,
+            enrichment_backend=enrichment_backend,
+            agent_enrichment_jsonl=agent_enrichment_jsonl,
+        )
+    except ValueError as exc:
+        console.print(str(exc))
+        return 1
     if result["chunk_count"]:
         console.print(f"Ingested {result['chunk_count']} chunks from {corpus_path}")
         console.print(f"Index written to {result['index_path']}")
     else:
         console.print(f"No supported documents were ingested from {corpus_path}.")
         console.print("Add .tex, .md, .txt, .bib, or .pdf files and run ingest again.")
+    for warning in result["warnings"]:
+        console.print(f"Warning: {warning}")
+    return 0
+
+
+def run_export_enrichment_batch(
+    corpus_path: str,
+    output: str,
+    metadata: str | None = None,
+    max_content_chars: int = 4000,
+) -> int:
+    if max_content_chars < 3:
+        console.print("--max-content-chars must be at least 3.")
+        return 1
+    result = export_enrichment_batch(
+        corpus_path,
+        output=output,
+        metadata=metadata,
+        max_content_chars=max_content_chars,
+    )
+    console.print(f"Exported {result['chunk_count']} chunks to {result['output_path']}")
     for warning in result["warnings"]:
         console.print(f"Warning: {warning}")
     return 0
@@ -313,8 +343,32 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
         metadata: str | None = typer.Option(None, help="Optional metadata YAML file."),
         enrich_metadata: bool = typer.Option(False, help="Add cached metadata enrichment to deterministic chunks."),
         refresh_enrichment_cache: bool = typer.Option(False, help="Recompute metadata enrichment cache."),
+        enrichment_backend: str = typer.Option(
+            DETERMINISTIC_ENRICHMENT_BACKEND,
+            help="Metadata enrichment backend: deterministic_v1 or agent_json_v1.",
+        ),
+        agent_enrichment_jsonl: str | None = typer.Option(None, help="Local JSONL file for agent_json_v1 metadata."),
     ) -> None:
-        raise typer.Exit(run_ingest(corpus_path, index_dir, metadata, enrich_metadata, refresh_enrichment_cache))
+        raise typer.Exit(
+            run_ingest(
+                corpus_path,
+                index_dir,
+                metadata,
+                enrich_metadata,
+                refresh_enrichment_cache,
+                enrichment_backend,
+                agent_enrichment_jsonl,
+            )
+        )
+
+    @app.command("export-enrichment-batch")
+    def export_enrichment_batch_cmd(
+        corpus_path: str,
+        output: str = typer.Option(..., help="JSONL output path."),
+        metadata: str | None = typer.Option(None, help="Optional metadata YAML file."),
+        max_content_chars: int = typer.Option(4000, help="Maximum chunk content characters per JSONL record."),
+    ) -> None:
+        raise typer.Exit(run_export_enrichment_batch(corpus_path, output, metadata, max_content_chars))
 
     @app.command()
     def search(
@@ -415,6 +469,14 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     ingest_parser.add_argument("--metadata", default=None)
     ingest_parser.add_argument("--enrich-metadata", action="store_true")
     ingest_parser.add_argument("--refresh-enrichment-cache", action="store_true")
+    ingest_parser.add_argument("--enrichment-backend", default=DETERMINISTIC_ENRICHMENT_BACKEND)
+    ingest_parser.add_argument("--agent-enrichment-jsonl", default=None)
+
+    export_parser = subparsers.add_parser("export-enrichment-batch")
+    export_parser.add_argument("corpus_path")
+    export_parser.add_argument("--output", required=True)
+    export_parser.add_argument("--metadata", default=None)
+    export_parser.add_argument("--max-content-chars", type=int, default=4000)
 
     search_parser = subparsers.add_parser("search")
     search_parser.add_argument("query")
@@ -501,7 +563,11 @@ def _argparse_main(argv: list[str] | None = None) -> int:
             args.metadata,
             args.enrich_metadata,
             args.refresh_enrichment_cache,
+            args.enrichment_backend,
+            args.agent_enrichment_jsonl,
         )
+    if args.command == "export-enrichment-batch":
+        return run_export_enrichment_batch(args.corpus_path, args.output, args.metadata, args.max_content_chars)
     if args.command == "search":
         return run_search(args.query, args.index_dir, args.mode, args.top_k)
     if args.command == "ask":

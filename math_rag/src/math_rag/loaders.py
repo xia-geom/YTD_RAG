@@ -9,6 +9,7 @@ from typing import Any
 
 from .config import SUPPORTED_SUFFIXES
 from .latex_chunker import chunk_latex_file, make_chunk_id
+from .metadata_enrichment import DETERMINISTIC_ENRICHMENT_BACKEND, build_enrichment_backend
 from .metadata_enrichment_cache import MetadataEnrichmentCache
 from .models import Chunk, DocumentMetadata, metadata_from_dict
 from .paper_store import load_yaml_file
@@ -196,20 +197,33 @@ def load_corpus(
     enrich_metadata: bool = False,
     enrichment_cache_dir: str | Path | None = None,
     refresh_enrichment_cache: bool = False,
+    enrichment_backend: str = DETERMINISTIC_ENRICHMENT_BACKEND,
+    agent_enrichment_jsonl: str | Path | None = None,
 ) -> tuple[list[Chunk], list[str]]:
     metadata_map = load_metadata_map(metadata_path)
-    enrichment_cache = MetadataEnrichmentCache(enrichment_cache_dir) if enrich_metadata and enrichment_cache_dir else None
+    backend = (
+        build_enrichment_backend(enrichment_backend, agent_enrichment_jsonl=agent_enrichment_jsonl)
+        if enrich_metadata
+        else None
+    )
+    enrichment_cache = (
+        MetadataEnrichmentCache(enrichment_cache_dir, backend=backend)
+        if enrich_metadata and enrichment_cache_dir and backend is not None
+        else None
+    )
     chunks: list[Chunk] = []
-    warnings: list[str] = []
+    warnings: list[str] = list(backend.initial_warnings) if backend is not None else []
     for path in discover_files(corpus_path):
         metadata = metadata_for_path(path, metadata_map)
         try:
             file_chunks = load_file(path, metadata)
             if enrichment_cache is not None:
-                enrichment_cache.apply(path, metadata, file_chunks, refresh=refresh_enrichment_cache)
+                warnings.extend(enrichment_cache.apply(path, metadata, file_chunks, refresh=refresh_enrichment_cache))
             chunks.extend(file_chunks)
         except Exception as exc:
             warnings.append(f"Skipped {path}: {exc}")
+    if backend is not None:
+        warnings.extend(backend.final_warnings())
     return chunks, warnings
 
 
