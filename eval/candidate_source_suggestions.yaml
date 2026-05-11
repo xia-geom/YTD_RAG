@@ -1,0 +1,414 @@
+metadata:
+  status: candidate_human_validation_required
+  notes: Online-discovered source suggestions. Not a benchmark; not proof verification.
+  generated_on: '2026-05-09'
+sources:
+- id: arxiv_1109_3159
+  topic: conic/cusp/Poincare metrics
+  title: The space of Poincaré type Kähler metrics on the complement of a divisor
+  authors:
+  - Hugues Auvray
+  source_kind: arxiv
+  arxiv_id: '1109.3159'
+  url: https://arxiv.org/abs/1109.3159
+  corpus_status: present
+  priority: core
+  suggested_action: download_arxiv
+  rationale: Directly matches the held Poincare metric-space candidate and user correction.
+  related_candidate_ids:
+  - conic_poincare_004
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1109.3159
+- id: arxiv_1211_4566
+  topic: kahler_einstein/conic_metrics
+  title: 'Kahler-Einstein metrics on Fano manifolds, I: approximation of metrics with cone singularities'
+  authors:
+  - Xiuxiong Chen
+  - Simon Donaldson
+  - Song Sun
+  source_kind: arxiv
+  arxiv_id: '1211.4566'
+  url: https://arxiv.org/abs/1211.4566
+  corpus_status: present
+  priority: core
+  suggested_action: download_arxiv
+  rationale: Core Chen-Donaldson-Sun conic approximation source for Fano KE/YTD.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1211.4566
+- id: arxiv_1212_4714
+  topic: kahler_einstein/conic_metrics
+  title: 'Kahler-Einstein metrics on Fano manifolds, II: limits with cone angle less than 2 π'
+  authors:
+  - Xiuxiong Chen
+  - Simon Donaldson
+  - Song Sun
+  source_kind: arxiv
+  arxiv_id: '1212.4714'
+  url: https://arxiv.org/abs/1212.4714
+  corpus_status: present
+  priority: core
+  suggested_action: download_arxiv
+  rationale: Core Chen-Donaldson-Sun cone-angle limit source.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1212.4714
+- id: arxiv_1302_0282
+  topic: kahler_einstein/conic_metrics
+  title: 'Kahler-Einstein metrics on Fano manifolds, III: limits as cone angle approaches 2π and completion of the main proof'
+  authors:
+  - Xiuxiong Chen
+  - Simon Donaldson
+  - Song Sun
+  source_kind: arxiv
+  arxiv_id: '1302.0282'
+  url: https://arxiv.org/abs/1302.0282
+  corpus_status: present
+  priority: core
+  suggested_action: download_arxiv
+  rationale: Core Chen-Donaldson-Sun completion source for Fano KE/YTD via cone angle continuity.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1302.0282
+- id: arxiv_1210_7494
+  topic: kahler_einstein/YTD
+  title: Kahler-Einstein metrics and stability
+  authors:
+  - Xiuxiong Chen
+  - Simon Donaldson
+  - Song Sun
+  source_kind: arxiv
+  arxiv_id: '1210.7494'
+  url: https://arxiv.org/abs/1210.7494
+  corpus_status: present
+  priority: core
+  suggested_action: download_arxiv
+  rationale: Announcement and outline of the Chen-Donaldson-Sun Fano KE/YTD result.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1210.7494
+- id: arxiv_1111_7158
+  topic: kahler_einstein/log_fano
+  title: Kähler-Einstein metrics and the Kähler-Ricci flow on log Fano varieties
+  authors:
+  - Robert J. Berman
+  - Sébastien Boucksom
+  - Philippe Eyssidieux
+  - Vincent Guedj
+  - Ahmed Zeriahi
+  source_kind: arxiv
+  arxiv_id: '1111.7158'
+  url: https://arxiv.org/abs/1111.7158
+  corpus_status: present
+  priority: core
+  suggested_action: download_arxiv
+  rationale: Foundational log-Fano KE/Kähler-Ricci-flow finite-energy source.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1111.7158
+- id: arxiv_1309_5013
+  topic: kahler_einstein/conic_metrics
+  title: A remark on Kahler metrics with conical singularities along a simple normal crossing divisor
+  authors:
+  - Ved Datar
+  - Jian Song
+  source_kind: arxiv
+  arxiv_id: '1309.5013'
+  url: https://arxiv.org/abs/1309.5013
+  corpus_status: present
+  priority: supporting
+  suggested_action: download_arxiv
+  rationale: Short source on conical metrics along simple normal crossing divisors.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1309.5013
+- id: guenancia_2014_mixed_poincare_cone_ke
+  topic: kahler_einstein/mixed_poincare_cone
+  title: Kähler-Einstein metrics with mixed Poincaré and cone singularities along a normal crossing divisor
+  authors:
+  - Henri Guenancia
+  source_kind: journal_open
+  arxiv_id: ''
+  url: https://numdam.org/articles/10.5802/aif.2881/
+  corpus_status: absent
+  priority: core
+  suggested_action: add_bibliographic_note_or_pdf_if_allowed
+  rationale: Directly relevant to mixed Poincare/cone singularities in the project scope.
+  related_candidate_ids: []
+  verification_status: online_verified
+- id: campana_guenancia_paun_2013_cone_snc
+  topic: kahler_einstein/conic_metrics
+  title: Metrics with cone singularities along normal crossing divisors and holomorphic tensor fields
+  authors:
+  - Frédéric Campana
+  - Henri Guenancia
+  - Mihai Păun
+  source_kind: journal_open
+  arxiv_id: ''
+  url: https://www.numdam.org/item/ASENS_2013_4_46_6_879_0/
+  corpus_status: absent
+  priority: core
+  suggested_action: add_bibliographic_note_or_pdf_if_allowed
+  rationale: Core normal-crossing cone singularity and Kähler-Einstein source.
+  related_candidate_ids: []
+  verification_status: online_verified
+- id: lin_shen_2018_conic_ke_snc_fano
+  topic: kahler_einstein/conic_metrics
+  title: Conic Kähler-Einstein metrics along simple normal crossing divisors on Fano manifolds
+  authors:
+  - Aijin Lin
+  - Liangming Shen
+  source_kind: publisher
+  arxiv_id: ''
+  url: https://www.sciencedirect.com/science/article/pii/S0022123618300211
+  corpus_status: absent
+  priority: supporting
+  suggested_action: add_bibliographic_note_or_download_if_license_allows
+  rationale: Conic KE metrics along SNC divisors on Fano manifolds; useful for KE/cone coverage.
+  related_candidate_ids: []
+  verification_status: online_verified
+- id: arxiv_2106_05486
+  topic: kahler_einstein/singularities
+  title: Kahler-Einstein metric near an isolated log canonical singularity
+  authors:
+  - Ved Datar
+  - Xin Fu
+  - Jian Song
+  source_kind: arxiv
+  arxiv_id: '2106.05486'
+  url: https://arxiv.org/abs/2106.05486
+  corpus_status: present
+  priority: watch
+  suggested_action: download_arxiv
+  rationale: Recent singular KE source; useful watch-list material for local singularity questions.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2106.05486
+- id: arxiv_2306_07900
+  topic: kahler_einstein/singularities
+  title: Kähler-Einstein metrics with positive curvature near an isolated log terminal singularity
+  authors:
+  - Vincent Guedj
+  - Antonio Trusiani
+  - Sébastien Boucksom
+  source_kind: arxiv
+  arxiv_id: '2306.07900'
+  url: https://arxiv.org/abs/2306.07900
+  corpus_status: present
+  priority: watch
+  suggested_action: download_arxiv
+  rationale: Recent positive-curvature KE source near log-terminal singularities.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2306.07900
+- id: arxiv_2508_02212
+  topic: kahler_einstein/mixed_singularities
+  title: Variation of Kahler-Einstein metrics with mixed singularities
+  authors:
+  - Xin Fu
+  - Jiyuan Han
+  - Yongpan Zou
+  source_kind: arxiv
+  arxiv_id: '2508.02212'
+  url: https://arxiv.org/abs/2508.02212
+  corpus_status: present
+  priority: watch
+  suggested_action: download_arxiv
+  rationale: Recent source on variation of KE metrics with mixed cone and Poincare singularities.
+  related_candidate_ids: []
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2508.02212
+- id: arxiv_2509_15173
+  topic: darvas_zhang/quantization/YTD
+  title: A YTD correspondence for constant scalar curvature metrics
+  authors:
+  - Tamas Darvas
+  - Kewei Zhang
+  source_kind: arxiv
+  arxiv_id: '2509.15173'
+  url: https://arxiv.org/abs/2509.15173
+  corpus_status: present
+  priority: core
+  suggested_action: downloaded_arxiv
+  rationale: Introduces K^beta energies, Berman transcendental quantization, and a YTD correspondence for cscK metrics.
+  related_candidate_ids:
+  - darvas_zhang_quantization_001
+  - darvas_zhang_quantization_002
+  - darvas_zhang_quantization_003
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2509.15173
+- id: arxiv_2602_03111
+  topic: darvas_zhang/bergman_kernel/quantization
+  title: Sharp C^{1,bar1} estimates in Kahler quantization and non-pluripolar Radon measures
+  authors:
+  - Zbigniew Blocki
+  - Tamas Darvas
+  source_kind: arxiv
+  arxiv_id: '2602.03111'
+  url: https://arxiv.org/abs/2602.03111
+  corpus_status: present
+  priority: core
+  suggested_action: downloaded_arxiv
+  rationale: Directly addresses weighted Bergman kernels, Kahler quantization, and non-pluripolar Radon measures.
+  related_candidate_ids:
+  - darvas_zhang_quantization_004
+  - darvas_zhang_quantization_005
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2602.03111
+- id: arxiv_2503_16766
+  topic: quantization/Fano
+  title: Quantized volume comparison for Fano manifolds
+  authors:
+  - Kewei Zhang
+  source_kind: arxiv
+  arxiv_id: '2503.16766'
+  url: https://arxiv.org/abs/2503.16766
+  corpus_status: present
+  priority: supporting
+  suggested_action: downloaded_arxiv
+  rationale: Relevant supporting source for quantized Fano volume comparison.
+  related_candidate_ids:
+  - darvas_zhang_quantization_006
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2503.16766
+- id: arxiv_0907_4490
+  topic: pluripotential/variational_methods/quantization
+  title: A variational approach to complex Monge-Ampere equations
+  authors:
+  - Robert J. Berman
+  - Sebastien Boucksom
+  - Vincent Guedj
+  - Ahmed Zeriahi
+  source_kind: arxiv
+  arxiv_id: '0907.4490'
+  url: https://arxiv.org/abs/0907.4490
+  corpus_status: present
+  priority: core
+  suggested_action: downloaded_arxiv
+  rationale: Foundational variational source for finite-energy Monge-Ampere equations and balanced metric convergence.
+  related_candidate_ids:
+  - darvas_zhang_quantization_007
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/0907.4490
+- id: arxiv_1011_3976
+  topic: berman/thermodynamical_formalism/Kahler_Einstein
+  title: A thermodynamical formalism for Monge-Ampere equations, Moser-Trudinger inequalities and Kahler-Einstein metrics
+  authors:
+  - Robert J. Berman
+  source_kind: arxiv
+  arxiv_id: '1011.3976'
+  url: https://arxiv.org/abs/1011.3976
+  corpus_status: present
+  priority: core
+  suggested_action: downloaded_arxiv
+  rationale: Core Berman source on free energy, twisted Kahler-Einstein metrics, and singular measures.
+  related_candidate_ids:
+  - darvas_zhang_quantization_002
+  - darvas_zhang_quantization_008
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1011.3976
+- id: arxiv_1009_2942
+  topic: berman/statistical_mechanics/YTD
+  title: Kahler-Einstein metrics emerging from free fermions and statistical mechanics
+  authors:
+  - Robert J. Berman
+  source_kind: arxiv
+  arxiv_id: '1009.2942'
+  url: https://arxiv.org/abs/1009.2942
+  corpus_status: present
+  priority: supporting
+  suggested_action: downloaded_arxiv
+  rationale: Supporting Berman source connecting statistical mechanics, free fermions, and the YTD program.
+  related_candidate_ids:
+  - darvas_zhang_quantization_009
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/1009.2942
+- id: arxiv_2602_10800
+  topic: boucksom_jonsson/YTD/non_Archimedean
+  title: 'From complex to non-Archimedean geometry: an approach to the YTD conjecture'
+  authors:
+  - Sebastien Boucksom
+  - Mattias Jonsson
+  source_kind: arxiv
+  arxiv_id: '2602.10800'
+  url: https://arxiv.org/abs/2602.10800
+  corpus_status: present
+  priority: core
+  suggested_action: downloaded_arxiv
+  rationale: Recent Boucksom-Jonsson notes on the complex/non-Archimedean route to YTD.
+  related_candidate_ids:
+  - darvas_zhang_quantization_010
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2602.10800
+- id: arxiv_2412_06096
+  topic: boucksom_jonsson_trusiani/weighted_extremal/resolutions
+  title: Weighted extremal Kahler metrics on resolutions of singularities
+  authors:
+  - Sebastien Boucksom
+  - Mattias Jonsson
+  - Antonio Trusiani
+  source_kind: arxiv
+  arxiv_id: '2412.06096'
+  url: https://arxiv.org/abs/2412.06096
+  corpus_status: present
+  priority: core
+  suggested_action: downloaded_arxiv
+  rationale: Recent weighted-extremal source tied to weighted Mabuchi coercivity and resolutions of singularities.
+  related_candidate_ids:
+  - darvas_zhang_quantization_011
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2412.06096
+- id: arxiv_2307_01697
+  topic: boucksom_jonsson/pluripotential/finite_energy
+  title: 'Measures of finite energy in pluripotential theory: a synthetic approach'
+  authors:
+  - Sebastien Boucksom
+  - Mattias Jonsson
+  source_kind: arxiv
+  arxiv_id: '2307.01697'
+  url: https://arxiv.org/abs/2307.01697
+  corpus_status: present
+  priority: supporting
+  suggested_action: downloaded_arxiv
+  rationale: Relevant finite-energy pluripotential source for the analytic side of YTD and coercivity.
+  related_candidate_ids:
+  - darvas_zhang_quantization_012
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2307.01697
+- id: arxiv_2206_07183
+  topic: boucksom_jonsson/pluripotential/trivially_valued
+  title: Addendum to the article Global pluripotential theory over a trivially valued field
+  authors:
+  - Sebastien Boucksom
+  - Mattias Jonsson
+  source_kind: arxiv
+  arxiv_id: '2206.07183'
+  url: https://arxiv.org/abs/2206.07183
+  corpus_status: present
+  priority: watch
+  suggested_action: downloaded_arxiv
+  rationale: Supporting addendum for the pluripotential/non-Archimedean background.
+  related_candidate_ids:
+  - darvas_zhang_quantization_013
+  verification_status: online_verified
+  download_status: downloaded
+  local_path: corpus/arxiv/2206.07183

@@ -1,0 +1,2914 @@
+metadata:
+  status: candidate_human_validation_required
+  total_questions: 154
+  notes: Do not treat as a benchmark until manually validated.
+  relevance_rubric: &id001
+    '3': Exact theorem/proposition/definition/proof/example.
+    '2': Relevant discussion.
+    '1': Bibliography only.
+    '0': Irrelevant.
+questions:
+- id: conic_poincare_001
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss conical approximation of Poincare type cscK metrics?
+  expected_sources:
+  - '2210.11862'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - Poincare type
+  - conical approximation
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Best evidence ranks: 1,2.'
+  correction_needed: ''
+- id: conic_poincare_002
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus state or prove uniqueness for Poincare type cscK metrics?
+  expected_sources:
+  - '2410.14130'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  expected_terms:
+  - uniqueness
+  - Poincare type
+  - constant scalar curvature
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Best evidence rank: 3.'
+  correction_needed: ''
+- id: conic_poincare_003
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss toric extremal metrics with Poincare type singularities?
+  expected_sources:
+  - '1711.08424'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - toric
+  - extremal
+  - Poincare type
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Best evidence rank: 1. Blank triage field means looks fine.'
+  correction_needed: ''
+- id: conic_poincare_004
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss the space of Poincare type Kahler metrics on a divisor complement?
+  expected_sources:
+  - '1205.0056'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - space
+  - Poincare type Kahler metrics
+  - divisor
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Auvray 1109.3159 is now downloaded, but current retrieval finds it only at rank 8; do not promote under the
+    top-5 rule.
+  correction_needed: Rewrite the query toward Auvray space-of-Poincare-type-metrics terminology or use this as a retrieval-quality
+    failure rather than gold.
+- id: conic_poincare_005
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss extremal Poincare type metrics and Futaki invariants?
+  expected_sources:
+  - '1401.0123'
+  - '1401.0128'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - extremal
+  - Poincare type
+  - Futaki
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: 'Best evidence ranks: 1,3.'
+  correction_needed: Add weighted_twisted notes as expected source/context.
+- id: conic_poincare_006
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss relative or modified Futaki invariants for Poincare type metrics?
+  expected_sources:
+  - '1401.0128'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - Futaki
+  - Poincare
+  - relative
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Best evidence rank: 1. Blank triage field means looks fine.'
+  correction_needed: ''
+- id: conic_poincare_007
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss deforming the cone angle in a cscK cone path?
+  expected_sources:
+  - '1803.09506'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - cone angle
+  - cscK
+  - path
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Best evidence rank: 1. Blank triage field means looks fine.'
+  correction_needed: ''
+- id: conic_poincare_008
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss log K-stability for cscK cone metrics?
+  expected_sources:
+  - '1508.02640'
+  - '1803.09506'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - log K-stability
+  - cone angle
+  - cscK cone
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: 'Best evidence ranks: 1,3.'
+  correction_needed: Check/add Donaldson paper on conic toric metrics if this is the intended source.
+- id: conic_poincare_009
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss Jeffres-Mazzeo-Rubinstein edge singularities?
+  expected_sources:
+  - '1105.5216'
+  expected_chunk_types:
+  - theorem
+  - definition
+  - text
+  expected_terms:
+  - edge singularities
+  - Kahler-Einstein
+  - polyhomogeneous
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Best evidence rank: 1. Blank triage field means looks fine.'
+  correction_needed: ''
+- id: conic_poincare_010
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss conic Kahler-Einstein metrics and divisor cone angles?
+  expected_sources:
+  - '1105.5216'
+  - '1205.0056'
+  - '1508.02640'
+  expected_chunk_types:
+  - theorem
+  - definition
+  - text
+  expected_terms:
+  - conic
+  - Kahler-Einstein
+  - cone angle
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: After corpus expansion, new source 2508.02212 appears at rank 1, while original expected sources appear only
+    at ranks 9 and 10; top snippet is not yet clean enough for gold.
+  correction_needed: Split into a mixed-singularities KE variation question using 2508.02212, and a separate edge/cone-angle
+    question for JMR/Log Futaki/conic sources.
+- id: conic_poincare_011
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss gluing constructions for cscK metrics of Poincare type?
+  expected_sources:
+  - '2405.11952'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - gluing
+  - cscK
+  - Poincare type
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_012
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss asymptotics of scalar curvature for Poincare type metrics?
+  expected_sources:
+  - '1711.08424'
+  - '1205.0056'
+  - '1401.0123'
+  expected_chunk_types:
+  - proposition
+  - lemma
+  - proof
+  - text
+  expected_terms:
+  - scalar curvature
+  - asymptotics
+  - Poincare
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_013
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss Poincare type metrics near a smooth divisor?
+  expected_sources:
+  - '1205.0056'
+  - '1401.0123'
+  expected_chunk_types:
+  - definition
+  - lemma
+  - text
+  expected_terms:
+  - smooth divisor
+  - Poincare type
+  - Kahler metric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_014
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss complete Kahler metrics on divisor complements?
+  expected_sources:
+  - '1205.0056'
+  - '1711.08424'
+  - '1109.3159'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - complete Kahler
+  - divisor complement
+  - Poincare
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: After corpus expansion, Auvray 1109.3159 appears in chunk-level inspection, but eval unique-source rank is
+    8; do not promote under top-5 source-rank rule.
+  correction_needed: Rewrite toward more specific Auvray terminology or keep as a retrieval-quality failure until expected
+    source reaches top 5 by eval source rank.
+- id: conic_poincare_015
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss cusp limits of conic cscK metrics?
+  expected_sources:
+  - '2210.11862'
+  - '1803.09506'
+  - '2410.14130'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - cusp limit
+  - conic
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_016
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss Poincare type K-energy or Mabuchi functional on noncompact complements?
+  expected_sources:
+  - '1205.0056'
+  - '1401.0123'
+  - '2410.14130'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - K-energy
+  - Mabuchi
+  - Poincare
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_017
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss extremal vector fields for Poincare type metrics?
+  expected_sources:
+  - '1401.0123'
+  - '1711.08424'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - extremal vector field
+  - Poincare
+  - Futaki
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_018
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss cscK metrics with edge or cone singularities along a divisor?
+  expected_sources:
+  - '1105.5216'
+  - '1508.02640'
+  - '1803.09506'
+  expected_chunk_types:
+  - theorem
+  - definition
+  - text
+  expected_terms:
+  - edge
+  - cone singularities
+  - divisor
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected source 1508.02640 appears at rank 3 and 1803.09506 at rank 4; arXiv confirms these sources concern
+    cone/edge singularities, cscK cone metrics, and divisors.
+  correction_needed: ''
+- id: conic_poincare_019
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss analytic estimates for conic or Poincare type cscK metrics?
+  expected_sources:
+  - '1803.09506'
+  - '2210.11862'
+  - '2410.14130'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - proof
+  expected_terms:
+  - estimates
+  - conic
+  - Poincare type
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_020
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss the logarithmic or cusp boundary behavior of potentials?
+  expected_sources:
+  - '1205.0056'
+  - '1711.08424'
+  - '2210.11862'
+  expected_chunk_types:
+  - definition
+  - lemma
+  - text
+  expected_terms:
+  - logarithmic
+  - cusp
+  - potential
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_021
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss Poincare type cscK metrics in relation to automorphisms?
+  expected_sources:
+  - '2410.14130'
+  - '1401.0123'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - automorphism
+  - Poincare type
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_022
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss the modified scalar curvature equation for Poincare type extremal metrics?
+  expected_sources:
+  - '1711.08424'
+  - '1401.0123'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - modified scalar curvature
+  - extremal
+  - Poincare
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_023
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss existence obstructions for Poincare type extremal metrics?
+  expected_sources:
+  - '1401.0123'
+  - '1401.0128'
+  - '1711.08424'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - obstruction
+  - Futaki
+  - Poincare type extremal
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_024
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss regularity of conic cscK metrics along a divisor?
+  expected_sources:
+  - '1508.02640'
+  - '1803.09506'
+  - '1105.5216'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - proof
+  - text
+  expected_terms:
+  - regularity
+  - conic cscK
+  - divisor
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_025
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss scalar curvature for metrics with cusp singularities?
+  expected_sources:
+  - '1711.08424'
+  - '2210.11862'
+  - '2410.14130'
+  expected_chunk_types:
+  - proposition
+  - lemma
+  - text
+  expected_terms:
+  - scalar curvature
+  - cusp singularities
+  - Poincare
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_026
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss cscK metrics on quasi-projective or punctured manifolds?
+  expected_sources:
+  - '1205.0056'
+  - '2405.11952'
+  - '2410.14130'
+  expected_chunk_types:
+  - theorem
+  - text
+  expected_terms:
+  - quasi-projective
+  - punctured
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_027
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus compare cone metrics and Poincare type metrics?
+  expected_sources:
+  - '2210.11862'
+  - '1803.09506'
+  - '1205.0056'
+  expected_chunk_types:
+  - remark
+  - example
+  - text
+  expected_terms:
+  - cone metrics
+  - Poincare type
+  - comparison
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_028
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss Poincare type extremal metrics on toric varieties with labeled polytopes?
+  expected_sources:
+  - '1711.08424'
+  expected_chunk_types:
+  - theorem
+  - example
+  - text
+  expected_terms:
+  - labeled polytope
+  - toric variety
+  - Poincare type extremal
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_029
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss boundedness or coercivity of energy functionals for singular cscK metrics?
+  expected_sources:
+  - '2210.11862'
+  - '1508.02640'
+  - '1803.09506'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - coercivity
+  - energy functional
+  - singular cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: conic_poincare_030
+  topic: conic/cusp/Poincare metrics
+  question: Where does the corpus discuss Poincare type cscK metrics as limits of conic approximations?
+  expected_sources:
+  - '2210.11862'
+  - '2410.14130'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - limit
+  - conic approximation
+  - Poincare type cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_001
+  topic: toric Abreu equation
+  question: Where does the corpus discuss the Abreu equation in toric Kahler geometry?
+  expected_sources:
+  - dg-ga_9711014
+  - math_0407486
+  - '0805.0128'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - Abreu equation
+  - toric
+  - scalar curvature
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected foundational Abreu sources are absent from top 5; retrieval surfaces generalized/modern Abreu discussions
+    and Donaldson toric surfaces instead.
+  correction_needed: Either rewrite as a foundational Abreu-equation question with expected sources dg-ga_9711014/math_0407486/0805.0128,
+    or add current top sources such as 2303.03263, 2108.12297, and 1008.2607.
+- id: toric_abreu_002
+  topic: toric Abreu equation
+  question: Where does the corpus discuss Donaldson interior estimates for solutions of Abreu's equation?
+  expected_sources:
+  - math_0407486
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  expected_terms:
+  - interior estimates
+  - Abreu equation
+  - Donaldson
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_003
+  topic: toric Abreu equation
+  question: Where does the corpus discuss extremal metrics on toric surfaces?
+  expected_sources:
+  - '0805.0128'
+  - '1008.2607'
+  - '2402.01159'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - toric surfaces
+  - extremal metrics
+  - Abreu
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_004
+  topic: toric Abreu equation
+  question: Where does the corpus discuss symplectic potentials and scalar curvature on toric manifolds?
+  expected_sources:
+  - dg-ga_9711014
+  - '2208.12493'
+  - '0805.0128'
+  expected_chunk_types:
+  - definition
+  - example
+  - text
+  expected_terms:
+  - symplectic potential
+  - scalar curvature
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_005
+  topic: toric Abreu equation
+  question: Where does the corpus discuss labeled polytopes and extremal affine functions?
+  expected_sources:
+  - '1711.08424'
+  - '2208.12493'
+  - '0909.4512'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - labeled polytope
+  - extremal affine function
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_006
+  topic: toric Abreu equation
+  question: Where does the corpus discuss Guillemin boundary conditions for toric Kahler metrics?
+  expected_sources:
+  - dg-ga_9711014
+  - '2208.12493'
+  - '0805.0128'
+  expected_chunk_types:
+  - definition
+  - example
+  - text
+  expected_terms:
+  - Guillemin
+  - boundary conditions
+  - symplectic potential
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected source 0805.0128 appears at rank 3; arXiv confirms Donaldson toric surfaces, and arXiv 2208.12493
+    confirms Apostolov toric lecture notes.
+  correction_needed: ''
+- id: toric_abreu_007
+  topic: toric Abreu equation
+  question: Where does the corpus discuss K-stability or uniform K-stability for toric varieties?
+  expected_sources:
+  - '1610.07998'
+  - '2110.10386'
+  - '2110.08491'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - toric
+  - uniform K-stability
+  - K-energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_008
+  topic: toric Abreu equation
+  question: Where does the corpus discuss Donaldson scalar curvature and stability of toric varieties?
+  expected_sources:
+  - dg-ga_9711014
+  - corpus/my_notes/requested_non_arxiv_sources.md
+  expected_chunk_types:
+  - theorem
+  - text
+  expected_terms:
+  - scalar curvature
+  - stability
+  - toric varieties
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_009
+  topic: toric Abreu equation
+  question: Where does the corpus discuss toric Yau-Tian-Donaldson results for extremal metrics?
+  expected_sources:
+  - '2110.10386'
+  - '2110.08491'
+  - '1610.07998'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Yau-Tian-Donaldson
+  - toric
+  - extremal metrics
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_010
+  topic: toric Abreu equation
+  question: Where does the corpus discuss Hamiltonian 2-forms and extremal toric metrics?
+  expected_sources:
+  - math_0202280
+  - math_0401320
+  - math_0511118
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Hamiltonian 2-forms
+  - extremal
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_011
+  topic: toric Abreu equation
+  question: Where does the corpus discuss ambitoric geometry and extremal toric surfaces?
+  expected_sources:
+  - '1302.6979'
+  - '1302.6975'
+  expected_chunk_types:
+  - theorem
+  - definition
+  - text
+  expected_terms:
+  - ambitoric
+  - extremal toric surfaces
+  - Einstein
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected sources 1302.6975 and 1302.6979 appear at ranks 2 and 3; arXiv confirms the ambitoric/extremal toric
+    surface topics.
+  correction_needed: ''
+- id: toric_abreu_012
+  topic: toric Abreu equation
+  question: Where does the corpus discuss toric projective bundles and extremal Kahler metrics?
+  expected_sources:
+  - '0905.0498'
+  - '0909.4512'
+  expected_chunk_types:
+  - theorem
+  - example
+  - text
+  expected_terms:
+  - projective bundles
+  - extremal Kahler
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_013
+  topic: toric Abreu equation
+  question: Where does the corpus discuss relative K-stability and extremal metrics in the toric setting?
+  expected_sources:
+  - math_0611002
+  - '0912.4095'
+  - '2110.10386'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - relative K-stability
+  - extremal metrics
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_014
+  topic: toric Abreu equation
+  question: Where does the corpus discuss affine functions and the extremal vector field on a polytope?
+  expected_sources:
+  - '2208.12493'
+  - '0805.0128'
+  - '1711.08424'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - affine function
+  - extremal vector field
+  - polytope
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_015
+  topic: toric Abreu equation
+  question: Where does the corpus discuss convexity of functionals on the space of toric symplectic potentials?
+  expected_sources:
+  - '1610.07998'
+  - '2208.12493'
+  - '0805.0128'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - convexity
+  - symplectic potentials
+  - K-energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_016
+  topic: toric Abreu equation
+  question: Where does the corpus discuss the fourth-order nature of Abreu's equation?
+  expected_sources:
+  - dg-ga_9711014
+  - math_0407486
+  - '0805.0128'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - fourth-order
+  - Abreu equation
+  - Hessian
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected source math_0407486 appears at rank 1; arXiv confirms it treats Abreu's equation as a fourth-order
+    nonlinear PDE for toric scalar curvature.
+  correction_needed: ''
+- id: toric_abreu_017
+  topic: toric Abreu equation
+  question: Where does the corpus discuss boundary behavior of solutions to Abreu's equation?
+  expected_sources:
+  - math_0407486
+  - '0805.0128'
+  - '2208.12493'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - proof
+  - text
+  expected_terms:
+  - boundary
+  - Abreu equation
+  - solution
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_018
+  topic: toric Abreu equation
+  question: Where does the corpus discuss Calabi flow or Calabi functional in toric geometry?
+  expected_sources:
+  - math_0412518
+  - '1008.2607'
+  - '0805.0128'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Calabi functional
+  - toric
+  - extremal
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_019
+  topic: toric Abreu equation
+  question: Where does the corpus discuss slope stability and lower bounds for the Calabi functional?
+  expected_sources:
+  - math_0412518
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - slope stability
+  - Calabi functional
+  - lower bounds
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_020
+  topic: toric Abreu equation
+  question: Where does the corpus discuss test configurations or filtrations for toric manifolds?
+  expected_sources:
+  - '2110.08491'
+  - '1610.07998'
+  - '1603.01026'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - filtration
+  - test configuration
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_021
+  topic: toric Abreu equation
+  question: Where does the corpus discuss toric contact geometry in relation to moment cones?
+  expected_sources:
+  - '1708.04942'
+  - '1708.05253'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - toric contact
+  - moment cone
+  - CR
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_022
+  topic: toric Abreu equation
+  question: Where does the corpus discuss ALE scalar-flat Kahler metrics on weighted projective spaces?
+  expected_sources:
+  - '1510.02226'
+  expected_chunk_types:
+  - theorem
+  - example
+  - text
+  expected_terms:
+  - ALE
+  - scalar-flat Kahler
+  - weighted projective
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_023
+  topic: toric Abreu equation
+  question: Where does the corpus discuss conformally Kahler Einstein-Maxwell geometry in toric examples?
+  expected_sources:
+  - '1512.06391'
+  expected_chunk_types:
+  - theorem
+  - example
+  - text
+  expected_terms:
+  - conformally Kahler
+  - Einstein-Maxwell
+  - toric
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_024
+  topic: toric Abreu equation
+  question: Where does the corpus discuss homogeneous toric bundles and YTD-type statements?
+  expected_sources:
+  - '2110.08491'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - homogeneous toric bundles
+  - YTD
+  - filtration
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: toric_abreu_025
+  topic: toric Abreu equation
+  question: Where does the corpus discuss Apostolov's lecture notes on the Kahler geometry of toric manifolds?
+  expected_sources:
+  - '2208.12493'
+  expected_chunk_types:
+  - definition
+  - example
+  - text
+  expected_terms:
+  - Kahler geometry of toric manifolds
+  - moment polytope
+  - symplectic potential
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_001
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss the weighted Mabuchi functional?
+  expected_sources:
+  - '2007.01345'
+  - '2104.09709'
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - weighted Mabuchi
+  - functional
+  - weighted scalar curvature
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected source appears only at rank 5; top evidence includes 2412.07968, 2303.03263, and 2309.02279, which
+    are relevant but not expected.
+  correction_needed: Add the top retrieved weighted Mabuchi sources, especially 2412.07968 and/or 2303.03263, or rewrite the
+    question to target Lahdili 2007.01345 specifically.
+- id: weighted_mabuchi_002
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted extremal Kahler metrics?
+  expected_sources:
+  - '1808.07811'
+  - '2007.01345'
+  - '2104.09709'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - weighted extremal
+  - Kahler metrics
+  - Lahdili
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_003
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss convexity of weighted Mabuchi energy along weak geodesics?
+  expected_sources:
+  - '2007.01345'
+  - '2303.03263'
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - convexity
+  - weighted Mabuchi
+  - weak geodesics
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_004
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted cscK coercivity?
+  expected_sources:
+  - '2407.09929'
+  - '2412.07968'
+  - '2503.22183'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - weighted cscK
+  - coercivity
+  - Mabuchi
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_005
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss a YTD correspondence for weighted cscK metrics?
+  expected_sources:
+  - '2509.15016'
+  - '2503.22183'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - YTD
+  - weighted cscK
+  - K-stability
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_006
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss Lahdili's weighted scalar curvature?
+  expected_sources:
+  - '1808.07811'
+  - '2007.01345'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - Lahdili
+  - weighted scalar curvature
+  - momentum map
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected Lahdili sources are absent from top 5; current top evidence is 2509.15016, weighted_twisted notes,
+    and 2108.12297.
+  correction_needed: Add retrieved sources for Lahdili-compatible weighted scalar curvature, or rewrite to target 1808.07811/2007.01345
+    more directly.
+- id: weighted_mabuchi_007
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted K-stability or weighted Donaldson-Futaki invariants?
+  expected_sources:
+  - '2104.09709'
+  - '2503.22183'
+  - '2509.15016'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - weighted K-stability
+  - Donaldson-Futaki
+  - weighted
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_008
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted twisted cscK metrics?
+  expected_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - '2309.02279'
+  - '2412.07968'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - weighted twisted
+  - cscK
+  - Mabuchi
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_009
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss openness for weighted cscK metrics?
+  expected_sources:
+  - '2407.09929'
+  - '2412.07968'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - openness
+  - weighted cscK
+  - coercivity
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_010
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss properness of weighted Mabuchi functionals?
+  expected_sources:
+  - '2007.01345'
+  - '2104.09709'
+  - '2407.09929'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - properness
+  - weighted Mabuchi
+  - coercivity
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_011
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted energy functionals on finite energy spaces?
+  expected_sources:
+  - '2007.01345'
+  - '2303.03263'
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - finite energy
+  - weighted energy
+  - Mabuchi
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected local weighted_twisted notes appear at ranks 1, 2, and 3 with finite-energy weighted energy sections.
+  correction_needed: ''
+- id: weighted_mabuchi_012
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted extremal metrics on fibrations or bundles?
+  expected_sources:
+  - '1808.07811'
+  - '2104.09709'
+  - '2309.02279'
+  expected_chunk_types:
+  - theorem
+  - example
+  - text
+  expected_terms:
+  - weighted extremal
+  - fibration
+  - bundle
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_013
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss the weighted Mabuchi Hessian or geodesic convexity mechanism?
+  expected_sources:
+  - '2007.01345'
+  - '2303.03263'
+  expected_chunk_types:
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - Hessian
+  - geodesic convexity
+  - weighted Mabuchi
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_014
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss Lahdili's weighted extremal equation?
+  expected_sources:
+  - '1808.07811'
+  - '2007.01345'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - Lahdili
+  - weighted extremal equation
+  - scalar curvature
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_015
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted cscK metrics and moment maps?
+  expected_sources:
+  - '1808.07811'
+  - '2007.01345'
+  - '2104.09709'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - moment map
+  - weighted cscK
+  - scalar curvature
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_016
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted K-energy in the notes?
+  expected_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - weighted K-energy
+  - weighted Mabuchi
+  - twisted
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_017
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted scalar curvature in toric coordinates?
+  expected_sources:
+  - '2007.01345'
+  - '2104.09709'
+  - '2503.22183'
+  expected_chunk_types:
+  - definition
+  - example
+  - text
+  expected_terms:
+  - weighted scalar curvature
+  - toric
+  - coordinates
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_018
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted extremal metrics and stability on compactifications?
+  expected_sources:
+  - '2104.09709'
+  - '2309.02279'
+  - '2412.07968'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - weighted extremal
+  - stability
+  - compactification
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_019
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss weighted cscK continuity or deformation methods?
+  expected_sources:
+  - '2407.09929'
+  - '2412.07968'
+  - '2503.22183'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - continuity
+  - deformation
+  - weighted cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: weighted_mabuchi_020
+  topic: weighted Mabuchi/Lahdili
+  question: Where does the corpus discuss non-Archimedean aspects of weighted Mabuchi or weighted stability?
+  expected_sources:
+  - '2104.09709'
+  - '2503.22183'
+  - '2509.15016'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - non-Archimedean
+  - weighted Mabuchi
+  - stability
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_001
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss convexity of the extended K-energy on finite energy spaces?
+  expected_sources:
+  - '1510.01260'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  expected_terms:
+  - extended K-energy
+  - finite energy
+  - convexity
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected source 1510.01260 appears at rank 2; arXiv confirms Berman-Darvas-Lu on convexity of the extended
+    K-energy on finite energy spaces.
+  correction_needed: ''
+- id: bdl_finite_energy_002
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss convexity of K-energy along weak geodesics?
+  expected_sources:
+  - '1405.0401'
+  - '1409.7896'
+  - '1510.01260'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - K-energy
+  - weak geodesics
+  - convexity
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_003
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss the Berman-Darvas-Lu extension of Mabuchi energy?
+  expected_sources:
+  - '1510.01260'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - Berman
+  - Darvas
+  - Lu
+  - Mabuchi energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_004
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss finite energy spaces E1 and the Mabuchi functional?
+  expected_sources:
+  - '1510.01260'
+  - '1602.03114'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - E1
+  - finite energy
+  - Mabuchi
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_005
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss weak minimizers of the K-energy and regularity?
+  expected_sources:
+  - '1602.03114'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - weak minimizers
+  - K-energy
+  - regularity
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_006
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss properness of the K-energy and existence of cscK metrics?
+  expected_sources:
+  - '1602.03114'
+  - '1506.07129'
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - properness
+  - K-energy
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected sources are absent from top 5; current top evidence is mainly 1803.09506 on conic properness and
+    singular cscK questions.
+  correction_needed: Split smooth properness/existence sources from conic properness; add 1803.09506 only if the intended
+    question is singular/conic cscK properness.
+- id: bdl_finite_energy_007
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss Tian properness conjectures modulo automorphisms?
+  expected_sources:
+  - '1506.07129'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Tian
+  - properness
+  - automorphisms
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_008
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss uniform K-stability and energy asymptotics?
+  expected_sources:
+  - '1603.01026'
+  expected_chunk_types:
+  - theorem
+  - definition
+  - text
+  expected_terms:
+  - uniform K-stability
+  - energy asymptotics
+  - non-Archimedean
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_009
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss geodesic rays and non-Archimedean energy functionals?
+  expected_sources:
+  - '1603.01026'
+  - '1510.01260'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - geodesic rays
+  - non-Archimedean
+  - energy functionals
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_010
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss the d1 metric on finite energy potentials?
+  expected_sources:
+  - '1510.01260'
+  - '1506.07129'
+  - '1602.03114'
+  expected_chunk_types:
+  - definition
+  - lemma
+  - text
+  expected_terms:
+  - d1 metric
+  - finite energy
+  - potentials
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_011
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss lower semicontinuity of the extended Mabuchi functional?
+  expected_sources:
+  - '1510.01260'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  expected_terms:
+  - lower semicontinuity
+  - extended Mabuchi
+  - finite energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected source 1510.01260 is absent from top 5; retrieval surfaces related Mabuchi-energy and weak-geodesic
+    sources instead.
+  correction_needed: Use BDL-specific wording such as d_p-lsc extension or extended K-energy, or keep this as a retrieval
+    failure rather than gold.
+- id: bdl_finite_energy_012
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss entropy terms in the extension of K-energy?
+  expected_sources:
+  - '1510.01260'
+  - '1810.04661'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - entropy
+  - K-energy
+  - finite energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_013
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss weak geodesic segments in the space of Kahler potentials?
+  expected_sources:
+  - '1405.0401'
+  - '1409.7896'
+  - '1510.01260'
+  expected_chunk_types:
+  - definition
+  - lemma
+  - text
+  expected_terms:
+  - weak geodesic segments
+  - Kahler potentials
+  - convexity
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_014
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss the relation between minimizers of K-energy and cscK metrics?
+  expected_sources:
+  - '1602.03114'
+  - '1801.00656'
+  - '1510.01260'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - minimizers
+  - K-energy
+  - cscK metrics
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_015
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss coercivity of K-energy in finite energy geometry?
+  expected_sources:
+  - '1602.03114'
+  - '1506.07129'
+  - '1510.01260'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - coercivity
+  - K-energy
+  - finite energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_016
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss convexity of Ding or Mabuchi functionals in singular settings?
+  expected_sources:
+  - '1405.0401'
+  - '1510.01260'
+  - '1810.04661'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Ding functional
+  - Mabuchi
+  - singular
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_017
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss finite energy geodesics and pluripotential theory?
+  expected_sources:
+  - '1510.01260'
+  - '1405.0401'
+  - '1810.04661'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - finite energy geodesics
+  - pluripotential
+  - Kahler
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_018
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss automorphism groups in properness and K-energy arguments?
+  expected_sources:
+  - '1506.07129'
+  - '1602.03114'
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - automorphism group
+  - properness
+  - K-energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_019
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss energy functionals on singular or weak Kahler potentials?
+  expected_sources:
+  - '1510.01260'
+  - '1810.04661'
+  - '2102.05277'
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - energy functionals
+  - weak potentials
+  - singular
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: bdl_finite_energy_020
+  topic: Berman-Darvas-Lu finite energy convexity
+  question: Where does the corpus discuss Berman-Darvas-Lu convexity as an input to YTD-type arguments?
+  expected_sources:
+  - '1510.01260'
+  - '1603.01026'
+  - '1602.03114'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Berman-Darvas-Lu
+  - convexity
+  - YTD
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_001
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss Chen-Cheng cscK estimates?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - proof
+  expected_terms:
+  - Chen-Cheng
+  - estimates
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected Chen-Cheng source papers are absent from top 5; top results cite or generalize Chen-Cheng estimates
+    rather than retrieving the source papers.
+  correction_needed: Rewrite to target Chen-Cheng a priori estimates directly, or add application/citation sources if the
+    question is about later uses of the estimates.
+- id: chen_cheng_csck_002
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss cscK metrics with general automorphism group?
+  expected_sources:
+  - '1801.00656'
+  - '1801.05907'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - general automorphism group
+  - cscK
+  - Chen-Cheng
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_003
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss a priori estimates for the cscK equation?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - proof
+  expected_terms:
+  - a priori estimates
+  - cscK equation
+  - Chen-Cheng
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_004
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss properness and existence of cscK metrics via Chen-Cheng?
+  expected_sources:
+  - '1801.00656'
+  - '1602.03114'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - properness
+  - existence
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_005
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss the fourth-order cscK equation and scalar curvature estimates?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - proof
+  expected_terms:
+  - fourth-order
+  - scalar curvature
+  - estimates
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_006
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss twisted cscK or continuity paths related to Chen-Cheng estimates?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  - '1412.0648'
+  expected_chunk_types:
+  - theorem
+  - lemma
+  - text
+  expected_terms:
+  - twisted cscK
+  - continuity path
+  - Chen-Cheng
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected source 1801.00656 appears at rank 1; arXiv confirms Chen-Cheng discusses twisted cscK equations and
+    continuity paths.
+  correction_needed: ''
+- id: chen_cheng_csck_007
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss cscK existence when the automorphism group is non-discrete?
+  expected_sources:
+  - '1801.00656'
+  - '1801.05907'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - automorphism group
+  - non-discrete
+  - cscK existence
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_008
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss regularity of weak cscK minimizers?
+  expected_sources:
+  - '1602.03114'
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - weak minimizers
+  - regularity
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_009
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss the J-flow or J-equation as background to cscK estimates?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - text
+  expected_terms:
+  - J-flow
+  - J-equation
+  - cscK estimates
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_010
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss Chen-Cheng's reduction of cscK existence to geodesic stability or properness?
+  expected_sources:
+  - '1801.00656'
+  - '1801.05907'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - geodesic stability
+  - properness
+  - cscK existence
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_011
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss K-energy minimizers and Chen-Cheng regularity?
+  expected_sources:
+  - '1801.00656'
+  - '1602.03114'
+  expected_chunk_types:
+  - theorem
+  - proof
+  - text
+  expected_terms:
+  - K-energy minimizers
+  - regularity
+  - Chen-Cheng
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected source 1602.03114 appears at rank 2, but the question wording mixes BDL weak minimizer regularity
+    with Chen-Cheng regularity and misses 1801.00656 in top evidence.
+  correction_needed: Either rewrite as BDL weak K-energy minimizer regularity, or adjust sources/wording to target Chen-Cheng
+    1801.00656.
+- id: chen_cheng_csck_012
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss scalar curvature bounds in Chen-Cheng theory?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  expected_chunk_types:
+  - lemma
+  - proposition
+  - proof
+  expected_terms:
+  - scalar curvature bounds
+  - Chen-Cheng
+  - estimate
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_013
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss properness modulo automorphisms for cscK metrics?
+  expected_sources:
+  - '1506.07129'
+  - '1801.00656'
+  - '1801.05907'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - properness modulo automorphisms
+  - cscK
+  - K-energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_014
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss cscK estimates in relation to the Calabi functional?
+  expected_sources:
+  - '1712.06697'
+  - math_0412518
+  - '1801.00656'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Calabi functional
+  - cscK estimates
+  - scalar curvature
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: chen_cheng_csck_015
+  topic: Chen-Cheng cscK estimates
+  question: Where does the corpus discuss Chen-Cheng estimates as an ingredient in later weighted or conic cscK work?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  - '2407.09929'
+  - '1803.09506'
+  expected_chunk_types:
+  - theorem
+  - text
+  - citation_context
+  expected_terms:
+  - Chen-Cheng
+  - weighted cscK
+  - conic cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_001
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss CP1 with moment polytope [-1,1] and one conic point?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  expected_chunk_types:
+  - example
+  - definition
+  - text
+  expected_terms:
+  - CP1
+  - '[-1,1]'
+  - conic point
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Expected local one_conic_point.tex appears at ranks 1 and 3 and directly states CP1, P=[-1,1], cone angle,
+    and one conic point.
+  correction_needed: ''
+- id: my_notes_cp1_002
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss CP1 or a moment interval with one cusp point?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_cusp_point.tex
+  expected_chunk_types:
+  - example
+  - definition
+  - text
+  expected_terms:
+  - CP1
+  - cusp point
+  - moment interval
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_003
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss cone angle beta and the Guillemin boundary term?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex
+  expected_chunk_types:
+  - definition
+  - example
+  - text
+  expected_terms:
+  - cone angle beta
+  - Guillemin
+  - boundary term
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_004
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss Poincare cusp parameters alpha and beta?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex
+  expected_chunk_types:
+  - definition
+  - text
+  expected_terms:
+  - alpha
+  - beta
+  - Poincare cusp
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_005
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes give a dictionary between Kahler geometry and toric moment-polytope expressions?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/kenergy_table.tex
+  expected_chunk_types:
+  - definition
+  - text
+  expected_terms:
+  - dictionary
+  - Kahler
+  - moment polytope
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_006
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss the symplectic potential for a one-conic CP1 model?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  expected_chunk_types:
+  - example
+  - definition
+  - text
+  expected_terms:
+  - symplectic potential
+  - one conic
+  - CP1
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Expected local one_conic_point.tex is absent from top 5; retrieval surfaces generic toric symplectic-potential
+    sources instead.
+  correction_needed: Check whether the note uses the exact phrase symplectic potential; consider rewriting with the note's
+    local terminology such as Guillemin potential or cone angle beta.
+- id: my_notes_cp1_007
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss the symplectic potential for a one-cusp CP1 model?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_cusp_point.tex
+  expected_chunk_types:
+  - example
+  - definition
+  - text
+  expected_terms:
+  - symplectic potential
+  - one cusp
+  - CP1
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_008
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss cone-to-cusp limiting behavior in the CP1 examples?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_cusp_point.tex
+  expected_chunk_types:
+  - example
+  - remark
+  - text
+  expected_terms:
+  - cone-to-cusp
+  - limit
+  - CP1
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_009
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss notation for mixed conic and cusp toric manifolds?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex
+  expected_chunk_types:
+  - definition
+  - text
+  expected_terms:
+  - notation
+  - mixed conic
+  - cusp
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: my_notes_cp1_010
+  topic: my_notes CP1 cone-to-cusp examples
+  question: Where do my notes discuss weighted or twisted K-energy together with the CP1 examples?
+  expected_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/kenergy_table.tex
+  expected_chunk_types:
+  - definition
+  - proposition
+  - text
+  expected_terms:
+  - weighted
+  - twisted K-energy
+  - CP1
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_001
+  topic: negative/non-established claims
+  question: Does the corpus prove a general Chen-Cheng theorem for mixed conic and cusp toric manifolds?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - general Chen-Cheng theorem
+  - mixed conic cusp
+  - toric manifolds
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Negative sanity candidate: top evidence mentions conic/cusp applications, toric manifolds, and Chen-Cheng
+    separately, but does not establish a general mixed conic-cusp toric Chen-Cheng theorem.'
+  correction_needed: ''
+- id: negative_non_established_002
+  topic: negative/non-established claims
+  question: Does the corpus contain a complete proof of my own new theorem?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - complete proof
+  - own new theorem
+  - novelty
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_003
+  topic: negative/non-established claims
+  question: Where does this corpus establish a Floer homology spectral sequence for these metrics?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - Floer homology
+  - spectral sequence
+  - cscK metrics
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_004
+  topic: negative/non-established claims
+  question: Does the corpus prove a general YTD theorem for arbitrary mixed conic-cusp weighted cscK metrics?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - general YTD theorem
+  - mixed conic-cusp
+  - weighted cscK
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_005
+  topic: negative/non-established claims
+  question: Does the corpus establish existence of cscK Poincare metrics on every log Calabi-Yau pair?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - every log Calabi-Yau pair
+  - existence
+  - cscK Poincare
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_006
+  topic: negative/non-established claims
+  question: Does the corpus prove smooth convergence from all cone angles to a cusp metric without hypotheses?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - smooth convergence
+  - all cone angles
+  - without hypotheses
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_007
+  topic: negative/non-established claims
+  question: Does the corpus prove the Abreu equation has a smooth solution on every labeled polytope?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - Abreu equation
+  - every labeled polytope
+  - smooth solution
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_008
+  topic: negative/non-established claims
+  question: Does the corpus establish weighted Mabuchi convexity for all singular weak geodesics without regularity assumptions?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - weighted Mabuchi convexity
+  - all singular weak geodesics
+  - without regularity
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_009
+  topic: negative/non-established claims
+  question: Does the corpus prove Chen-Cheng estimates in the noncompact cusp setting directly?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - Chen-Cheng estimates
+  - noncompact cusp
+  - direct proof
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_010
+  topic: negative/non-established claims
+  question: Does the corpus prove uniqueness of weighted extremal Poincare metrics on all toric varieties?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - uniqueness
+  - weighted extremal Poincare
+  - all toric varieties
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_011
+  topic: negative/non-established claims
+  question: Does the corpus contain a complete classification of all mixed cone-cusp CP1 limits?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - complete classification
+  - mixed cone-cusp
+  - CP1 limits
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: 'Negative sanity candidate: top evidence discusses toric classifications or limits in other contexts, but
+    not a complete classification of all mixed cone-cusp CP1 limits.'
+  correction_needed: ''
+- id: negative_non_established_012
+  topic: negative/non-established claims
+  question: Does the corpus prove that every toric destabilizing test configuration is detected by the current notes?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - every toric destabilizing test configuration
+  - current notes
+  - detected
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_013
+  topic: negative/non-established claims
+  question: Does the corpus establish a numerical algorithm with certified proof for solving all Abreu equations?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - numerical algorithm
+  - certified proof
+  - all Abreu equations
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_014
+  topic: negative/non-established claims
+  question: Does the corpus prove an equivalence between weighted K-stability and ordinary K-stability in all cases?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - weighted K-stability
+  - ordinary K-stability
+  - all cases
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_015
+  topic: negative/non-established claims
+  question: Does the corpus prove finite energy K-energy convexity for arbitrary non-Kahler complex manifolds?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - finite energy
+  - non-Kahler
+  - K-energy convexity
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_016
+  topic: negative/non-established claims
+  question: Does the corpus prove that all cusp limits preserve algebraic K-polystability automatically?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - all cusp limits
+  - algebraic K-polystability
+  - automatically
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_017
+  topic: negative/non-established claims
+  question: Does the corpus establish a complete theorem for mixed conic-cusp extremal metrics with arbitrary automorphism
+    group?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - mixed conic-cusp extremal
+  - arbitrary automorphism group
+  - complete theorem
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_018
+  topic: negative/non-established claims
+  question: Does the corpus prove that the CP1 cone-to-cusp notes are already publication-ready?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - CP1 cone-to-cusp notes
+  - publication-ready
+  - proof
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_019
+  topic: negative/non-established claims
+  question: Does the corpus prove a general bridge between Floer theory and weighted Mabuchi convexity?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - Floer theory
+  - weighted Mabuchi convexity
+  - general bridge
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: negative_non_established_020
+  topic: negative/non-established claims
+  question: Does the corpus establish that the local RAG system verifies mathematical proofs?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - RAG system
+  - verifies mathematical proofs
+  - establish
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: unreviewed
+  review_notes: ''
+  correction_needed: ''
+- id: darvas_zhang_quantization_001
+  topic: Darvas-Zhang/Berman quantization/YTD
+  question: Where does the corpus discuss K^beta energies in the Darvas-Zhang YTD correspondence for cscK metrics?
+  expected_sources:
+  - '2509.15173'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - K^beta
+  - YTD correspondence
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Source is now downloaded and ingested, but current retrieval did not surface it in the top 3 triage evidence.
+  correction_needed: Inspect top 10 before promotion; likely query wording needs Darvas-Zhang/K^beta-specific terms.
+- id: darvas_zhang_quantization_002
+  topic: Darvas-Zhang/Berman quantization/YTD
+  question: Where does the corpus connect Berman's transcendental quantization with Darvas-Zhang K^beta energies?
+  expected_sources:
+  - '2509.15173'
+  - '1011.3976'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - Berman
+  - transcendental quantization
+  - K^beta
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Sources are now downloaded and ingested, but top 3 triage evidence is dominated by conic/KE sources rather than the expected quantization papers.
+  correction_needed: Split or rewrite toward either Darvas-Zhang K^beta energy or Berman thermodynamical formalism before promotion.
+- id: darvas_zhang_quantization_003
+  topic: Darvas-Zhang/Berman quantization/YTD
+  question: Where does the corpus discuss the slope or intersection formula for the K_beta invariant of a test configuration?
+  expected_sources:
+  - '2509.15173'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - K_beta invariant
+  - test configuration
+  - intersection formula
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: needs_correction
+  review_notes: Source is now downloaded and ingested, but current top 3 evidence misses the expected Darvas-Zhang source.
+  correction_needed: Rewrite toward the exact K_beta invariant terminology used in the paper before promotion.
+- id: darvas_zhang_quantization_004
+  topic: Bergman kernel/Kahler quantization
+  question: Where does the corpus discuss sharp C^{1,bar1} estimates for weighted Bergman kernels in Kahler quantization?
+  expected_sources:
+  - '2602.03111'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - weighted Bergman kernel
+  - C^{1,bar1}
+  - Kahler quantization
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit exact evidence before promotion to stable gold.
+- id: darvas_zhang_quantization_005
+  topic: Bergman kernel/Kahler quantization
+  question: Where does the corpus discuss quantization of non-pluripolar Radon measures on compact Kahler manifolds?
+  expected_sources:
+  - '2602.03111'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - non-pluripolar Radon measure
+  - quantization
+  - compact Kahler manifold
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit exact evidence before promotion to stable gold.
+- id: darvas_zhang_quantization_006
+  topic: Fano quantization/Kahler-Einstein
+  question: Where does the corpus discuss quantized volume comparison for Fano manifolds?
+  expected_sources:
+  - '2503.16766'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - quantized volume comparison
+  - Fano manifolds
+  - Kahler-Einstein
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit whether this should be core evidence or supporting/background before promotion.
+- id: darvas_zhang_quantization_007
+  topic: pluripotential theory/variational Monge-Ampere
+  question: Where does the corpus discuss the variational approach to complex Monge-Ampere equations and balanced metric convergence?
+  expected_sources:
+  - '0907.4490'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - variational approach
+  - complex Monge-Ampere
+  - balanced metrics
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit exact evidence before promotion to stable gold.
+- id: darvas_zhang_quantization_008
+  topic: Berman thermodynamical formalism/Kahler-Einstein
+  question: Where does the corpus discuss Berman's thermodynamical formalism for Monge-Ampere equations and singular Kahler-Einstein metrics?
+  expected_sources:
+  - '1011.3976'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - thermodynamical formalism
+  - Monge-Ampere
+  - singular Kahler-Einstein
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit whether evidence is exact or discussion-level before promotion.
+- id: darvas_zhang_quantization_009
+  topic: Berman statistical mechanics/YTD
+  question: Where does the corpus discuss Kahler-Einstein metrics emerging from free fermions and statistical mechanics?
+  expected_sources:
+  - '1009.2942'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - free fermions
+  - statistical mechanics
+  - Kahler-Einstein metrics
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit whether this remains exploratory rather than stable gold.
+- id: darvas_zhang_quantization_010
+  topic: Boucksom-Jonsson/YTD/non-Archimedean geometry
+  question: Where does the corpus discuss Boucksom-Jonsson's complex-to-non-Archimedean approach to the YTD conjecture?
+  expected_sources:
+  - '2602.10800'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - text
+  expected_terms:
+  - complex to non-Archimedean
+  - YTD conjecture
+  - cscK
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 2 in the triage report. User-declined K-stability II source is excluded.
+  correction_needed: Human audit exact evidence before promotion; do not add the excluded K-stability II source.
+- id: darvas_zhang_quantization_011
+  topic: weighted extremal metrics/resolutions
+  question: Where does the corpus discuss weighted extremal Kahler metrics on resolutions of singularities?
+  expected_sources:
+  - '2412.06096'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - weighted extremal
+  - resolutions of singularities
+  - Mabuchi energy
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit against existing weighted Mabuchi questions for duplication before promotion.
+- id: darvas_zhang_quantization_012
+  topic: finite-energy pluripotential theory
+  question: Where does the corpus discuss measures of finite energy in pluripotential theory using a synthetic approach?
+  expected_sources:
+  - '2307.01697'
+  expected_chunk_types:
+  - definition
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - measures of finite energy
+  - pluripotential theory
+  - synthetic approach
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit whether it is useful for evidence gold or background only.
+- id: darvas_zhang_quantization_013
+  topic: non-Archimedean/pluripotential background
+  question: Where does the corpus discuss the addendum to global pluripotential theory over a trivially valued field?
+  expected_sources:
+  - '2206.07183'
+  expected_chunk_types:
+  - theorem
+  - proposition
+  - proof
+  - text
+  expected_terms:
+  - global pluripotential theory
+  - trivially valued field
+  - envelope property
+  preferred_sections: []
+  relevance_rubric: *id001
+  review_status: promote_candidate
+  review_notes: Source is now downloaded, ingested, and appears at rank 1 in the triage report.
+  correction_needed: Human audit; keep as background unless it has direct project relevance.
+- id: darvas_zhang_quantization_014
+  topic: negative/non-established claims
+  question: Does the corpus prove a conic or cusp version of the Darvas-Zhang YTD correspondence for cscK metrics?
+  expected_sources: []
+  expected_chunk_types: []
+  expected_terms:
+  - conic Darvas-Zhang
+  - cusp Darvas-Zhang
+  - YTD correspondence
+  preferred_sections: []
+  negative: true
+  relevance_rubric: *id001
+  review_status: exploratory_only
+  review_notes: Use as an exploratory guardrail; downloaded sources still do not establish a conic/cusp Darvas-Zhang theorem in the top retrieved evidence.
+  correction_needed: Reassess only if direct conic/cusp Darvas-Zhang evidence is found.
