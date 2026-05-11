@@ -9,6 +9,12 @@ from .citations import format_result_header
 from .config import DEFAULT_INDEX_DIR
 from .discovery import discover_candidates
 from .downloader import DEFAULT_SEED_MAX_PAPERS, download_approved_papers, download_arxiv_ids, download_seed_file
+from .evidence_eval import (
+    format_candidate_evidence_inspection_markdown,
+    inspect_candidate_evidence_eval,
+    write_candidate_evidence_inspection_markdown,
+    write_candidate_evidence_triage_markdown,
+)
 from .eval import evaluate_retrieval, format_eval_report
 from .metadata_enrichment import DETERMINISTIC_ENRICHMENT_BACKEND
 from .paper_store import (
@@ -150,6 +156,30 @@ def run_eval(eval_path: str, index_dir: str = DEFAULT_INDEX_DIR, mode: str = "hy
         console.print(str(exc))
         return 1
     console.print(format_eval_report(summary))
+    return 0
+
+
+def run_inspect_evidence_eval(
+    eval_path: str,
+    index_dir: str = DEFAULT_INDEX_DIR,
+    mode: str = "hybrid",
+    top_k: int = 10,
+    out: str | None = None,
+    triage_out: str | None = None,
+) -> int:
+    try:
+        report = inspect_candidate_evidence_eval(eval_path, index_dir=index_dir, mode=mode, top_k=top_k)
+    except (FileNotFoundError, ValueError, IndexNotFoundError) as exc:
+        console.print(str(exc))
+        return 1
+    markdown = format_candidate_evidence_inspection_markdown(report)
+    console.print(markdown)
+    if out:
+        path = write_candidate_evidence_inspection_markdown(report, out)
+        console.print(f"Wrote candidate evidence inspection report to {path}")
+    if triage_out:
+        path = write_candidate_evidence_triage_markdown(report, triage_out)
+        console.print(f"Wrote candidate evidence triage report to {path}")
     return 0
 
 
@@ -401,6 +431,17 @@ if TYPER_AVAILABLE:  # pragma: no cover - optional dependency
     ) -> None:
         raise typer.Exit(run_eval(eval_path, index_dir, mode, top_k))
 
+    @app.command("inspect-evidence-eval")
+    def inspect_evidence_eval_cmd(
+        eval_path: str,
+        index_dir: str = typer.Option(DEFAULT_INDEX_DIR, help="Local index directory."),
+        mode: str = typer.Option("hybrid", help="keyword, vector, or hybrid."),
+        top_k: int = typer.Option(10, help="Number of retrieved chunks to inspect."),
+        out: str | None = typer.Option(None, help="Optional Markdown report path."),
+        triage_out: str | None = typer.Option(None, help="Optional compact human triage Markdown path."),
+    ) -> None:
+        raise typer.Exit(run_inspect_evidence_eval(eval_path, index_dir, mode, top_k, out, triage_out))
+
     @app.command()
     def discover(
         query: str | None = typer.Argument(None, help="Search query for arXiv discovery."),
@@ -499,6 +540,14 @@ def _argparse_main(argv: list[str] | None = None) -> int:
     eval_parser.add_argument("--mode", default="hybrid", choices=["keyword", "vector", "hybrid"])
     eval_parser.add_argument("--top-k", type=int, default=5)
 
+    inspect_evidence_parser = subparsers.add_parser("inspect-evidence-eval")
+    inspect_evidence_parser.add_argument("eval_path")
+    inspect_evidence_parser.add_argument("--index-dir", default=DEFAULT_INDEX_DIR)
+    inspect_evidence_parser.add_argument("--mode", default="hybrid", choices=["keyword", "vector", "hybrid"])
+    inspect_evidence_parser.add_argument("--top-k", type=int, default=10)
+    inspect_evidence_parser.add_argument("--out", default=None)
+    inspect_evidence_parser.add_argument("--triage-out", default=None)
+
     discover_parser = subparsers.add_parser("discover")
     discover_parser.add_argument("query", nargs="?")
     discover_parser.add_argument("--config", default=None)
@@ -576,6 +625,8 @@ def _argparse_main(argv: list[str] | None = None) -> int:
         return run_stats(args.index_dir)
     if args.command == "eval":
         return run_eval(args.eval_path, args.index_dir, args.mode, args.top_k)
+    if args.command == "inspect-evidence-eval":
+        return run_inspect_evidence_eval(args.eval_path, args.index_dir, args.mode, args.top_k, args.out, args.triage_out)
     if args.command == "discover":
         return run_discover(args.query, args.config, args.output, args.index_dir, args.max_results, args.sort_by, args.verbose)
     if args.command == "review-candidates":

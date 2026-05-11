@@ -1,0 +1,153 @@
+metadata:
+  status: agent_generated_human_audit_recommended
+  notes: "Agent/search triage. Source identity and topical relevance only; not proof verification."
+  batch: "conic_poincare_001 through conic_poincare_009"
+  generated_on: "2026-05-09"
+  promotion_target: "eval/toric_evidence_gold_questions.yaml"
+  source_suggestions: "eval/candidate_source_suggestions.yaml"
+
+reviews:
+  - candidate_id: conic_poincare_001
+    decision: promote_candidate
+    best_evidence_ranks: [1, 2]
+    verified_sources:
+      - source: "2210.11862"
+        title: "A conical approximation of constant scalar curvature Kähler metrics of Poincaré type"
+        authors: ["Takahiro Aoi"]
+        url: "https://arxiv.org/abs/2210.11862"
+        verification: source_identity_and_topic_confirmed
+    local_retrieval_assessment: "Expected source appears at rank 1; rank 2 is also relevant background."
+    online_assessment: "arXiv metadata confirms the title and abstract topic: cscK Poincare-type metrics approximated by small-angle cone cscK metrics."
+    mathematical_conservatism: "Source-level retrieval question; does not ask the system to verify a proof."
+    correction_needed: ""
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_002
+    decision: promote_candidate
+    best_evidence_ranks: [3]
+    verified_sources:
+      - source: "2410.14130"
+        title: "The uniqueness of Poincaré type constant scalar curvature Kähler metric"
+        authors: ["Yulun Xu", "Kai Zheng"]
+        url: "https://arxiv.org/abs/2410.14130"
+        verification: source_identity_and_topic_confirmed
+    local_retrieval_assessment: "Expected source appears at rank 3."
+    online_assessment: "arXiv metadata confirms the uniqueness topic for Poincare-type cscK metrics."
+    mathematical_conservatism: "Source-level retrieval question; acceptable despite rank 3 because the expected source is in top-3."
+    correction_needed: ""
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_003
+    decision: promote_candidate
+    best_evidence_ranks: [1, 3]
+    verified_sources:
+      - source: "1711.08424"
+        title: "Extremal Kähler Poincaré type metrics on toric varieties"
+        authors: ["Vestislav Apostolov", "Hugues Auvray", "Lars Martin Sektnan"]
+        url: "https://arxiv.org/abs/1711.08424"
+        verification: source_identity_and_topic_confirmed
+    local_retrieval_assessment: "Expected source appears at ranks 1 and 3."
+    online_assessment: "arXiv metadata confirms toric extremal Poincare-type Kähler metrics."
+    mathematical_conservatism: "Source-level retrieval question with direct title/topic match."
+    correction_needed: ""
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_004
+    decision: needs_corpus_expansion
+    best_evidence_ranks: [2, 3]
+    verified_sources:
+      - source: "1109.3159"
+        title: "The space of Poincaré type Kähler metrics on the complement of a divisor"
+        authors: ["Hugues Auvray"]
+        url: "https://arxiv.org/abs/1109.3159"
+        verification: better_source_identity_and_topic_confirmed
+    local_retrieval_assessment: "The current expected source 1205.0056 is not in top-3; local ranks 2 and 3 are relevant discussion but not the intended source."
+    online_assessment: "arXiv 1109.3159 matches the user's Hugues/Auvray space-of-Poincare-type-metrics correction."
+    mathematical_conservatism: "Do not promote until 1109.3159 is added to the corpus, ingested, and retrieval-checked."
+    correction_needed: "Replace or augment expected source with Auvray 1109.3159 after corpus expansion."
+    suggested_new_sources: ["arxiv_1109_3159"]
+
+  - candidate_id: conic_poincare_005
+    decision: needs_correction
+    best_evidence_ranks: [1, 3]
+    verified_sources:
+      - source: "1401.0123"
+        title: "Asymptotic properties of extremal Kähler metrics of Poincaré type"
+        authors: ["Hugues Auvray"]
+        url: "https://arxiv.org/abs/1401.0123"
+        verification: source_identity_confirmed_but_local_retrieval_mismatch
+      - source: "1401.0128"
+        title: "Note on Poincaré type Kähler metrics and Futaki characters"
+        authors: ["Hugues Auvray"]
+        url: "https://arxiv.org/abs/1401.0128"
+        verification: source_identity_confirmed_but_local_retrieval_mismatch
+    local_retrieval_assessment: "Top evidence currently points mainly to 1711.08424, while the candidate expects Auvray 1401.0123 and 1401.0128."
+    online_assessment: "Online metadata supports the Auvray sources, but the question mixes extremal Poincare metrics, Futaki invariants, AAS toric evidence, and local weighted_twisted notes."
+    mathematical_conservatism: "Hold until the candidate is split or the expected-source policy is clarified."
+    correction_needed: "Split or clarify Auvray vs AAS vs weighted_twisted expected evidence."
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_006
+    decision: needs_correction
+    best_evidence_ranks: [1]
+    verified_sources:
+      - source: "1401.0128"
+        title: "Note on Poincaré type Kähler metrics and Futaki characters"
+        authors: ["Hugues Auvray"]
+        url: "https://arxiv.org/abs/1401.0128"
+        verification: source_identity_confirmed_but_local_retrieval_miss
+    local_retrieval_assessment: "Expected source 1401.0128 is not in current top-3; top evidence points to 1711.08424 and math_0611002."
+    online_assessment: "arXiv metadata confirms 1401.0128 is the intended Futaki-character source."
+    mathematical_conservatism: "Hold under the policy that verified but currently missed expected sources are not promoted."
+    correction_needed: "Investigate retrieval miss or rewrite expected sources before promotion."
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_007
+    decision: promote_candidate
+    best_evidence_ranks: [1]
+    verified_sources:
+      - source: "1803.09506"
+        title: "Existence of constant scalar curvature Kaehler cone metrics, properness and geodesic stability"
+        authors: ["Chengjian Yao"]
+        url: "https://arxiv.org/abs/1803.09506"
+        verification: source_identity_and_topic_confirmed
+    local_retrieval_assessment: "Expected source appears at rank 1 with the cscK cone path definition."
+    online_assessment: "arXiv metadata confirms the cscK cone metrics/properness/geodesic stability topic."
+    mathematical_conservatism: "Source-level retrieval question; does not claim theorem verification."
+    correction_needed: ""
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_008
+    decision: needs_correction
+    best_evidence_ranks: [1, 3]
+    verified_sources:
+      - source: "1803.09506"
+        title: "Existence of constant scalar curvature Kaehler cone metrics, properness and geodesic stability"
+        authors: ["Chengjian Yao"]
+        url: "https://arxiv.org/abs/1803.09506"
+        verification: source_identity_and_topic_confirmed
+      - source: "1508.02640"
+        title: "Scalar curvature and Futaki invariant of Kähler metrics with cone singularities along a divisor"
+        authors: ["Yoshinori Hashimoto"]
+        url: "https://arxiv.org/abs/1508.02640"
+        verification: source_identity_and_topic_confirmed
+    local_retrieval_assessment: "Expected sources appear at ranks 1 and 3, but the triage note asks about an unresolved Donaldson conic-toric source."
+    online_assessment: "Hashimoto and Yao sources are relevant; Donaldson/conic toric source remains ambiguous."
+    mathematical_conservatism: "Hold until the Donaldson-source question is resolved or removed."
+    correction_needed: "Resolve whether Donaldson's conic toric source should be added."
+    suggested_new_sources: []
+
+  - candidate_id: conic_poincare_009
+    decision: needs_correction
+    best_evidence_ranks: [1]
+    verified_sources:
+      - source: "1105.5216"
+        title: "Kahler-Einstein metrics with edge singularities"
+        authors: ["T. Jeffres", "Rafe Mazzeo", "Yanir A. Rubinstein"]
+        url: "https://arxiv.org/abs/1105.5216"
+        verification: source_identity_confirmed_but_local_retrieval_miss
+    local_retrieval_assessment: "The expected JMR source is not in current top-3; rank 1 is Donaldson 1102.1196."
+    online_assessment: "arXiv metadata confirms 1105.5216 is the intended JMR edge-singularity source."
+    mathematical_conservatism: "Hold under the policy that verified but currently missed expected sources are not promoted."
+    correction_needed: "Investigate retrieval miss or adjust query wording before promotion."
+    suggested_new_sources: []

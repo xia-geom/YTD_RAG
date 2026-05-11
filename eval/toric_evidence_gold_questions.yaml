@@ -1,0 +1,99 @@
+# Agent/search verified source-level evidence eval.
+# This file is separate from toric_core_gold_questions.yaml so core hits@k
+# remain comparable across ranking changes.
+
+questions:
+  - id: conic_poincare_001
+    question: "Where does the corpus discuss conical approximation of Poincare type cscK metrics?"
+    expected_sources:
+      - "2210.11862"
+    notes: "Agent/search verified source identity and current top-3 retrieval."
+
+  - id: conic_poincare_002
+    question: "Where does the corpus state or prove uniqueness for Poincare type cscK metrics?"
+    expected_sources:
+      - "2410.14130"
+    notes: "Agent/search verified source identity and current top-3 retrieval."
+
+  - id: conic_poincare_003
+    question: "Where does the corpus discuss toric extremal metrics with Poincare type singularities?"
+    expected_sources:
+      - "1711.08424"
+    notes: "Agent/search verified source identity and current top-3 retrieval."
+
+  - id: conic_poincare_007
+    question: "Where does the corpus discuss deforming the cone angle in a cscK cone path?"
+    expected_sources:
+      - "1803.09506"
+    notes: "Agent/search verified source identity and current top-3 retrieval."
+
+  - id: conic_poincare_018
+    question: "Where does the corpus discuss cscK metrics with edge or cone singularities along a divisor?"
+    expected_sources:
+      - "1105.5216"
+      - "1508.02640"
+      - "1803.09506"
+    notes: "Agent/search verified source identity; current retrieval finds an expected source at rank 3."
+
+  - id: toric_abreu_006
+    question: "Where does the corpus discuss Guillemin boundary conditions for toric Kahler metrics?"
+    expected_sources:
+      - "dg-ga_9711014"
+      - "2208.12493"
+      - "0805.0128"
+    notes: "Agent/search verified source identity; current retrieval finds an expected source at rank 3."
+
+  - id: toric_abreu_011
+    question: "Where does the corpus discuss ambitoric geometry and extremal toric surfaces?"
+    expected_sources:
+      - "1302.6979"
+      - "1302.6975"
+    notes: "Agent/search verified source identity; current retrieval finds expected sources at ranks 2 and 3."
+
+  - id: toric_abreu_016
+    question: "Where does the corpus discuss the fourth-order nature of Abreu's equation?"
+    expected_sources:
+      - "dg-ga_9711014"
+      - "math_0407486"
+      - "0805.0128"
+    notes: "Agent/search verified source identity; current retrieval finds an expected source at rank 1."
+
+  - id: weighted_mabuchi_011
+    question: "Where does the corpus discuss weighted energy functionals on finite energy spaces?"
+    expected_sources:
+      - "2007.01345"
+      - "2303.03263"
+      - "corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex"
+    notes: "Current retrieval finds expected local notes at ranks 1, 2, and 3."
+
+  - id: bdl_finite_energy_001
+    question: "Where does the corpus discuss convexity of the extended K-energy on finite energy spaces?"
+    expected_sources:
+      - "1510.01260"
+    notes: "Agent/search verified source identity; current retrieval finds the expected source at rank 2."
+
+  - id: chen_cheng_csck_006
+    question: "Where does the corpus discuss twisted cscK or continuity paths related to Chen-Cheng estimates?"
+    expected_sources:
+      - "1712.06697"
+      - "1801.00656"
+      - "1412.0648"
+    notes: "Agent/search verified source identity; current retrieval finds an expected source at rank 1."
+
+  - id: my_notes_cp1_001
+    question: "Where do my notes discuss CP1 with moment polytope [-1,1] and one conic point?"
+    expected_sources:
+      - "corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex"
+    notes: "Current retrieval finds the expected local note at ranks 1 and 3."
+
+  - id: negative_non_established_001
+    question: "Does the corpus prove a general Chen-Cheng theorem for mixed conic and cusp toric manifolds?"
+    expected_sources: []
+    negative: true
+    notes: "Negative sanity candidate; current retrieval does not establish the claimed theorem."
+
+  - id: negative_non_established_011
+    question: "Does the corpus contain a complete classification of all mixed cone-cusp CP1 limits?"
+    expected_sources: []
+    negative: true
+    notes: "Negative sanity candidate; current retrieval does not establish the claimed classification."

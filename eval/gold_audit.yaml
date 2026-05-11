@@ -1,0 +1,1101 @@
+metadata:
+  status: first_pass_gold_audit_not_final
+  generated_on: '2026-05-09'
+  notes: Ranks/source presence are from current retrieval after corpus expansion. Online identity yes means source was checked
+    or downloaded from arXiv in this workflow; no means not checked yet, not necessarily wrong.
+  audited_gold_files:
+  - eval/toric_core_gold_questions.yaml
+  - eval/toric_evidence_gold_questions.yaml
+  total_questions: 56
+audits:
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: conical_approx_poincare_csck
+  question: Where does the corpus discuss conical approximation of Poincare type cscK metrics?
+  expected_sources:
+  - '2210.11862'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  - corpus/my_notes/project_paper_index.md
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: poincare_csck_uniqueness
+  question: Where does the corpus discuss uniqueness of Poincare type cscK metrics?
+  expected_sources:
+  - '2410.14130'
+  negative: false
+  current_first_expected_rank: 5
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1109.3159/source/source.tex
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: toric_poincare_extremal
+  question: Where does the corpus discuss toric Poincare type extremal metrics?
+  expected_sources:
+  - '1711.08424'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: poincare_metric_space
+  question: Where does the corpus discuss the space of Poincare type Kahler metrics on a divisor complement?
+  expected_sources:
+  - '1205.0056'
+  negative: false
+  current_first_expected_rank: null
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/1401.0128/source/Note_PKFutaki.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: gluing_poincare_csck
+  question: Where does the corpus discuss gluing constructions for cscK metrics of Poincare type?
+  expected_sources:
+  - '2405.11952'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: extended_k_energy_finite_energy
+  question: Where does the corpus discuss convexity of the extended K-energy on finite energy spaces?
+  expected_sources:
+  - '1510.01260'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1602.03114/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1510.01260/source/source.tex
+  - corpus/arxiv/1810.04661/source/source.tex
+  - corpus/arxiv/1405.0401/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: k_energy_weak_geodesics
+  question: Where does the corpus discuss convexity of the K-energy along weak geodesics?
+  expected_sources:
+  - '1405.0401'
+  - '1409.7896'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/1111.7158/source/source.tex
+  - corpus/arxiv/1405.0401/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2007.01345/source/source.tex
+  - corpus/arxiv/1801.00656/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: berman_darvas_lu_convexity
+  question: Where does the corpus discuss Berman-Darvas-Lu convexity and weak geodesics?
+  expected_sources:
+  - '1510.01260'
+  - '1405.0401'
+  - '1409.7896'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/1111.7158/source/source.tex
+  - corpus/arxiv/1712.06697/source/source.tex
+  - corpus/arxiv/1405.0401/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1409.7896/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: weighted_mabuchi_functional
+  question: Where does the corpus discuss weighted Mabuchi functional or weighted extremal metrics?
+  expected_sources:
+  - '2007.01345'
+  - '1808.07811'
+  - '2104.09709'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/2303.03263/source/arxiv-2.tex
+  - corpus/arxiv/2309.02279/source/document.tex
+  - corpus/arxiv/2007.01345/source/source.tex
+  - corpus/arxiv/2412.07968/source/main.tex
+  - corpus/arxiv/2509.15016/source/wytd_arxiv1.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: weighted_mabuchi_convexity
+  question: Where does the corpus discuss convexity of weighted Mabuchi energy along weak geodesics?
+  expected_sources:
+  - '2007.01345'
+  - '2303.03263'
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1111.7158/source/source.tex
+  - corpus/arxiv/2007.01345/source/source.tex
+  - corpus/arxiv/2303.03263/source/arxiv-2.tex
+  - corpus/arxiv/1405.0401/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: weighted_csck_coercivity
+  question: Where does the corpus discuss weighted cscK coercivity and openness?
+  expected_sources:
+  - '2407.09929'
+  - '2412.07968'
+  - '2503.22183'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/2412.07968/source/main.tex
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2309.02279/source/document.tex
+  - corpus/arxiv/2407.09929/source/Weighted_cscK.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: weighted_ytd
+  question: Where does the corpus discuss a YTD correspondence for weighted cscK metrics?
+  expected_sources:
+  - '2509.15016'
+  negative: false
+  current_first_expected_rank: 7
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/arxiv/2407.09929/source/Weighted_cscK.tex
+  - corpus/arxiv/2104.09709/source/source.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2412.07968/source/main.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: hisamoto_toric_coercivity_uniform_stability
+  question: Where does the corpus discuss equivalence between toric uniform K-stability and coercivity of the K-energy?
+  expected_sources:
+  - '1610.07998'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/1610.07998/source/source.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1412.0648/source/twisted.tex
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/2108.12297/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: nitta_saito_uniform_extremal_toric_ytd
+  question: Where does the corpus discuss a uniform YTD correspondence for extremal Kahler metrics on polarized toric manifolds?
+  expected_sources:
+  - '2110.10386'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1610.07998/source/source.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/2110.08491/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: li_lian_sheng_filtration_toric_ytd
+  question: Where does the corpus discuss the filtration version of the YTD conjecture for toric manifolds and homogeneous
+    toric bundles?
+  expected_sources:
+  - '2110.08491'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/1008.2607/source/source.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: bhj_uniform_kstability_energy_asymptotics
+  question: Where does the corpus discuss uniform K-stability and asymptotics of energy functionals in Kahler geometry?
+  expected_sources:
+  - '1603.01026'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/my_notes/requested_non_arxiv_sources.md
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1603.01026/source/source.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/1602.03114/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: bdl_weak_minimizers_properness
+  question: Where does the corpus discuss regularity of weak minimizers of the K-energy and applications to properness and
+    K-stability?
+  expected_sources:
+  - '1602.03114'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1510.01260/source/source.tex
+  - corpus/arxiv/1602.03114/source/source.tex
+  - corpus/arxiv/2104.09709/source/source.tex
+  - corpus/arxiv/1603.01026/source/source.tex
+  - corpus/arxiv/1610.07998/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: darvas_rubinstein_properness_mod_automorphisms
+  question: Where does the corpus discuss Tian's properness conjectures and properness modulo automorphisms?
+  expected_sources:
+  - '1506.07129'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/1506.07129/source/source.tex
+  - corpus/arxiv/1111.7158/source/source.tex
+  - corpus/arxiv/1602.03114/source/source.tex
+  - corpus/arxiv/1801.00656/source/source.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: szekelyhidi_extremal_kstability
+  question: Where does the corpus discuss Szekelyhidi's extremal metrics and K-stability?
+  expected_sources:
+  - math_0611002
+  negative: false
+  current_first_expected_rank: 4
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/2108.12297/source/source.tex
+  - corpus/arxiv/2303.03263/source/arxiv-2.tex
+  - corpus/arxiv/math_0611002/source/thesis.tex
+  - corpus/arxiv/2309.02279/source/document.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: stoppa_szekelyhidi_relative_kstability
+  question: Where does the corpus state that if M admits an extremal metric in c1(L), then (M,L) is K-polystable relative
+    to a maximal torus?
+  expected_sources:
+  - '0912.4095'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/0912.4095/source/source.tex
+  - corpus/arxiv/2506.02360/source/2025_06_03_extremal.tex
+  - corpus/arxiv/math_0511118/source/source.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1401.0123/source/ExtPK.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: chen_li_sheng_toric_surfaces
+  question: Where does the corpus discuss extremal metrics on toric surfaces by Chen, Li, and Sheng?
+  expected_sources:
+  - '1008.2607'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/1008.2607/source/source.tex
+  - corpus/arxiv/1801.05907/source/source.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/2110.08491/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: jmr_edge_singularities
+  question: Where does the corpus discuss Jeffres Mazzeo Rubinstein and polyhomogeneous Kahler-Einstein metrics with edge
+    singularities?
+  expected_sources:
+  - '1105.5216'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1212.4714/source/source.tex
+  - corpus/arxiv/1105.5216/source/source.tex
+  - corpus/arxiv/1508.02640/source/2017_11_16_conic_modified.tex
+  - corpus/arxiv/1309.5013/source/source.tex
+  - corpus/arxiv/1205.0056/source/cone_metrics.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: hashimoto_relative_uniform_models
+  question: Where does the corpus discuss relative uniform K-stability over models implying existence of extremal metrics?
+  expected_sources:
+  - '2506.02360'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/2506.02360/source/2025_06_03_extremal.tex
+  - corpus/arxiv/2309.02279/source/document.tex
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/arxiv/1808.02813/source/source.tex
+  - corpus/arxiv/2303.03263/source/arxiv-2.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: requested_donaldson_toric_stability_note
+  question: Where does the corpus record the requested Donaldson scalar curvature and stability of toric varieties source?
+  expected_sources:
+  - corpus/my_notes/requested_non_arxiv_sources.md
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/my_notes/project_paper_index.md
+  - corpus/my_notes/requested_non_arxiv_sources.md
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/1008.2607/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: chen_cheng_estimates
+  question: Where does the corpus discuss Chen-Cheng cscK estimates?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2407.09929/source/Weighted_cscK.tex
+  - corpus/arxiv/1801.00656/source/source.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/2412.07968/source/main.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: chen_cheng_general_automorphism
+  question: Where does the corpus discuss constant scalar curvature Kahler metrics with general automorphism group?
+  expected_sources:
+  - '1801.00656'
+  - '1801.05907'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/1610.07998/source/source.tex
+  - corpus/arxiv/1801.05907/source/source.tex
+  - corpus/arxiv/1109.3159/source/source.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: abreu_equation
+  question: Where does the corpus discuss the Abreu equation?
+  expected_sources:
+  - dg-ga_9711014
+  - math_0407486
+  - '0805.0128'
+  negative: false
+  current_first_expected_rank: null
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/1008.2607/source/source.tex
+  - corpus/arxiv/1102.1196/source/source.tex
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/2108.12297/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: donaldson_abreu_estimates
+  question: Where does the corpus discuss Donaldson interior estimates for solutions of Abreu's equation?
+  expected_sources:
+  - math_0407486
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/math_0407486/source/intest2.tex
+  - corpus/arxiv/0805.0128/source/extremal2b.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/2208.12493/source/toric-lecture-notes.tex
+  - corpus/arxiv/1205.0056/source/cone_metrics.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: toric_kahler_extremal_abreu
+  question: Where does the corpus discuss Kahler geometry of toric varieties and extremal metrics?
+  expected_sources:
+  - dg-ga_9711014
+  - '0805.0128'
+  negative: false
+  current_first_expected_rank: 5
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/math_0407486/source/intest2.tex
+  - corpus/arxiv/dg-ga_9711014/paper.pdf
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: k_stability_csck
+  question: Where does the corpus discuss K-stability of cscK manifolds?
+  expected_sources:
+  - '0803.4095'
+  - math_0412518
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: pass
+  recommended_action: keep_after_source_identity_audit
+  top_sources:
+  - corpus/arxiv/math_0412518/source/slopeobs_archive.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/1801.00656/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: slope_stability
+  question: Where does the corpus discuss lower bounds on the Calabi functional and slope stability?
+  expected_sources:
+  - math_0412518
+  negative: false
+  current_first_expected_rank: 11
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'no'
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/1412.0648/source/twisted.tex
+  - corpus/arxiv/1004.2012/source/Kempf_Ness_uniqueness_12272011.tex
+  - corpus/arxiv/math_0611002/source/thesis.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/1801.05907/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: cp1_polytope_one_conic
+  question: Where do my notes discuss CP1 with moment polytope [-1,1] and one conic point?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  - corpus/arxiv/dg-ga_9711014/paper.pdf
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: cp1_polytope_one_cusp
+  question: Where do my notes discuss CP1 or a moment interval with one cusp point?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_cusp_point.tex
+  negative: false
+  current_first_expected_rank: null
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/dg-ga_9711014/paper.pdf
+  - corpus/arxiv/math_0611002/source/thesis.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: cone_angle_beta_notes
+  question: Where do my notes discuss cone angle beta and the Guillemin boundary term?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  - corpus/arxiv/1508.02640/source/2017_11_16_conic_modified.tex
+  - corpus/arxiv/1205.0056/source/cone_metrics.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/1102.1196/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: cusp_alpha_beta_table
+  question: Where do my notes discuss Poincare cusp parameters alpha and beta?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/notation_table.tex
+  negative: false
+  current_first_expected_rank: 11
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: toric_kenergy_dictionary
+  question: Where do my notes give a dictionary between Kahler geometry and toric moment-polytope expressions?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/tables/kenergy_table.tex
+  negative: false
+  current_first_expected_rank: null
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/2208.12493/source/toric-lecture-notes.tex
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/0805.0128/source/extremal2a.tex
+  - corpus/arxiv/1708.05253/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: symplectic_potential_toric_notes
+  question: Where does the corpus discuss symplectic potentials in toric Kahler geometry?
+  expected_sources:
+  - '2208.12493'
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  negative: false
+  current_first_expected_rank: 6
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: weak_retrieval
+  recommended_action: review_question_wording_expected_sources_or_retrieval
+  top_sources:
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/2108.12297/source/source.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1708.05253/source/source.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: log_k_stability_cone_angle
+  question: Where does the corpus discuss log K-stability and cone angle beta?
+  expected_sources:
+  - '1508.02640'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/1508.02640/source/2017_11_16_conic_modified.tex
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/1111.7158/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: cscK_cone_path
+  question: Where does the corpus discuss deforming the cone angle in a cscK cone path?
+  expected_sources:
+  - '1803.09506'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/1508.02640/source/2017_11_16_conic_modified.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/1102.1196/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: negative_mixed_conic_cusp_chen_cheng
+  question: Does the corpus prove a general Chen-Cheng theorem for mixed conic and cusp toric manifolds?
+  expected_sources: []
+  negative: true
+  current_first_expected_rank: null
+  source_exists_in_corpus: not_needed
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/2508.02212/source/v4.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: negative_own_new_theorem
+  question: Does the corpus contain a complete proof of my own new theorem?
+  expected_sources: []
+  negative: true
+  current_first_expected_rank: null
+  source_exists_in_corpus: not_needed
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2309.02279/source/document.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/1412.0648/source/twisted.tex
+  - corpus/arxiv/1109.3159/source/source.tex
+  - corpus/arxiv/2106.05486/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_core_gold_questions.yaml
+  id: negative_floer_homology
+  question: Where does this corpus establish a Floer homology spectral sequence for these metrics?
+  expected_sources: []
+  negative: true
+  current_first_expected_rank: null
+  source_exists_in_corpus: not_needed
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/2407.09929/source/Weighted_cscK.tex
+  - corpus/arxiv/2106.05486/source/source.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/math_0401320/source/hfkg2.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: conic_poincare_001
+  question: Where does the corpus discuss conical approximation of Poincare type cscK metrics?
+  expected_sources:
+  - '2210.11862'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: duplicate
+  recommended_action: deduplicate_or_merge_after_review
+  top_sources:
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  - corpus/my_notes/project_paper_index.md
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: conic_poincare_002
+  question: Where does the corpus state or prove uniqueness for Poincare type cscK metrics?
+  expected_sources:
+  - '2410.14130'
+  negative: false
+  current_first_expected_rank: 5
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/1109.3159/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2410.14130/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: conic_poincare_003
+  question: Where does the corpus discuss toric extremal metrics with Poincare type singularities?
+  expected_sources:
+  - '1711.08424'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  - corpus/arxiv/1510.02226/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: conic_poincare_007
+  question: Where does the corpus discuss deforming the cone angle in a cscK cone path?
+  expected_sources:
+  - '1803.09506'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: duplicate
+  recommended_action: deduplicate_or_merge_after_review
+  top_sources:
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/1508.02640/source/2017_11_16_conic_modified.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/1102.1196/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: conic_poincare_018
+  question: Where does the corpus discuss cscK metrics with edge or cone singularities along a divisor?
+  expected_sources:
+  - '1105.5216'
+  - '1508.02640'
+  - '1803.09506'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2210.11862/source/source.tex
+  - corpus/arxiv/1412.0648/source/twisted.tex
+  - corpus/arxiv/1508.02640/source/2017_11_16_conic_modified.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: toric_abreu_006
+  question: Where does the corpus discuss Guillemin boundary conditions for toric Kahler metrics?
+  expected_sources:
+  - dg-ga_9711014
+  - '2208.12493'
+  - '0805.0128'
+  negative: false
+  current_first_expected_rank: 4
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/arxiv/2110.10386/source/source.tex
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/0805.0128/source/extremal2a.tex
+  - corpus/arxiv/1610.07998/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: toric_abreu_011
+  question: Where does the corpus discuss ambitoric geometry and extremal toric surfaces?
+  expected_sources:
+  - '1302.6979'
+  - '1302.6975'
+  negative: false
+  current_first_expected_rank: 2
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  - corpus/arxiv/1302.6975/source/ambitoric1.tex
+  - corpus/arxiv/1302.6979/source/ambitoric2.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/1510.02226/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: toric_abreu_016
+  question: Where does the corpus discuss the fourth-order nature of Abreu's equation?
+  expected_sources:
+  - dg-ga_9711014
+  - math_0407486
+  - '0805.0128'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/math_0407486/source/intest.tex
+  - corpus/arxiv/1102.1196/source/source.tex
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/1610.07998/source/source.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: weighted_mabuchi_011
+  question: Where does the corpus discuss weighted energy functionals on finite energy spaces?
+  expected_sources:
+  - '2007.01345'
+  - '2303.03263'
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1808.07811/source/source.tex
+  - corpus/arxiv/2503.22183/source/Weighted_CscK_II.tex
+  - corpus/arxiv/2509.15016/source/wytd_arxiv1.tex
+  - corpus/arxiv/2405.11952/source/main.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: bdl_finite_energy_001
+  question: Where does the corpus discuss convexity of the extended K-energy on finite energy spaces?
+  expected_sources:
+  - '1510.01260'
+  negative: false
+  current_first_expected_rank: 3
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: duplicate
+  recommended_action: deduplicate_or_merge_after_review
+  top_sources:
+  - corpus/arxiv/1602.03114/source/source.tex
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/1510.01260/source/source.tex
+  - corpus/arxiv/1810.04661/source/source.tex
+  - corpus/arxiv/1405.0401/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: chen_cheng_csck_006
+  question: Where does the corpus discuss twisted cscK or continuity paths related to Chen-Cheng estimates?
+  expected_sources:
+  - '1712.06697'
+  - '1801.00656'
+  - '1412.0648'
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: 'yes'
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/1801.00656/source/source.tex
+  - corpus/arxiv/1803.09506/source/source.tex
+  - corpus/arxiv/2407.09929/source/Weighted_cscK.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/1105.5216/source/source.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: my_notes_cp1_001
+  question: Where do my notes discuss CP1 with moment polytope [-1,1] and one conic point?
+  expected_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  negative: false
+  current_first_expected_rank: 1
+  source_exists_in_corpus: 'yes'
+  online_source_identity_verified: not_needed
+  status: duplicate
+  recommended_action: deduplicate_or_merge_after_review
+  top_sources:
+  - corpus/my_notes/toric_manifolds_mixed_conic_cusp/notes/one_conic_point.tex
+  - corpus/arxiv/dg-ga_9711014/paper.pdf
+  - corpus/arxiv/1811.05693/source/etakm_REM.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/1711.08424/source/Poincare-metrics.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: negative_non_established_001
+  question: Does the corpus prove a general Chen-Cheng theorem for mixed conic and cusp toric manifolds?
+  expected_sources: []
+  negative: true
+  current_first_expected_rank: null
+  source_exists_in_corpus: not_needed
+  online_source_identity_verified: not_needed
+  status: duplicate
+  recommended_action: deduplicate_or_merge_after_review
+  top_sources:
+  - corpus/my_notes/weighted_twisted/paper/weighted_twisted.tex
+  - corpus/arxiv/2110.08491/source/source.tex
+  - corpus/arxiv/2508.02212/source/v4.tex
+  - corpus/arxiv/2001.01366/source/source.tex
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
+- gold_file: eval/toric_evidence_gold_questions.yaml
+  id: negative_non_established_011
+  question: Does the corpus contain a complete classification of all mixed cone-cusp CP1 limits?
+  expected_sources: []
+  negative: true
+  current_first_expected_rank: null
+  source_exists_in_corpus: not_needed
+  online_source_identity_verified: not_needed
+  status: pass
+  recommended_action: keep
+  top_sources:
+  - corpus/arxiv/2402.01159/source/ToricSurfacesModuli.tex
+  - corpus/arxiv/2309.02279/source/document.tex
+  - corpus/arxiv/0805.0128/source/extremal2b.tex
+  - corpus/arxiv/math_0511118/source/source.tex
+  - corpus/arxiv/2508.02212/source/v4.tex
+  notes: First-pass audit refreshed after arXiv suggestion download and corpus re-ingest; online identity yes means source
+    was checked or downloaded from arXiv in this workflow.
