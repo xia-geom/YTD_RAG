@@ -1,0 +1,86 @@
+{
+  "$id": "verification_input.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "project",
+    "apim_url",
+    "healthz_url",
+    "readyz_url",
+    "chatgpt_auth_mode",
+    "backend_auth_mode",
+    "tool_allowlist",
+    "fixture_queries",
+    "forbidden_strings",
+    "deployment_assumptions",
+    "no_specific_constraint"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "project": { "type": "string", "const": "math-rag-safe-fixture-verification" },
+    "apim_url": { "type": "string", "format": "uri" },
+    "healthz_url": { "type": "string", "format": "uri" },
+    "readyz_url": { "type": "string", "format": "uri" },
+    "chatgpt_auth_mode": { "type": "string", "enum": ["no_authentication"] },
+    "backend_auth_mode": { "type": "string", "enum": ["bearer"] },
+    "tool_allowlist": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["search", "fetch"] },
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true
+    },
+    "tool_deny_prefixes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["rag_"]
+    },
+    "allowed_apim_host": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fetch_max_chars": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12000,
+      "default": 12000
+    },
+    "fixture_queries": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "forbidden_strings": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "deployment_assumptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_only",
+        "no_private_index",
+        "apim_injects_backend_bearer",
+        "no_oauth",
+        "use_apim_only"
+      ],
+      "properties": {
+        "fixture_only": { "type": "boolean", "const": true },
+        "no_private_index": { "type": "boolean", "const": true },
+        "apim_injects_backend_bearer": { "type": "boolean", "const": true },
+        "no_oauth": { "type": "boolean", "const": true },
+        "use_apim_only": { "type": "boolean", "const": true }
+      }
+    },
+    "source_pack_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "manual_chatgpt_transcript_path": {
+      "type": ["string", "null"]
+    },
+    "no_specific_constraint": { "type": "boolean", "const": true }
+  }
+}

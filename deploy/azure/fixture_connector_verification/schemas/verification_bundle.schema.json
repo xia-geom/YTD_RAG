@@ -1,0 +1,96 @@
+{
+  "$id": "verification_bundle.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["research", "prompt_bundle", "security_audit", "test_report", "synthesis"],
+  "properties": {
+    "research": {
+      "type": "object",
+      "required": ["facts", "risks", "source_priority"],
+      "properties": {
+        "facts": { "type": "array", "items": { "type": "string" } },
+        "risks": { "type": "array", "items": { "type": "string" } },
+        "source_priority": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "prompt_bundle": {
+      "type": "object",
+      "required": ["master_prompt", "agent_prompts"],
+      "properties": {
+        "master_prompt": { "type": "string" },
+        "agent_prompts": {
+          "type": "object",
+          "required": ["researcher", "prompt_writer", "security_auditor", "test_runner", "synthesizer"],
+          "properties": {
+            "researcher": { "type": "string" },
+            "prompt_writer": { "type": "string" },
+            "security_auditor": { "type": "string" },
+            "test_runner": { "type": "string" },
+            "synthesizer": { "type": "string" }
+          }
+        }
+      }
+    },
+    "security_audit": {
+      "type": "object",
+      "required": ["decision", "findings"],
+      "properties": {
+        "decision": { "type": "string", "enum": ["pass", "fail", "blocked"] },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "severity", "summary"],
+            "properties": {
+              "code": { "type": "string" },
+              "severity": { "type": "string", "enum": ["warning", "high", "critical"] },
+              "summary": { "type": "string" },
+              "evidence_ref": { "type": ["string", "null"] },
+              "remediation": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "test_report": {
+      "type": "object",
+      "required": ["overall", "checks", "secret_scan"],
+      "properties": {
+        "overall": { "type": "string", "enum": ["pass", "fail", "blocked"] },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "status", "expected", "observed"],
+            "properties": {
+              "id": { "type": "string" },
+              "status": { "type": "string", "enum": ["pass", "fail", "blocked"] },
+              "http_status": { "type": ["integer", "null"] },
+              "expected": { "type": "string" },
+              "observed": { "type": "string" },
+              "artifact_ref": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "secret_scan": {
+          "type": "object",
+          "required": ["status", "hits"],
+          "properties": {
+            "status": { "type": "string", "enum": ["pass", "fail"] },
+            "hits": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "required": ["decision", "scope", "summary", "remediation_actions"],
+      "properties": {
+        "decision": { "type": "string", "enum": ["go_fixture_only", "no_go", "blocked_pending_operator"] },
+        "scope": { "type": "string" },
+        "summary": { "type": "string" },
+        "remediation_actions": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
