@@ -1,0 +1,43 @@
+<!--
+  Private/risk-accepted MCP APIM policy template.
+
+  Replace placeholders before applying:
+  - <TENANT_ID>
+  - <PRIVATE_MCP_API_AUDIENCE>, for example api://<private-mcp-api-client-id>
+  - <ALLOWED_USER_OBJECT_ID>
+
+  This policy assumes the backend bearer token is stored as the APIM named value
+  {{math-rag-backend-token}}. Do not replace it with the raw token in this file.
+-->
+<policies>
+  <inbound>
+    <base />
+    <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized">
+      <openid-config url="https://login.microsoftonline.com/<TENANT_ID>/v2.0/.well-known/openid-configuration" />
+      <audiences>
+        <audience><PRIVATE_MCP_API_AUDIENCE></audience>
+      </audiences>
+      <required-claims>
+        <claim name="scp" match="any">
+          <value>mcp.read</value>
+        </claim>
+        <claim name="oid" match="any">
+          <value><ALLOWED_USER_OBJECT_ID></value>
+        </claim>
+      </required-claims>
+    </validate-jwt>
+    <set-header name="Authorization" exists-action="override">
+      <value>Bearer {{math-rag-backend-token}}</value>
+    </set-header>
+    <rewrite-uri template="/mcp" copy-unmatched-params="true" />
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>

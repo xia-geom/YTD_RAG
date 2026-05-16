@@ -6,13 +6,22 @@
 // - the image is in a private registry you control;
 // - a private storage mount named by indexStorageName is configured on the
 //   managed environment and contains .math_rag_index/index.json;
-// - authentication and HTTPS are configured before connecting ChatGPT.
+// - authentication, HTTPS, and direct-ingress restrictions are configured
+//   before connecting ChatGPT.
+//
+// SECURITY NOTE:
+// The ingress block below uses external: true only as a placeholder for early
+// fixture-index tests. This is not safe for the real research index unless APIM
+// or equivalent network policy prevents direct bypass. Prefer private ingress
+// or IP/network restrictions that allow only the gateway to reach the backend.
 
 param location string = resourceGroup().location
 param appName string = 'math-rag-remote-mcp'
 param managedEnvironmentId string
 param containerImage string
-param publicBaseUrl string
+param apiTokenSecretName string = 'math-rag-api-token'
+@secure()
+param apiToken string
 param indexStorageName string = 'math-rag-index'
 
 resource app 'Microsoft.App/containerApps@2024-03-01' = {
@@ -21,6 +30,12 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
   properties: {
     managedEnvironmentId: managedEnvironmentId
     configuration: {
+      secrets: [
+        {
+          name: apiTokenSecretName
+          value: apiToken
+        }
+      ]
       ingress: {
         external: true
         targetPort: 8000
@@ -42,27 +57,43 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
               value: 'true'
             }
             {
-              name: 'MATH_RAG_REMOTE_PUBLIC_BASE_URL'
-              value: publicBaseUrl
+              name: 'MATH_RAG_AUTH_MODE'
+              value: 'bearer'
             }
             {
-              name: 'MATH_RAG_REMOTE_HOST'
+              name: 'MATH_RAG_API_TOKEN'
+              secretRef: apiTokenSecretName
+            }
+            {
+              name: 'MATH_RAG_TOOL_MODE'
+              value: 'chatgpt'
+            }
+            {
+              name: 'MATH_RAG_HOST'
               value: '0.0.0.0'
             }
             {
-              name: 'MATH_RAG_REMOTE_PORT'
+              name: 'PORT'
               value: '8000'
             }
             {
               name: 'MATH_RAG_REMOTE_TRANSPORT'
-              value: 'http'
+              value: 'streamable-http'
             }
             {
               name: 'MATH_RAG_REMOTE_PATH'
-              value: '/mcp/'
+              value: '/mcp'
             }
             {
               name: 'MATH_RAG_MCP_ALLOW_WRITE_TOOLS'
+              value: 'false'
+            }
+            {
+              name: 'MATH_RAG_ALLOW_UNAUTHENTICATED_PUBLIC'
+              value: 'false'
+            }
+            {
+              name: 'MATH_RAG_PROTECT_HEALTH'
               value: 'false'
             }
           ]

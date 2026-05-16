@@ -48,6 +48,7 @@ full = [
 [project.scripts]
 math-rag = "math_rag.cli:main"
 math-rag-mcp-remote = "math_rag.remote_mcp_server:main"
+math-rag-mcp-http = "math_rag.mcp_http_server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
