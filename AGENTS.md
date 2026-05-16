@@ -74,9 +74,19 @@ This file is the short operating guide for coding agents working in this reposit
 ## Safety Rules
 
 - Do not commit generated or private data: `corpus/arxiv/`, `.math_rag_index/`, `.math_rag_agent_logs_index/`, virtualenvs, PDFs, `.env`, caches, build outputs, or secrets.
-- Do not commit automatically. Make commits only when the user explicitly asks for a commit.
+- Do not commit automatically unless the user explicitly requests a commit or delegates an automation, cleanup, deployment, audit, verification, or multi-step implementation sprint where committing is part of completing the workflow.
+- When auto-committing is allowed, create small scoped commits only after inspecting `git status --short`, staging only intended files, reviewing `git diff --cached --name-only`, and running the relevant validation or documenting why it was not run.
+- Never auto-commit secrets, `.env`, private indexes, raw corpus/PDF data, virtualenvs, caches, build outputs, or unrelated dirty work.
+- Keep unrelated concerns in separate commits: docs/logs, deployment config, source code, tests, cleanup/archive, and retrieval/ranking work.
 - Do not change retrieval ranking, chunking, downloader behavior, MCP behavior, or deployment behavior unless the task asks for it.
 - Do not delete or rewrite user data without explicit approval.
+
+## Commit Hygiene
+
+- Preserve existing unrelated dirty files.
+- Do not stage retrieval/ranking/eval/corpus/index changes unless the current task explicitly owns them.
+- Use factual commit messages, such as `Deploy public-safe MCP index notes` or `Archive superseded MCP logs`.
+- When commits are made, include commit hashes in the final response.
 
 ## Validation Defaults
 
