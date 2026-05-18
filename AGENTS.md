@@ -10,9 +10,10 @@ This file is the short operating guide for coding agents working in this reposit
 
 ## Remote MCP Connector
 
-- Current safe lane is fixture/public-safe only: ChatGPT Developer Mode connects to `https://apim-math-rag-mcp-5d67a258.azure-api.net/mcp` with `No Authentication`.
+- Remote MCP is paused as of 2026-05-18: Container App ingress is disabled, so the APIM `/mcp`, `/healthz`, and `/readyz` paths are not a usable live connector until ingress is re-enabled.
+- Last safe lane before pause was fixture/public-safe only: ChatGPT Developer Mode connected to `https://apim-math-rag-mcp-5d67a258.azure-api.net/mcp` with `No Authentication`.
 - Expected ChatGPT-facing tools are exactly `search` and `fetch`; internal `rag_*` tools must not be exposed to ChatGPT mode.
-- Current live data is the harmless fixture index only unless a later task explicitly approves a reviewed public-safe index.
+- Last deployed remote data before pause was the reviewed public-safe index; local RAG use remains the preferred path for now.
 - Verify the APIM fixture connector with:
   ```bash
   math_rag/.venv/bin/python deploy/azure/fixture_connector_verification/verify_fixture_connector.py \
@@ -23,7 +24,7 @@ This file is the short operating guide for coding agents working in this reposit
 - Do not mount, deploy, upload, or expose the private real `.math_rag_index`; direct Container App ingress remains a blocker for private data.
 - Private rollout requires network isolation plus OAuth/JWT validation; do not treat the current APIM Consumption fixture path as private-index ready.
 - A personal risk-accepted private-index pilot is allowed only when explicitly requested: require APIM OAuth/JWT validation, backend bearer auth, `MATH_RAG_PROTECT_HEALTH=true`, read-only index mount, and a log that states the public-backend residual risk.
-- Source-of-truth references: `findings/summary.md`, `findings/chatgpt_runbook.md`, `findings/private_lane.md`, and `agent_logs/codex/2026-05-15-mcp-connector-finalization.md`.
+- Source-of-truth references: `findings/summary.md`, `findings/chatgpt_runbook.md`, `findings/private_lane.md`, `agent_logs/codex/2026-05-15-mcp-connector-finalization.md`, and `agent_logs/codex/2026-05-18-remote-mcp-paused.md`.
 
 ## Multi-Agent Use
 

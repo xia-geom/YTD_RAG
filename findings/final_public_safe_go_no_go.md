@@ -2,6 +2,11 @@
 
 Date: 2026-05-16
 
+Pause update: on 2026-05-18 the remote MCP service was paused by disabling
+Container App ingress for `math-rag-mcp-test`. The APIM endpoint is preserved
+but is not currently a usable live connector. See
+`agent_logs/codex/2026-05-18-remote-mcp-paused.md`.
+
 ## Decision
 
 GO_PUBLIC_SAFE_CHATGPT_CONNECTOR=false
@@ -14,10 +19,11 @@ SAFE_FOR_PRIVATE_SECRET_INDEX=false
 
 ## Summary
 
-The public-safe research index is deployed behind the existing APIM MCP
-endpoint. APIM health reports 18,544 chunks and 104 sources. MCP protocol tests
-passed, the ChatGPT-visible tool surface remains exactly `search` and `fetch`,
-all five required math queries returned results, and APIM payload scans passed.
+The public-safe research index was deployed behind the existing APIM MCP
+endpoint during the 2026-05-16 verification. APIM health reported 18,544 chunks
+and 104 sources. MCP protocol tests passed, the ChatGPT-visible tool surface
+remained exactly `search` and `fetch`, all five required math queries returned
+results, and APIM payload scans passed.
 
 The final ChatGPT web UI Draft app gate is still pending, so the stricter
 `GO_PUBLIC_SAFE_CHATGPT_CONNECTOR` value remains false until a manual ChatGPT
@@ -87,9 +93,10 @@ Auth mode:
 ## Cost / Cleanup Note
 
 This adds one Azure Files share containing a roughly 55 MB `index.json`. The
-Container App remains Consumption with min replicas 0 / max replicas 1. Costs
-should remain low for light use, but storage, logs, bandwidth, and unexpected
-traffic may cost money.
+Container App remains Consumption with min replicas 0 / max replicas 1, but
+ingress is now disabled. Costs should remain low for light use, but storage,
+logs, registry storage, APIM metadata/calls, bandwidth, and unexpected traffic
+may cost money.
 
 ## Rollback Plan
 
