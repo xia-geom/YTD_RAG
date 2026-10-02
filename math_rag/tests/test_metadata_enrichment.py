@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from math_rag.cli import _argparse_main
+from math_rag.cli import main
 from math_rag.loaders import load_corpus
 from math_rag.metadata_enrichment_cache import MetadataEnrichmentCache
 
@@ -521,7 +521,7 @@ def test_argparse_export_enrichment_batch_writes_jsonl(tmp_path):
     (corpus / "notes.md").write_text("# Notes\n\nMabuchi energy.\n", encoding="utf-8")
     output = tmp_path / "batch.jsonl"
 
-    exit_code = _argparse_main(["export-enrichment-batch", str(corpus), "--output", str(output)])
+    exit_code = main(["export-enrichment-batch", str(corpus), "--output", str(output)])
 
     assert exit_code == 0
     records = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
@@ -537,7 +537,7 @@ def test_argparse_export_enrichment_batch_rejects_tiny_content_limit(tmp_path):
     (corpus / "notes.md").write_text("# Notes\n\nMabuchi energy.\n", encoding="utf-8")
     output = tmp_path / "batch.jsonl"
 
-    exit_code = _argparse_main([
+    exit_code = main([
         "export-enrichment-batch",
         str(corpus),
         "--output",

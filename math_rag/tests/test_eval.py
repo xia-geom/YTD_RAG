@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from math_rag.cli import _argparse_main
+from math_rag.cli import main
 from math_rag.eval import evaluate_retrieval, format_eval_report, load_gold_questions
 from math_rag.index_store import IndexStore
 from math_rag.models import Chunk
@@ -161,7 +161,7 @@ questions:
 """,
     )
 
-    exit_code = _argparse_main(["eval", str(eval_path), "--index-dir", str(index_dir), "--top-k", "3"])
+    exit_code = main(["eval", str(eval_path), "--index-dir", str(index_dir), "--top-k", "3"])
     output = capsys.readouterr().out
 
     assert exit_code == 0

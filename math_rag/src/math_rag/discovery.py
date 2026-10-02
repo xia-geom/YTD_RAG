@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from .arxiv_client import ArxivClient, ArxivPaper, build_arxiv_query
 from .index_store import IndexStore
-from .paper_ranker import DiscoveryConfig, discovery_query_phrases, load_discovery_config, rank_papers
+from .paper_ranker import discovery_query_phrases, load_discovery_config, rank_papers
 from .paper_store import DEFAULT_CANDIDATES_PATH, PaperCandidate, write_candidates
 from .text_cleaning import salient_terms
 

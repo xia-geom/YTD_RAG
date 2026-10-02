@@ -38,7 +38,7 @@ def load_pdf_chunks(path: str | Path, metadata: DocumentMetadata | None = None) 
     try:
         from pypdf import PdfReader  # type: ignore
     except Exception as exc:  # pragma: no cover - depends on optional package
-        raise RuntimeError("PDF ingestion requires the optional package pypdf. Install with: pip install -e '.[preferred]'") from exc
+        raise RuntimeError("PDF ingestion requires pypdf. From the workspace root: pip install -e './math_rag[pdf]'") from exc
 
     source_path = str(path)
     reader = PdfReader(source_path)
@@ -67,4 +67,3 @@ def load_pdf_chunks(path: str | Path, metadata: DocumentMetadata | None = None) 
                 )
             )
     return chunks
-

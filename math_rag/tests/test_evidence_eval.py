@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from math_rag.cli import _argparse_main
+from math_rag.cli import main
 from math_rag.evidence_eval import (
     SourceTitleResolver,
     format_candidate_evidence_inspection_markdown,
@@ -292,7 +292,7 @@ def test_argparse_inspect_evidence_eval_writes_markdown(tmp_path, capsys):
     eval_path = _write_candidate_eval(tmp_path / "candidate.yaml")
     out_path = tmp_path / "inspection.md"
 
-    exit_code = _argparse_main(
+    exit_code = main(
         [
             "inspect-evidence-eval",
             str(eval_path),
@@ -318,7 +318,7 @@ def test_argparse_inspect_evidence_eval_writes_triage_markdown(tmp_path, capsys)
     eval_path = _write_candidate_eval(tmp_path / "candidate.yaml")
     out_path = tmp_path / "triage.md"
 
-    exit_code = _argparse_main(
+    exit_code = main(
         [
             "inspect-evidence-eval",
             str(eval_path),

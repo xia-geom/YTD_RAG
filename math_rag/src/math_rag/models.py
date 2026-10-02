@@ -1,13 +1,12 @@
-"""Structured data models used by the local RAG pipeline.
+"""Dataclass models and JSON conversion for the local RAG pipeline.
 
-The project uses pydantic when it is installed. A small dataclass fallback keeps
-the first version runnable in bare Python environments, which is useful for a
-private local-first tool.
+Types document the index schema; model construction does not coerce or validate
+values. The same models are used with every optional dependency combination.
 """
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field, is_dataclass
+from dataclasses import asdict, dataclass, field, fields, is_dataclass
 from typing import Any, Literal
 
 
@@ -37,84 +36,51 @@ ChunkType = Literal[
 ]
 
 
-try:  # pragma: no cover - exercised only when pydantic is installed
-    from pydantic import BaseModel, Field
+@dataclass
+class DocumentMetadata:
+    source_path: str
+    title: str | None = None
+    authors: list[str] = field(default_factory=list)
+    year: int | None = None
+    document_type: DocumentType = "other"
+    topics: list[str] = field(default_factory=list)
+    mathematical_objects: list[str] = field(default_factory=list)
+    status: DocumentStatus = "unread"
+    notes: str | None = None
 
-    class DocumentMetadata(BaseModel):
-        source_path: str
-        title: str | None = None
-        authors: list[str] = Field(default_factory=list)
-        year: int | None = None
-        document_type: DocumentType = "other"
-        topics: list[str] = Field(default_factory=list)
-        mathematical_objects: list[str] = Field(default_factory=list)
-        status: DocumentStatus = "unread"
-        notes: str | None = None
 
-    class Chunk(BaseModel):
-        chunk_id: str
-        source_path: str
-        title: str | None = None
-        chunk_type: ChunkType = "text"
-        section_path: list[str] = Field(default_factory=list)
-        page_number: int | None = None
-        line_start: int | None = None
-        line_end: int | None = None
-        content: str
-        metadata: dict[str, Any] = Field(default_factory=dict)
-        symbols: list[str] = Field(default_factory=list)
-        topics: list[str] = Field(default_factory=list)
+@dataclass
+class Chunk:
+    chunk_id: str
+    source_path: str
+    title: str | None = None
+    chunk_type: ChunkType = "text"
+    section_path: list[str] = field(default_factory=list)
+    page_number: int | None = None
+    line_start: int | None = None
+    line_end: int | None = None
+    content: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+    symbols: list[str] = field(default_factory=list)
+    topics: list[str] = field(default_factory=list)
 
-    class SearchResult(BaseModel):
-        chunk: Chunk
-        score: float
-        keyword_score: float = 0.0
-        vector_score: float = 0.0
-        rank: int | None = None
 
-except Exception:  # pragma: no cover - main path in the execution sandbox
+@dataclass
+class SearchResult:
+    chunk: Chunk
+    score: float
+    keyword_score: float = 0.0
+    vector_score: float = 0.0
+    rank: int | None = None
 
-    @dataclass
-    class DocumentMetadata:
-        source_path: str
-        title: str | None = None
-        authors: list[str] = field(default_factory=list)
-        year: int | None = None
-        document_type: DocumentType = "other"
-        topics: list[str] = field(default_factory=list)
-        mathematical_objects: list[str] = field(default_factory=list)
-        status: DocumentStatus = "unread"
-        notes: str | None = None
 
-    @dataclass
-    class Chunk:
-        chunk_id: str
-        source_path: str
-        title: str | None = None
-        chunk_type: ChunkType = "text"
-        section_path: list[str] = field(default_factory=list)
-        page_number: int | None = None
-        line_start: int | None = None
-        line_end: int | None = None
-        content: str = ""
-        metadata: dict[str, Any] = field(default_factory=dict)
-        symbols: list[str] = field(default_factory=list)
-        topics: list[str] = field(default_factory=list)
-
-    @dataclass
-    class SearchResult:
-        chunk: Chunk
-        score: float
-        keyword_score: float = 0.0
-        vector_score: float = 0.0
-        rank: int | None = None
+_CHUNK_FIELDS = frozenset(item.name for item in fields(Chunk))
+_METADATA_FIELDS = frozenset(item.name for item in fields(DocumentMetadata))
 
 
 def model_to_dict(model: Any) -> dict[str, Any]:
-    """Return a plain dict for pydantic or dataclass model instances."""
+    """Return a plain dict for a dataclass instance or existing dictionary."""
 
-    if hasattr(model, "model_dump"):
-        return model.model_dump()
     if is_dataclass(model):
         return asdict(model)
     if isinstance(model, dict):
@@ -123,9 +89,12 @@ def model_to_dict(model: Any) -> dict[str, Any]:
 
 
 def chunk_from_dict(data: dict[str, Any]) -> Chunk:
-    return Chunk(**data)
+    """Read an index record, ignoring unknown fields from other versions."""
+
+    return Chunk(**{key: value for key, value in data.items() if key in _CHUNK_FIELDS})
 
 
 def metadata_from_dict(data: dict[str, Any]) -> DocumentMetadata:
-    return DocumentMetadata(**data)
+    """Read known metadata fields while allowing extra keys in source YAML."""
 
+    return DocumentMetadata(**{key: value for key, value in data.items() if key in _METADATA_FIELDS})

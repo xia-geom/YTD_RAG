@@ -6,7 +6,6 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any
 
 from .arxiv_client import ArxivPaper
 from .paper_store import PaperCandidate, load_yaml_file
@@ -341,19 +340,6 @@ def classify_confidence(
     if protected_match_count >= 1 or seed_author_match:
         return "medium" if score < 0.55 else "high"
     return "low"
-
-
-def config_to_dict(config: DiscoveryConfig) -> dict[str, Any]:
-    return {
-        "seed_authors": config.seed_authors,
-        "seed_keywords": config.seed_keywords,
-        "arxiv_categories": config.arxiv_categories,
-        "ranking_weights": config.ranking_weights.__dict__,
-        "download_policy": config.download_policy.__dict__,
-        "manual_whitelist": config.manual_whitelist,
-        "manual_blacklist": config.manual_blacklist,
-        "exclude_low_confidence_by_default": config.exclude_low_confidence_by_default,
-    }
 
 
 def _matches_manual_list(paper: ArxivPaper, values: list[str]) -> bool:

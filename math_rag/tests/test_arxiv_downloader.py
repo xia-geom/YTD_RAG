@@ -417,11 +417,11 @@ def test_cli_force_and_skip_existing_flags(monkeypatch):
 
     monkeypatch.setattr(cli_module, "download_arxiv_ids", fake_download)
 
-    assert cli_module._argparse_main(["download-arxiv", "1711.08424", "--force"]) == 0
+    assert cli_module.main(["download-arxiv", "1711.08424", "--force"]) == 0
     assert calls[-1]["force"] is True
     assert calls[-1]["skip_existing"] is False
 
-    assert cli_module._argparse_main(["download-arxiv", "1711.08424", "--skip-existing"]) == 0
+    assert cli_module.main(["download-arxiv", "1711.08424", "--skip-existing"]) == 0
     assert calls[-1]["force"] is False
     assert calls[-1]["skip_existing"] is True
 
@@ -444,13 +444,13 @@ def test_cli_download_seed_max_papers_default_and_aliases(monkeypatch):
 
     monkeypatch.setattr(cli_module, "download_seed_file", fake_download)
 
-    assert cli_module._argparse_main(["download-seed", "arxiv_seed_core.txt"]) == 0
+    assert cli_module.main(["download-seed", "arxiv_seed_core.txt"]) == 0
     assert calls[-1]["max_papers"] == 10
 
-    assert cli_module._argparse_main(["download-seed", "arxiv_seed_core.txt", "--max-papers", "50"]) == 0
+    assert cli_module.main(["download-seed", "arxiv_seed_core.txt", "--max-papers", "50"]) == 0
     assert calls[-1]["max_papers"] == 50
 
-    assert cli_module._argparse_main(["download-seed", "arxiv_seed_core.txt", "--limit", "50"]) == 0
+    assert cli_module.main(["download-seed", "arxiv_seed_core.txt", "--limit", "50"]) == 0
     assert calls[-1]["max_papers"] == 50
 
 

@@ -4,7 +4,8 @@ The CLI and the MCP server both call into this module so that retrieval logic,
 the conservative answer discipline, and source/chunk lookups are defined in one
 place rather than duplicated.
 
-Every function in this module returns plain JSON-serialisable dictionaries.
+Public operations return JSON-serialisable dictionaries, except ``retrieve``,
+which returns SearchResult objects for callers that format their own output.
 """
 
 from __future__ import annotations
