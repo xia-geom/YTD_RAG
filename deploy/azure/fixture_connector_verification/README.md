@@ -1,5 +1,10 @@
 # Safe Fixture ChatGPT Connector Verification
 
+The last recorded deployment state is **paused since 2026-05-18**: Container
+App ingress is disabled. Defer remote verification and ChatGPT connection steps
+until a deliberate resume and fresh deployment checks. See the
+[remote MCP guide](../../../docs/remote_mcp_server.md).
+
 This pack verifies the harmless fixture MCP connector through the APIM endpoint
 only. It is deliberately fixture-only and does not approve private-index rollout.
 
@@ -18,13 +23,14 @@ search
 fetch
 ```
 
-The verification does not use the direct Container App backend URL. The current
-backend can still be directly reached at the network layer, so the private real
-index remains blocked.
+The verification does not use the direct Container App backend URL. Before the
+pause, the backend was directly reachable at the network layer. This verifier
+does not establish the network isolation required for a private real index.
 
 ## Run
 
-From the workspace root:
+After a deliberate resume with the harmless fixture index, run from the
+workspace root:
 
 ```bash
 math_rag/.venv/bin/python deploy/azure/fixture_connector_verification/verify_fixture_connector.py \

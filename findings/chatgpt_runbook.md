@@ -1,5 +1,10 @@
 # ChatGPT Developer Mode Runbook
 
+> Historical snapshot. Remote MCP was last recorded as paused on 2026-05-18
+> with Container App ingress disabled. Claims below describe their original
+> inspection dates; live status has not been rechecked. See the
+> [remote MCP guide](../docs/remote_mcp_server.md) before any future use.
+
 Date: 2026-05-15
 
 ## Purpose

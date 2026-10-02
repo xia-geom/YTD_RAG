@@ -1,470 +1,137 @@
-# math_rag
+# math_rag command reference
 
-`math_rag` is a local-first retrieval assistant for mathematical research notes. It ingests LaTeX, Markdown, text, BibTeX, and PDF files, chunks them with math-aware heuristics, builds a local searchable index, and answers questions by showing retrieved passages with citations.
+See the [workspace README](../README.md) for installation and the
+[architecture](../ARCHITECTURE.md) for module responsibilities. Run the examples
+from the workspace root, using `math_rag/.venv/bin/python -m math_rag.cli`.
+The installed `math-rag` command invokes the same parser.
 
-RAG means retrieval-augmented generation. In this project, the important part is retrieval: the system searches your own corpus and uses only retrieved chunks to prepare a structured report. It is not a proof checker and does not certify theorem correctness.
+## Commands
 
-## Roots And Layout
+Use `<command> --help` for the complete option list.
 
-This repository intentionally has two roots:
+| Command | Purpose |
+| --- | --- |
+| `ingest PATH` | Replace the selected index with chunks from PATH |
+| `search QUERY` | Show ranked passages with source locations |
+| `ask QUERY` | Format retrieved evidence, inference, and limitations |
+| `stats` | Show indexed source and chunk counts |
+| `eval FILE` | Evaluate source-level retrieval against a YAML benchmark |
+| `inspect-evidence-eval FILE` | Inspect candidate passage evidence and optional triage reports |
+| `export-enrichment-batch PATH --output FILE` | Export chunks for offline metadata enrichment |
+| `discover [QUERY]` | Query arXiv and write candidates for review |
+| `review-candidates [FILE]` | Display candidate rankings and approval status |
+| `download-approved [FILE]` | Download approved candidates |
+| `download-arxiv ID [ID ...]` | Download exact arXiv IDs |
+| `download-seed [FILE]` | Download IDs from a seed file (default `arxiv_seed_core.txt`) |
 
-- `WORKSPACE_ROOT`: the directory containing `corpus/`, `.math_rag_index/`, `eval/`, `metadata/`, `agent_logs/`, and `research_profile.md`.
-- `PACKAGE_ROOT`: the directory containing `pyproject.toml`, `src/math_rag/`, `tests/`, and this README.
+Index commands accept `--index-dir` (default `.math_rag_index` relative to the
+working directory). Search/ask/eval accept `--mode keyword|vector|hybrid` and
+`--top-k`. Hybrid is the default; vector is sparse cosine search, not neural
+embeddings. Use explicit `--index-dir ../.math_rag_index` if running inside
+`math_rag/` instead of the workspace root.
 
-In the current checkout:
+## Ingestion and enrichment
 
-```text
-WORKSPACE_ROOT/
-  corpus/
-  .math_rag_index/
-  eval/
-  metadata/
-  agent_logs/
-  research_profile.md
-  math_rag/              <- PACKAGE_ROOT
-    pyproject.toml
-    src/math_rag/
-    tests/
-    scripts/
-```
-
-When a command is shown below, its working directory is stated explicitly. If you run from `PACKAGE_ROOT` but want to use the workspace index, set `MATH_RAG_INDEX_DIR=../.math_rag_index` or pass `--index-dir ../.math_rag_index`.
-
-## Minimum Successful Demo
-
-From `WORKSPACE_ROOT`:
-
-```bash
-cd /absolute/path/to/YTD_RAG
-
-math_rag/.venv/bin/python -m math_rag.cli ingest corpus/
-math_rag/.venv/bin/python -m math_rag.cli stats
-math_rag/.venv/bin/python -m math_rag.cli search "Mabuchi energy convexity"
-math_rag/.venv/bin/python -m math_rag.cli ask "What does the corpus say about Mabuchi energy convexity?"
-```
-
-Equivalent from `PACKAGE_ROOT`:
+Supported inputs: `.tex`, `.md`, `.markdown`, `.txt`, `.bib`, and `.pdf` with
+the `pdf` extra. Metadata defaults to `metadata/documents.yaml`; override it
+with `--metadata`. See [documents.example.yaml](../metadata/documents.example.yaml).
 
 ```bash
-cd /absolute/path/to/YTD_RAG/math_rag
-export MATH_RAG_INDEX_DIR=../.math_rag_index
-
-python3 -m math_rag.cli ingest ../corpus/
-python3 -m math_rag.cli stats
-python3 -m math_rag.cli search "Mabuchi energy convexity"
-python3 -m math_rag.cli ask "What does the corpus say about Mabuchi energy convexity?"
-```
-
-## Install
-
-Recommended Python versions are 3.11 or 3.12. Python 3.13 may work, but editable installs may require explicitly setting `PYTHONPATH`, especially for MCP usage.
-
-From `PACKAGE_ROOT`:
-
-```bash
-cd /absolute/path/to/YTD_RAG/math_rag
-
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -e .
-```
-
-The base install is dependency-light and local. To install preferred terminal, metadata, PDF, and test libraries:
-
-```bash
-python3 -m pip install -e ".[preferred,dev]"
-```
-
-For future local embedding experiments:
-
-```bash
-python3 -m pip install -e ".[full]"
-```
-
-In this first version, `--mode vector` does not use neural embeddings. It is a deterministic sparse vector-style retriever. Dense embedding backends can be added later.
-
-## Add Documents
-
-Place research files under `WORKSPACE_ROOT/corpus/`, or pass another folder to the CLI. Supported first-version formats:
-
-- `.tex`
-- `.md`, `.markdown`
-- `.txt`
-- `.bib`
-- `.pdf` if `pypdf` is installed
-
-Optional document metadata can be stored under `WORKSPACE_ROOT/metadata/documents.yaml`; see `WORKSPACE_ROOT/metadata/documents.example.yaml`.
-
-## Build The Index
-
-From `WORKSPACE_ROOT`:
-
-```bash
-math_rag/.venv/bin/python -m math_rag.cli ingest corpus/
-math_rag/.venv/bin/python -m math_rag.cli stats
-```
-
-From `PACKAGE_ROOT`:
-
-```bash
-export MATH_RAG_INDEX_DIR=../.math_rag_index
-python3 -m math_rag.cli ingest ../corpus/
-python3 -m math_rag.cli stats
-```
-
-The default index is local and written to `.math_rag_index/index.json` relative to the current working directory unless `MATH_RAG_INDEX_DIR` or `--index-dir` is set.
-
-## Cached Metadata Enrichment
-
-Metadata enrichment is opt-in and never changes chunk boundaries, chunk ids, source content, chunk types, or line spans. It only adds search-oriented fields under `chunk.metadata["enrichment"]`.
-
-Deterministic enrichment:
-
-```bash
-# From WORKSPACE_ROOT
 math_rag/.venv/bin/python -m math_rag.cli ingest corpus/ --enrich-metadata
-```
-
-Offline agent-assisted enrichment:
-
-```bash
-# Export deterministic chunks for a coding agent or local model to summarize.
 math_rag/.venv/bin/python -m math_rag.cli export-enrichment-batch corpus/ --output /tmp/enrichment_batch.jsonl
-
-# Re-ingest with local precomputed JSONL metadata.
 math_rag/.venv/bin/python -m math_rag.cli ingest corpus/ \
-  --enrich-metadata \
-  --enrichment-backend agent_json_v1 \
+  --enrich-metadata --enrichment-backend agent_json_v1 \
   --agent-enrichment-jsonl /tmp/enrichment.jsonl
 ```
 
-`agent_json_v1` uses only a local JSONL file. It does not call a model API. Invalid or mismatched agent records are ignored with warnings and deterministic metadata is used as fallback.
+Enrichment adds metadata without changing source content, chunk IDs, boundaries,
+or line spans. `deterministic_v1` is the default backend. `agent_json_v1` reads
+a local JSONL file and falls back to deterministic metadata for invalid records;
+it never calls a model API. `--refresh-enrichment-cache` recomputes the cache.
 
-## Search And Ask
+`ingest` rebuilds the chosen index. For engineering logs, always select a
+separate `.math_rag_agent_logs_index` as shown in the workspace README.
 
-Hybrid search is the default because mathematical retrieval needs exact names/symbols and sparse similarity:
+## Paper acquisition
 
-```bash
-# From WORKSPACE_ROOT
-math_rag/.venv/bin/python -m math_rag.cli search "Mabuchi energy convexity"
-math_rag/.venv/bin/python -m math_rag.cli search "Chen-Cheng" --mode keyword
-math_rag/.venv/bin/python -m math_rag.cli search "cusp limit of conic toric metrics" --mode vector
-```
-
-Again, `--mode vector` means the deterministic sparse vector-style retriever, not sentence-transformers or dense neural embeddings.
-
-Ask uses retrieved chunks to produce a conservative structured report:
-
-```bash
-# From WORKSPACE_ROOT
-math_rag/.venv/bin/python -m math_rag.cli ask "What sources discuss cusp limits of conic metrics?"
-```
-
-The answer layer separates retrieved evidence, corpus-supported statements, cautious inference, and claims not established by the retrieved sources.
-
-## Seeded arXiv Corpus
-
-For an initial research corpus, prefer a curated arXiv seed list over broad discovery. A seed list starts from papers you already trust, avoids noisy query matches, and makes the first corpus reproducible.
-
-Privacy note: these commands contact arXiv. Discovery sends search queries/config-derived terms; download sends arXiv IDs. Private corpus contents are not sent unless you put private information into the query/config yourself.
-
-From `WORKSPACE_ROOT`, create `arxiv_seed_core.txt` with one arXiv ID per line:
-
-```text
-# comments and blank lines are ignored
-1711.08424
-1711.08424v2
-math/0407486
-dg-ga/9711014
-```
-
-Download the seed list:
-
-```bash
-math_rag/.venv/bin/python -m math_rag.cli download-seed arxiv_seed_core.txt
-```
-
-By default, `download-seed` downloads or records at most 10 new papers per run. For a larger seed list:
+These commands contact arXiv with queries or IDs. A curated seed file contains
+one ID per line; comments and blank lines are ignored. Versioned and old-style
+IDs are supported.
 
 ```bash
 math_rag/.venv/bin/python -m math_rag.cli download-seed arxiv_seed_core.txt --max-papers 50
-```
-
-Download exact IDs directly:
-
-```bash
-math_rag/.venv/bin/python -m math_rag.cli download-arxiv 1711.08424 math/0407486 dg-ga/9711014
-```
-
-Then ingest:
-
-```bash
+math_rag/.venv/bin/python -m math_rag.cli download-arxiv 1711.08424v2 math/0407486
 math_rag/.venv/bin/python -m math_rag.cli ingest corpus/
-math_rag/.venv/bin/python -m math_rag.cli stats
 ```
 
-Unversioned IDs resolve to the version returned by arXiv at download time; use `vN` when reproducibility matters. Old-style IDs are preserved in metadata and stored in filesystem-safe folders. Existing paper folders are skipped by default and are never silently overwritten; use `--force` only for intentional replacement.
+Seed download defaults to at most 10 new papers per run. Existing paper folders
+are skipped unless `--force` is explicitly supplied. `--skip-existing` and
+`--force` are mutually exclusive. Downloads fetch source and PDF by default and
+apply arXiv delays/backoff. Ingestion prefers TeX source and uses PDF as fallback.
 
-The downloader is polite: it serializes arXiv requests, enforces a delay between requests, backs off on HTTP 429, and records metadata. TeX source is preferred for ingestion; PDF is used as fallback when available.
-
-## Automatic Paper Discovery And Download
-
-`math_rag` can discover candidate papers from arXiv, rank them, and download only papers you approve:
-
-```text
-discover -> rank -> review/approve -> download -> ingest -> search/ask
-```
-
-Privacy note: these commands contact arXiv. Discovery sends search queries/config-derived terms; download sends arXiv IDs. Private corpus contents are not sent unless you put private information into the query/config yourself.
-
-From `WORKSPACE_ROOT`:
+For broader discovery:
 
 ```bash
 math_rag/.venv/bin/python -m math_rag.cli discover "constant scalar curvature Kahler toric" --verbose
-```
-
-Or from `PACKAGE_ROOT` with a workspace metadata config:
-
-```bash
-cp ../metadata/discovery_config.example.yaml ../metadata/discovery_config.yaml
-python3 -m math_rag.cli discover --config ../metadata/discovery_config.yaml --index-dir ../.math_rag_index
-```
-
-Discovery writes `discovered_papers.yaml` in the current working directory. Review candidates:
-
-```bash
 math_rag/.venv/bin/python -m math_rag.cli review-candidates discovered_papers.yaml
-```
-
-Then manually edit selected entries:
-
-```yaml
-action: download
-```
-
-Download only approved papers:
-
-```bash
+# Review the YAML and set action: download on selected entries.
 math_rag/.venv/bin/python -m math_rag.cli download-approved discovered_papers.yaml
 ```
 
-By default, `download_policy.require_approval: true` blocks downloads of pending candidates, even if `--auto-download` is passed. Keep this enabled for normal use.
-
-## MCP Integration
-
-`math_rag` ships with a local stdio MCP server so Codex or Claude Code can query the local RAG index directly.
-
-The MCP server exposes read-only tools by default:
-
-- `rag_search`: search the indexed corpus and return ranked chunks with snippets and provenance.
-- `rag_ask`: produce a retrieval-grounded structured answer.
-- `rag_get_chunk`: return full content and metadata for one indexed chunk id.
-- `rag_list_sources`: list indexed sources, optionally filtered by substring.
-
-The agent cannot freely read arbitrary files or execute shell commands. It can only query content already included in the `math_rag` index through bounded RAG tools. "Read-only" means no filesystem writes and no ingestion/write tools unless explicitly enabled; it does not mean the agent sees nothing from the corpus.
-
-When `MATH_RAG_MCP_ALLOW_WRITE_TOOLS=true`, the following additional tool is exposed:
-
-- `rag_ingest`: re-ingest a local corpus path into the configured index.
-
-`rag_ingest` accepts only relative paths and validates them with `Path.resolve()` against the workspace root. Absolute paths and path traversal outside the workspace root are rejected.
-
-### MCP Root Resolution
-
-Use explicit environment variables:
-
-- `MATH_RAG_PACKAGE_ROOT`: path to `YTD_RAG/math_rag`.
-- `MATH_RAG_WORKSPACE_ROOT`: path to `YTD_RAG`.
-- `MATH_RAG_INDEX_DIR`: optional override; defaults to `MATH_RAG_WORKSPACE_ROOT/.math_rag_index`.
-
-`MATH_RAG_ROOT` is still accepted as a legacy fallback. If it points to the package root, the server uses its parent as the workspace root when that parent looks like the workspace. Prefer the explicit variables above.
-
-Codex example:
-
-```bash
-codex mcp add math-rag \
-  --env MATH_RAG_PACKAGE_ROOT=/absolute/path/to/YTD_RAG/math_rag \
-  --env MATH_RAG_WORKSPACE_ROOT=/absolute/path/to/YTD_RAG \
-  --env MATH_RAG_INDEX_DIR=/absolute/path/to/YTD_RAG/.math_rag_index \
-  --env PYTHONPATH=/absolute/path/to/YTD_RAG/math_rag/src \
-  -- \
-  /absolute/path/to/YTD_RAG/math_rag/.venv/bin/python \
-  -m math_rag.mcp_server
-```
-
-Claude Code example:
-
-```bash
-claude mcp add --transport stdio math-rag -- \
-  /absolute/path/to/YTD_RAG/math_rag/.venv/bin/python \
-  -m math_rag.mcp_server
-```
-
-For Claude Code, configure the same environment variables in the place where that MCP command is launched.
-
-Security limits:
-
-- No shell execution is exposed by MCP.
-- No arbitrary filesystem reads are exposed by MCP.
-- arXiv discovery/download tools are not exposed through MCP.
-- Tool responses are capped in size; use `rag_get_chunk` for a specific retrieved chunk.
-- Source filters are substrings used against indexed source paths, not shell commands.
-
-### Remote MCP For ChatGPT
-
-The local `math_rag.mcp_server` entrypoint above is a stdio server for local tools such as Codex and Claude Code. ChatGPT custom MCP connectors require a remote HTTP MCP endpoint.
-
-`math_rag` includes a separate remote read-only entrypoint:
-
-```bash
-python -m math_rag.remote_mcp_server
-```
-
-Install the optional remote dependencies first:
-
-```bash
-python3 -m pip install -e '.[remote-mcp]'
-```
-
-The remote server exposes only two tools:
-
-- `search(query: str)`: search the existing index and return JSON text with `results`.
-- `fetch(id: str)`: fetch one indexed chunk by id and return JSON text.
-
-It does not expose `rag_ingest`, downloader/discovery tools, shell tools, arbitrary file reads, or write tools.
-
-Required runtime settings:
-
-```bash
-export MATH_RAG_INDEX_DIR=/data/.math_rag_index
-export MATH_RAG_REMOTE_MCP_READ_ONLY=true
-export MATH_RAG_REMOTE_PUBLIC_BASE_URL=https://your-mcp-host.example.com
-```
-
-The remote server refuses startup if `MATH_RAG_MCP_ALLOW_WRITE_TOOLS=true` or `MATH_RAG_REMOTE_MCP_READ_ONLY=false`.
-
-For Azure preparation, see `deploy/azure/README.md`. The prepared target is Azure Container Apps with an already-built `.math_rag_index` mounted at runtime. Do not bake private `corpus/` or `.math_rag_index/` into public images, and do not connect ChatGPT until HTTPS and authentication are configured. Indexed content is private data once exposed remotely.
+Discovery writes its review queue in the working directory. Use `--config` with
+[discovery_config.example.yaml](../metadata/discovery_config.example.yaml) to
+customize discovery/download policy. Keep `download_policy.require_approval`
+enabled; pending candidates remain blocked even with `--auto-download`.
 
 ## Evaluation
 
-Before changing ranking, embeddings, or answer-generation layers, validate whether the corpus retrieves sources you already expect.
-
-From `WORKSPACE_ROOT`:
-
 ```bash
 math_rag/.venv/bin/python -m math_rag.cli eval eval/toric_core_gold_questions.yaml
+math_rag/.venv/bin/python -m math_rag.cli inspect-evidence-eval eval/candidate_evidence_questions.yaml \
+  --out /tmp/evidence-inspection.md --triage-out /tmp/evidence-triage.md
 ```
 
-Gold files use this shape:
+The stable core benchmark reports source-level hits@1, hits@3, and hits@5;
+negative questions are excluded from those denominators. A source hit does not
+prove that the correct passage was found. See [eval/README.md](../eval/README.md)
+and the [evidence evaluation notes](../eval/evidence_eval_README.md).
 
-```yaml
-questions:
-  - id: abreu_equation
-    question: "Where does the corpus discuss the Abreu equation?"
-    expected_sources:
-      - "math_0407486"
-      - "0805.0128"
+## Local MCP
 
-  - id: negative_new_theorem
-    question: "Does the corpus contain a complete proof of my own new theorem?"
-    expected_sources: []
-    negative: true
-```
-
-The current eval is source-level retrieval evaluation:
-
-- it checks whether expected source identifiers appear in the top-k source paths;
-- it reports `hits@1`, `hits@3`, `hits@5`;
-- negative questions are excluded from the hit-rate denominators.
-
-It does not guarantee that the correct passage inside the paper was retrieved. Future eval could add expected text patterns, expected chunk types, or passage-level checks.
-
-Metrics from different eval versions should not be compared blindly. A stable core eval is for regression tracking; expanded/topic evals are for checking coverage as the corpus grows.
-
-## Agent Logs Workflow
-
-Agent logs are curated Markdown records of coding-agent work: Codex final reports, Claude Code reviews, git diff summaries, pytest outputs, eval results, design decisions, known limitations, and recommended next steps.
-
-Direct access to private Codex or Claude Code chat state is not assumed. Save only the useful final/report material manually under `WORKSPACE_ROOT/agent_logs/`:
-
-```text
-agent_logs/
-  codex/
-  claude/
-  decisions/
-  templates/
-```
-
-Agent logs are engineering memory, not mathematical theorem evidence. They must not be cited as evidence for theorem statements, proof correctness, novelty, priority, or literature claims. Use papers, drafts, notes, and reviewed source documents for mathematical evidence.
-
-Save a Codex report:
+Launch `math_rag.mcp_server` with the project Python and explicit environment:
 
 ```bash
-# From WORKSPACE_ROOT
-cp /path/to/report.md agent_logs/codex/2026-05-04-symbol-normalization.md
+MATH_RAG_PACKAGE_ROOT="$PWD/math_rag" \
+MATH_RAG_WORKSPACE_ROOT="$PWD" \
+MATH_RAG_INDEX_DIR="$PWD/.math_rag_index" \
+math_rag/.venv/bin/python -m math_rag.mcp_server
 ```
 
-Ingest logs:
+Configure those same executable, module arguments, and environment values in
+your local MCP client. Read-only tools are `rag_search`, `rag_ask`,
+`rag_get_chunk`, and `rag_list_sources`. Responses are bounded; use
+`rag_get_chunk` to inspect a retrieved ID.
 
-```bash
-# From WORKSPACE_ROOT
-math_rag/.venv/bin/python -m math_rag.cli ingest agent_logs/
-```
+`MATH_RAG_MCP_ALLOW_WRITE_TOOLS=true` additionally exposes `rag_ingest`, which
+accepts workspace-relative paths and rejects traversal outside the workspace.
+`MATH_RAG_ROOT` remains a legacy root fallback; prefer the explicit settings
+above. No shell, arbitrary-file, or arXiv download tools are exposed.
 
-This rebuilds the selected index over logs alone. Use a separate index when you want to keep the mathematical corpus index intact:
+## Remote MCP and migration notes
 
-```bash
-math_rag/.venv/bin/python -m math_rag.cli ingest agent_logs/ --index-dir .math_rag_agent_logs_index
-math_rag/.venv/bin/python -m math_rag.cli search "why hits@1 dropped" --index-dir .math_rag_agent_logs_index
-```
+Remote Azure serving is paused. The supported HTTP entrypoint is
+`math_rag.mcp_http_server`; see [HTTP configuration](../docs/remote_mcp_server.md).
+The older `remote_mcp_server` adapter and `math-rag-mcp-remote` executable remain
+for compatibility. They are not the Azure Dockerfile's entrypoint.
 
-Search logs:
+The cleanup standardizes on argparse and dataclasses. Existing valid JSON
+indexes retain the same schema and need no rebuild. Runtime type coercion from
+optional Pydantic models is no longer applied; metadata should use the types
+shown in the examples.
 
-```bash
-math_rag/.venv/bin/python -m math_rag.cli search "why hits@1 dropped"
-math_rag/.venv/bin/python -m math_rag.cli search "symbol normalization Codex report"
-math_rag/.venv/bin/python -m math_rag.cli search "MCP server final report"
-```
-
-MCP prompt example:
-
-```text
-Use math-rag to find the latest Codex report about symbol normalization and summarize what changed.
-```
-
-When ingested, files under `agent_logs/` are tagged in chunk metadata with `source_kind: agent_log`. The regular mathematical corpus under `corpus/` is not tagged this way.
-
-## Mathematical Behavior
-
-The LaTeX chunker tracks section hierarchy and creates separate chunks for theorem-like environments. It also detects common theorem aliases declared by `\newtheorem`.
-
-Search preserves mathematical terms and symbols, and adds conservative search-only metadata such as normalized symbols and broad concept tags. Original chunk content is not rewritten.
-
-## Privacy
-
-The default ingest/search/ask workflow is local-only:
-
-- no OpenAI key is required;
-- no API key is hard-coded;
-- `.env` is ignored by git;
-- the corpus and index stay on the local machine unless you explicitly add a remote backend later.
-
-The arXiv discovery and download commands are explicit exceptions: they contact arXiv and send search terms or arXiv IDs. They do not send your private corpus contents unless you put private information into the query/config yourself.
-
-Treat the corpus as private unpublished research material.
-
-## Limitations
-
-This is not a proof checker. It does not verify proofs, fill gaps, establish novelty, or decide whether a theorem is correct. It can only say that retrieved sources contain similar claims, definitions, examples, or references.
-
-PDF extraction quality depends on the PDF text layer and may be poor for scans or heavily formatted mathematics. LaTeX parsing is heuristic and may miss custom environments or macros. Hybrid ranking still needs corpus-specific tuning.
-
-## Tests
-
-From `PACKAGE_ROOT` with development dependencies installed:
-
-```bash
-python3 -m pytest
-```
-
-The tests cover LaTeX chunking, citation formatting, hybrid retrieval, eval behavior, downloader safety, MCP read-only behavior, and MCP root/path validation.
+The old `scripts/build_index.py`, `scripts/search.py`, and `scripts/ask.py`
+launchers were removed; use CLI `ingest`, `search`, and `ask` respectively.
+The old `preferred`, `embeddings`, and `full` extras were removed. Install only
+what you use: `./math_rag[pdf,remote-mcp,dev]` enables all supported extras.
+There is no implemented sentence-transformers backend. `MATH_RAG_LOCAL_ONLY`
+was unused and has been removed; local operation does not depend on that flag.
