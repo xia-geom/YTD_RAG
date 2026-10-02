@@ -1,11 +1,8 @@
 {
   "run_id": "math-rag-fixture-verification-2026-05-14",
-  "project": "math-rag-safe-fixture-verification",
   "apim_url": "https://apim-math-rag-mcp-5d67a258.azure-api.net/mcp",
   "healthz_url": "https://apim-math-rag-mcp-5d67a258.azure-api.net/healthz",
   "readyz_url": "https://apim-math-rag-mcp-5d67a258.azure-api.net/readyz",
-  "chatgpt_auth_mode": "no_authentication",
-  "backend_auth_mode": "bearer",
   "tool_allowlist": ["search", "fetch"],
   "tool_deny_prefixes": ["rag_"],
   "allowed_apim_host": "apim-math-rag-mcp-5d67a258.azure-api.net",
@@ -29,19 +26,5 @@
     "Bearer ",
     ".env",
     "sk-"
-  ],
-  "deployment_assumptions": {
-    "fixture_only": true,
-    "no_private_index": true,
-    "apim_injects_backend_bearer": true,
-    "no_oauth": true,
-    "use_apim_only": true
-  },
-  "source_pack_paths": [
-    "agent_logs/codex/2026-05-13-remote-mcp-extended-verification.md",
-    "agent_logs/codex/2026-05-12-low-cost-public-mcp.md",
-    "docs/azure_remote_mcp_readiness.md"
-  ],
-  "manual_chatgpt_transcript_path": null,
-  "no_specific_constraint": true
+  ]
 }

@@ -4,6 +4,7 @@
 .ruff_cache/
 .mypy_cache/
 .archive/
+.tmp-*/
 __pycache__/
 *.py[cod]
 *.pdf
